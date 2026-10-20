@@ -94,6 +94,7 @@
     {{/ stickycontent }}
 {{/ core/sticky_footer }}
 
+{{$ core_courseformat/local/content/bulkedittools-js}}
 {{#js}}
 require(['theme_snap/courseformat/content/bulkedittools'], function(component) {
     var toolsContainer = document.querySelector('#bulkedittools-{{uniqid}}');
@@ -102,3 +103,4 @@ require(['theme_snap/courseformat/content/bulkedittools'], function(component) {
     }
 });
 {{/js}}
+{{/ core_courseformat/local/content/bulkedittools-js}}

@@ -1558,7 +1558,8 @@ define(['jquery', 'core/log', 'core/aria', 'theme_snap/headroom', 'theme_snap/ut
                         const sectionMatch = linkWithSection.href.match(/section-(\d+)/);
                         if (sectionMatch) {
                             const sectionNumber = sectionMatch[1];
-                            blockSettingsLink.href += `&sr=${sectionNumber}`;
+                            // The sr URL parameter is deprecated since Moodle 5.3, returnoptions[sr] is supported until 7.0.
+                            blockSettingsLink.href += `&${encodeURIComponent('returnoptions[sr]')}=${sectionNumber}`;
                         }
                     }
 

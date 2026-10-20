@@ -1679,7 +1679,7 @@ class behat_theme_snap extends behat_base {
         global $DB;
         $activityid = $DB->get_field($activity, 'id', ['name' => $activityname], MUST_EXIST);
         $cm = get_coursemodule_from_instance($activity, $activityid, 0, false, MUST_EXIST);
-        course_delete_module($cm->id, true);
+        \core_courseformat\formatactions::cm($cm->course)->delete($cm->id, true);
     }
 
     /**

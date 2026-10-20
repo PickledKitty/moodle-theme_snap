@@ -22,6 +22,7 @@
 
     Example context (json):
     {
+        "collapsemenu": true,
         "initialsection": {
                 "num": 0,
                 "id": 34,
@@ -54,7 +55,8 @@
                 "id": 35,
                 "header": {
                     "name": "Section title",
-                    "url": "#"
+                    "url": "#",
+                    "headinglevel": 3
                 },
                 "cmlist": {
                     "cms": [
@@ -84,7 +86,8 @@
                 "id": 36,
                 "header": {
                     "name": "Section 2 title",
-                    "url": "#"
+                    "url": "#",
+                    "headinglevel": 3
                 },
                 "cmlist": {
                     "cms": [
@@ -140,7 +143,8 @@
             "id": 37,
             "header": {
                 "name": "Single Section Example",
-                "url": "#"
+                "url": "#",
+                "headinglevel": 3
             },
             "cmlist": {
                 "cms": [
@@ -170,15 +174,43 @@
 <div id="course-format-{{uniqid}}">
     <h2 class="accesshide">{{{title}}}</h2>
     {{{completionhelp}}}
-    <ul class="{{format}}" data-for="course_sectionlist">
+    {{#collapsemenu}}
+        <div class="d-flex justify-content-end mb-1">
+            <button type="button"
+                    class="section-collapsemenu aabtn"
+                    aria-expanded="true"
+                    data-toggle="toggleall"
+            >
+                <span class="collapseall text-nowrap">
+                    {{#pix}} t/collapseall, core {{/pix}}
+                    <span class="collapsemenu-text">{{#str}}collapseall{{/str}}</span>
+                </span>
+                <span class="expandall text-nowrap">
+                    {{#pix}} t/expandall, core {{/pix}}
+                    <span class="collapsemenu-text">{{#str}}expandall{{/str}}</span>
+                </span>
+            </button>
+        </div>
+    {{/collapsemenu}}
+    <ul class="{{format}}{{#collapsemenu}} has-collapsemenu{{/collapsemenu}}" data-for="course_sectionlist">
         {{#initialsection}}
             {{$ core_courseformat/local/content/section }}
-                {{> core_courseformat/local/content/section }}
+                {{!
+                    The deprecated collapse/expand all sections toggle inside the section content is
+                    suppressed here because this template renders it above the section list instead.
+                    Formats and themes overriding this template with an older version will not suppress
+                    it, and will keep the previous behaviour.
+                }}
+                {{< core_courseformat/local/content/section }}
+                    {{$ core_courseformat/local/content/section/collapsemenu }}{{/ core_courseformat/local/content/section/collapsemenu }}
+                {{/ core_courseformat/local/content/section }}
             {{/ core_courseformat/local/content/section }}
         {{/initialsection}}
         {{#sections}}
             {{$ core_courseformat/local/content/section }}
-                {{> core_courseformat/local/content/section }}
+                {{< core_courseformat/local/content/section }}
+                    {{$ core_courseformat/local/content/section/collapsemenu }}{{/ core_courseformat/local/content/section/collapsemenu }}
+                {{/ core_courseformat/local/content/section }}
             {{/ core_courseformat/local/content/section }}
         {{/sections}}
     </ul>
@@ -192,7 +224,9 @@
         <ul class="{{format}}">
         {{#singlesection}}
             {{$ core_courseformat/local/content/section }}
-                {{> core_courseformat/local/content/section }}
+                {{< core_courseformat/local/content/section }}
+                    {{$ core_courseformat/local/content/section/collapsemenu }}{{/ core_courseformat/local/content/section/collapsemenu }}
+                {{/ core_courseformat/local/content/section }}
             {{/ core_courseformat/local/content/section }}
         {{/singlesection}}
         </ul>
@@ -216,6 +250,7 @@
         {{/ core_courseformat/local/content/bulkedittools}}
     {{/bulkedittools}}
 </div>
+{{$ core_courseformat/local/content-js}}
 {{#js}}
 require(['theme_snap/courseformat/content'], function(component) {
     component.init(
@@ -223,3 +258,4 @@ require(['theme_snap/courseformat/content'], function(component) {
     );
 });
 {{/js}}
+{{/ core_courseformat/local/content-js}}

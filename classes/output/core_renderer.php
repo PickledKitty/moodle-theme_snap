@@ -2187,7 +2187,7 @@ HTML;
 
         if (!empty($coursemanagemenu)) {
             // Render the course management menu.
-            $dropdown = $this->render_from_template('my/dropdown', $coursemanagemenu);
+            $dropdown = $this->render_from_template('theme_snap/my_courses_management_options', $coursemanagemenu);
             $coursemanageoptions = "<div class='snap-page-my-courses-options d-flex'>";
             $coursemanageoptions .= $dropdown;
             $coursemanageoptions .= "</div>";

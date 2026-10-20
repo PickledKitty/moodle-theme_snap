@@ -115,10 +115,9 @@ if (\theme_snap\local::show_on_login_page('navbarlogin')) {
 // AJAX poll) is not rendered.
 if (isloggedin() && !isguestuser() && !$snapmfapending) {
     if (isset($SESSION->justloggedin)) {
-        require_once($CFG->dirroot . '/user/lib.php');
         unset($SESSION->justloggedin);
         // Just logged in, resetting the failed login count.
-        user_count_login_failures($USER);
+        \core\user::count_login_failures($USER);
     }
     if (!empty($CFG->messaging)) {
         $unreadcount = \core_message\api::count_unread_conversations($USER);

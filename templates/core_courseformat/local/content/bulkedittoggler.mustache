@@ -37,6 +37,7 @@
 >
     {{#str}} bulkedit, core_courseformat {{/str}} {{#pix}} i/edit, core {{/pix}}
 </button>
+{{$ core_courseformat/local/content/bulkedittoggler-js}}
 {{#js}}
 require(['core_courseformat/local/content/bulkedittoggler'], function(component) {
     // Validate the component exists in DOM.
@@ -46,3 +47,4 @@ require(['core_courseformat/local/content/bulkedittoggler'], function(component)
     }
 });
 {{/js}}
+{{/ core_courseformat/local/content/bulkedittoggler-js}}

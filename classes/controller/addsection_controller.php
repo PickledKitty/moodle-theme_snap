@@ -84,6 +84,6 @@ class addsection_controller extends controller_abstract {
         $DB->set_field('course_sections', 'summaryformat', $summaryformat, array('id' => $section->id));
         rebuild_course_cache($course->id);
 
-        redirect(course_get_url($course, $section->section, ['sr' => $section->sectionnum]));
+        redirect(course_get_url($course, $section->section, ['pagesectionid' => $section->id]));
     }
 }

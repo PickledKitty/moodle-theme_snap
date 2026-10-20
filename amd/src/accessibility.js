@@ -24,7 +24,7 @@
 /**
  * JS code to assign attributes and expected behavior for elements in the Dom regarding accessibility.
  */
-define(['jquery', 'core/str', 'core/event', 'core_form/events', 'theme_boost/bootstrap/util/sanitizer', 'theme_boost/popover',
+define(['jquery', 'core/str', 'core/event', 'core_form/events', 'bootstrap/util/sanitizer', 'bootstrap',
         'core/moremenu', 'core/log', 'core_filters/events'],
     function($, str, Event, FormEvents, {DefaultAllowlist}, {Popover}, coreMoreMenu, log, FilterEvents) {
         return {

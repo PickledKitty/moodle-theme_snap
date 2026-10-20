@@ -56,8 +56,8 @@ class course_action_section_delete extends course_action_section_base {
             } else {
                 $this->dataaction = 'deleteSection';
                 $this->dataid = $section->id;
-                $this->url = new moodle_url('/course/editsection.php', array('id' => $section->id,
-                    'sr' => $onsectionpage ? $section->section : 0, 'delete' => 1, ));
+                $this->url = new moodle_url('/course/editsection.php', ['id' => $section->id,
+                    'returnoptions' => ['pagesectionid' => $onsectionpage ? $section->id : 0], 'delete' => 1, ]);
             }
         }
     }

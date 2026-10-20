@@ -116,7 +116,7 @@ class webservice_ws_course_toc_progressbar extends \advanced_testcase {
 
         // Delete 1 activity.
         $cmassign = get_coursemodule_from_id('assign', $assign4->cmid);
-        course_delete_module($cmassign->id);
+        \core_courseformat\formatactions::cm($cmassign->course)->delete($cmassign->id);
 
         $result = ws_course_toc_progressbar::service(
             $user->id,

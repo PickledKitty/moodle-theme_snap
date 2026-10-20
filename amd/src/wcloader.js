@@ -23,8 +23,8 @@
  */
 
 
-define(['theme_boost/bootstrap/dropdown'],
-    function(Dropdown) {
+define(['bootstrap'],
+    function({Dropdown}) {
         return {
             /**
              * Initializes this module.

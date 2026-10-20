@@ -367,7 +367,8 @@ trait format_section_trait {
         // Get edit section HTML.
         $editbutton_html = '';
         if ($canupdatecourse) {
-            $url = new moodle_url('/course/editsection.php', array('id' => $section->id, 'sr' => $section->sectionnum));
+            $url = new moodle_url('/course/editsection.php',
+                ['id' => $section->id, 'returnoptions' => ['pagesectionid' => $section->id]]);
             $icon = '<img aria-hidden="true" role="presentation" class="svg-icon" alt="" src="';
             $icon .= $this->output->image_url('pencil', 'theme').'" /><br/>';
             $editbutton_html .= '<a href="'.$url.'" class="edit-summary">'.$icon.get_string('editcoursetopic', 'theme_snap'). '</a>';

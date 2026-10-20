@@ -343,7 +343,7 @@ label[for="toc-search-input"]{
   }
 }
 
-.drawerheadercontent {
+.drawerheading {
   order: -1;
   margin-left: 0.5rem;
 }
@@ -351,7 +351,15 @@ label[for="toc-search-input"]{
 #courseindexdrawercontrols {
   padding: 0;
   margin: 0;
-  width: 29px;
+
+  hr {
+    display: none;
+  }
+
+  .courseindex-collapsemenu {
+    padding: 0;
+    font-size: $font-size-sm;
+  }
 }
 
 .drawer.drawer-left .btn {
@@ -714,7 +722,7 @@ label[for="toc-search-input"]{
   .drawerheader{
     top: auto !important;
 
-    #courseindexdrawercontrolsmenubutton {
+    #courseindexdrawercontrols .courseindex-collapsemenu {
       margin-top: -1rem;
       margin-left: -2rem !important;
     }

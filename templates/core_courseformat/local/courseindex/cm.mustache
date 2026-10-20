@@ -44,6 +44,12 @@
     data-for="cm"
     data-id="{{id}}"
     role="treeitem"
+    {{! Activities with a delegated section are the tree item of that section, so they own its content. }}
+    {{#hasdelegatedsection}}{{#sectioninfo}}
+    aria-owns="courseindexcollapse{{number}}"
+    aria-labelledby="courseindexsection{{number}}-title"
+    aria-expanded="{{^indexcollapsed}}true{{/indexcollapsed}}{{#indexcollapsed}}false{{/indexcollapsed}}"
+    {{/sectioninfo}}{{/hasdelegatedsection}}
 >
     {{^hasdelegatedsection}}
         <span class="completioninfo" data-for="cm_completion" data-value="NaN"></span>
@@ -71,7 +77,7 @@
             </a>
         {{/uservisible}}
         <span class="courseindex-locked ms-1" data-for="cm_name">
-            {{#pix}} t/locked, core {{/pix}}
+            {{#pix}} t/locked, core, {{#str}} locked, course {{/str}} {{/pix}}
         </span>
     {{/hasdelegatedsection}}
     {{#hasdelegatedsection}}
@@ -80,8 +86,10 @@
         {{/sectioninfo}}
     {{/hasdelegatedsection}}
 </li>
+{{$ core_courseformat/local/courseindex/cm-js}}
 {{#js}}
     require(['theme_snap/courseformat/courseindex/cm'], function(component) {
-    component.init('course-index-cm-{{id}}');
+    component.init('#course-index-cm-{{id}}');
     });
 {{/js}}
+{{/ core_courseformat/local/courseindex/cm-js}}

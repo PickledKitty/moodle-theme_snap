@@ -26,9 +26,11 @@
     * cansignup - Signup allowed?,
     * cookieshelpicon - cookies help icon details
     * error - Any errors in the form?,
+    * errortitle - Optional bold heading shown above the error message,
     * forgotpasswordurl - Forgot password url,
     * hasidentityproviders - Flag, set to true to hide identity providers,
-    * hasinstructions - Flag, set to true to show instructions,
+    * hasoauth2client - Flag, set when this login form is part of an OAuth2 authorization flow,
+    * client - The requesting OAuth2 client (name, description), if hasoauth2client is true,
     * identityproviders - List of identiy providers,
     * instructions - Instructions,
     * instructionsformat - Format of instructions,
@@ -78,7 +80,8 @@
         "error": "",
         "forgotpasswordurl": "http://localhost/stable_master/login/forgot_password.php",
         "hasidentityproviders": false,
-        "hasinstructions": true,
+        "errortitle": "",
+        "hasoauth2client": false,
         "identityproviders": [],
         "instructions": "For full access to this site, you first need to create an account.",
         "instructionsformat": "1",
@@ -101,9 +104,20 @@
         {{^logourl}}
         <h1 id="site_name_snap" class="text-center">{{sitename}}</h1>
         {{/logourl}}
+        {{#hasoauth2client}}
+            <h2 class="login-heading">{{#str}}oauth2:confirmscopes:clientaccesstitle, moodle, {
+                "clientname": {{#quote}}{{client.name}}{{/quote}},
+                "clientdescription": {{#quote}}{{client.description}}{{/quote}},
+                "sitename": {{#quote}}{{sitename}}{{/quote}}
+            }{{/str}}</h2>
+            {{> core/oauth2/client_description}}
+        {{/hasoauth2client}}
         {{#error}}
             <div class="loginerrors">
-                <div class="alert alert-danger" role="alert">{{error}}</div>
+                <div class="alert alert-danger" id="loginerrormessage" role="alert">
+                    {{#errortitle}}<strong class="d-block mb-1">{{errortitle}}</strong>{{/errortitle}}
+                    {{error}}
+                </div>
             </div>
         {{/error}}
         <form action="{{loginurl}}" method="post" id="login" class="snap-custom-form">
@@ -188,7 +202,7 @@
     </div>
 </div>
 
-{{#hasinstructions}}
+{{#instructions}}
     <div class="js-only snap-login snap-login-option snap-login-box" id="snap-login-help">
         <div class="snap-login-instructions">
             <a class="btn btn-primary d-block w-100 iconhelp" href="#" data-bs-toggle="modal" data-bs-target="#login-help-modal">
@@ -200,7 +214,7 @@
                 <div class="modal-content">
                   <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{#str}}closebuttontitle{{/str}}"></button>
-                    <h5 class="modal-title" id="login-help-modal-title">{{#str}}helpwithlogin, theme_snap{{/str}}</h5>
+                    <h2 class="modal-title fs-5" id="login-help-modal-title">{{#str}}helpwithlogin, theme_snap{{/str}}</h2>
                   </div>
                   <div class="modal-body summary">
                       <br>
@@ -211,7 +225,7 @@
             </div>
         </div>
     </div>
-{{/hasinstructions}}
+{{/instructions}}
 
 <span class="snap-log-in-more snap-log-in-loading-spinner"></span>
 

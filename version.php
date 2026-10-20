@@ -24,9 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2026092400;
-$plugin->requires  = 2025100600;
-$plugin->release   = '5.1.4';
+$plugin->version   = 2026102000;
+$plugin->requires  = 2026100500;
+$plugin->release   = '5.3.0';
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->component = 'theme_snap';
 $plugin->dependencies = [
