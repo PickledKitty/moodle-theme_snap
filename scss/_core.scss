@@ -1577,6 +1577,8 @@ $mr-nav-zindex: 1052;
             overflow-y: auto;
             min-width: 13rem;
             border-radius: 5px;
+            // Match the navbar, which can be given its own colour in the theme settings.
+            background-color: $nav-bg;
             .carousel-item {
                 min-width: 13rem;
                 .header {
