@@ -861,6 +861,30 @@ body.path-grade-grading {
     }
 }
 
+// The lesson menu, moved beside the lesson on wide screens by theme_snap/inline_fake_blocks.
+// On narrow screens it stays in the blocks drawer.
+#page-mod-lesson-view {
+    @include media-breakpoint-up(lg) {
+        #snap-inline-fake-blocks {
+            float: left;
+            width: 25%;
+            margin-left: 4%;
+            position: sticky;
+            top: 80px;
+        }
+
+        &:has(#snap-inline-fake-blocks .block) #region-main-box {
+            float: right;
+            width: 70%;
+        }
+    }
+}
+
+// Nothing left in the blocks drawer once its blocks moved beside the content, so hide its button.
+body.snap-blocks-drawer-empty .blocks-drawer-button {
+    display: none;
+}
+
 /* Radio button and checkbox inputs. */
 #page-mod-lesson-view.path-mod-lesson {
     .answeroptiongroup,

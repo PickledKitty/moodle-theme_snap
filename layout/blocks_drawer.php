@@ -42,3 +42,10 @@ $templatecontext = [
     'modpurposes' => json_encode(\theme_snap\local::get_mod_purposes()),
 ];
 echo $OUTPUT->render_from_template('theme_snap/blocks_drawer', $templatecontext);
+
+// Fake blocks students need while they work, such as the lesson menu, move from the drawer
+// to this column beside the content on wide screens.
+if ($hasblocks && $OUTPUT->has_inline_fake_blocks()) {
+    echo html_writer::div('', '', ['id' => 'snap-inline-fake-blocks']);
+    $PAGE->requires->js_call_amd('theme_snap/inline_fake_blocks', 'init');
+}
