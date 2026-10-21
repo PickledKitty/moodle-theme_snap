@@ -6707,8 +6707,78 @@ span[data-flexitour="container"]:has(> div[data-role="flexitour-step"]) {
 #page-mod-assign-grader.theme-snap {
     [data-region="grading-navigation-panel"] {
         @media (min-width: 767px) {
-            height: 7rem;
-            top: 1rem;
+            // Starts at the very top, so no strip of page shows above the bar.
+            height: 8rem;
+            top: 0;
+            padding-top: 1rem;
+        }
+
+        // A dark bar sets the navigation apart from the marking area.
+        color: #fff;
+        background-color: $gray-600;
+
+        // !important to beat the theme-wide link colour.
+        a:not(.dropdown-item) {
+            color: #fff !important;
+        }
+
+        .icon {
+            color: #fff;
+        }
+
+        [data-region="assignment-info"] {
+            overflow: hidden;
+
+            > a {
+                display: inline-block;
+
+                &::before {
+                    @extend .fa-solid;
+                    padding-right: 10px;
+                    font-size: 1.5rem;
+                    vertical-align: middle;
+                }
+            }
+
+            // Back to the course, shown as a button.
+            > a:nth-of-type(1) {
+                max-width: 400px;
+                padding: 5px 15px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                border: 1px solid $gray-300;
+                border-radius: 3px;
+                background-color: $gray-100;
+                color: $body-color !important;
+
+                &::before {
+                    content: fa-content($fa-var-circle-arrow-up);
+                    color: $gray-700;
+                }
+            }
+
+            // Back to the assignment's submissions.
+            > a:nth-of-type(2) {
+                padding: 3px 15px 0;
+
+                &::before {
+                    content: fa-content($fa-var-circle-arrow-left);
+                }
+            }
+
+            // Keep the edit settings icon on the same line as the assignment name.
+            br:nth-of-type(2) {
+                display: none;
+            }
+        }
+
+        [data-region="user-info"] {
+            text-align: center;
+        }
+
+        [data-region="configure-filters"] {
+            color: $body-color;
         }
     }
 
