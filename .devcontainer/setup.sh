@@ -132,12 +132,19 @@ $CFG->behat_wwwroot = 'http://moodle';
 $CFG->behat_faildump_path = '/var/www/behatfaildumps';
 $CFG->behat_selenium_url = 'http://selenium:4444/wd/hub';
 
+// Screenshots: start Selenium's Chrome with --host-resolver-rules="MAP moodledev moodle"
+// to use the dev site (not the Behat site) over plain HTTP, scripts and all.
+if (PHP_SAPI !== 'cli' && ($_SERVER['HTTP_HOST'] ?? '') === 'moodledev') {
+    $CFG->wwwroot = 'http://moodledev';
+    $CFG->cookiesecure = false;
+}
+
 EOF
     if [ "${IN_CODESPACE}" = "true" ]; then
         cat >> /tmp/devconfig.php << 'EOF'
-// Codespaces: web requests arrive via an HTTPS proxy. Skip for CLI and for
-// Behat requests from Selenium (host "moodle"), which use plain HTTP.
-if (PHP_SAPI !== 'cli' && ($_SERVER['HTTP_HOST'] ?? '') !== 'moodle') {
+// Codespaces: web requests arrive via an HTTPS proxy. Skip for CLI, for Behat
+// requests from Selenium (host "moodle") and for screenshots (host "moodledev").
+if (PHP_SAPI !== 'cli' && !in_array($_SERVER['HTTP_HOST'] ?? '', ['moodle', 'moodledev'], true)) {
     $CFG->reverseproxy = true;
     $CFG->sslproxy = true;
 }
