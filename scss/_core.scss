@@ -7213,8 +7213,19 @@ span[data-flexitour="container"]:has(> div[data-role="flexitour-step"]) {
     margin-top: 3rem;
 }
 
-body#page-mod-assign-grading.path-mod-assign .gradingtable thead tr {
-    top: 0px;
+body#page-mod-assign-grading.path-mod-assign .gradingtable {
+    // A wide grading table scrolls sideways instead of running off the page.
+    overflow-x: auto;
+
+    thead tr {
+        top: 0px;
+    }
+
+    // Give text columns such as online text and feedback comments room to be read.
+    // A collapsed column holds no text, so it still shrinks.
+    #submissions td:has(> .no-overflow) {
+        min-width: 230px;
+    }
 }
 
 .path-mod-assign div.dropdown.extrafilters .dropdown-menu {
