@@ -1,0 +1,28 @@
+{
+    "php.executablePath": "/usr/local/bin/php",
+    "php.problems.exclude": {
+        "/": [
+            6601,
+            419
+        ]
+    },
+    "phpSniffer.standard": "moodle",
+    "phpSniffer.executablesFolder": "/usr/local/bin/",
+    "[php]": {
+        "editor.defaultFormatter": "obliviousharmony.vscode-php-codesniffer",
+        // phpcbf reformats whole files; avoid noisy diffs on existing code.
+        "editor.formatOnSave": false
+    },
+    "phpunit.phpunit": "/var/www/html/vendor/bin/phpunit",
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "editor.rulers": [
+        132
+    ],
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": true,
+    "intelephense.environment.includePaths": [
+        "/var/www/html"
+    ]
+}

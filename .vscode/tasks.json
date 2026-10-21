@@ -1,0 +1,127 @@
+{
+    // Run via Terminal > Run Task. Commands run inside the dev container.
+    "version": "2.0.0",
+    "options": {
+        "cwd": "/var/www/html"
+    },
+    "inputs": [
+        {
+            "id": "behatTags",
+            "type": "promptString",
+            "description": "Behat tags (e.g. @theme_snap, @theme_snap_course, @theme_snap&&~@javascript)",
+            "default": "@theme_snap"
+        }
+    ],
+    "tasks": [
+        {
+            "label": "PHPUnit: Snap test suite",
+            "type": "shell",
+            "command": "vendor/bin/phpunit --testsuite theme_snap_testsuite",
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "PHPUnit: current file",
+            "type": "shell",
+            "command": "vendor/bin/phpunit '${file}'",
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "PHPUnit: Snap test suite with coverage",
+            "type": "shell",
+            "command": "vendor/bin/phpunit --testsuite theme_snap_testsuite --coverage-text",
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "Behat: Snap features by tag",
+            "detail": "Watch the browser via the Selenium VNC port (7900, password: secret)",
+            "type": "shell",
+            "command": "vendor/bin/behat --config /var/www/behatdata/behatrun/behat/behat.yml --tags='${input:behatTags}'",
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "Behat: current feature file",
+            "type": "shell",
+            "command": "vendor/bin/behat --config /var/www/behatdata/behatrun/behat/behat.yml '${file}'",
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "PHP: tail error log",
+            "type": "shell",
+            "command": "tail -n 50 -f /var/log/php_errors.log",
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "Moodle: purge caches",
+            "type": "shell",
+            "command": "php admin/cli/purge_caches.php",
+            "problemMatcher": []
+        },
+        {
+            "label": "Moodle: upgrade (after a version.php bump)",
+            "type": "shell",
+            "command": "php admin/cli/upgrade.php --non-interactive",
+            "problemMatcher": []
+        },
+        {
+            "label": "Moodle: run cron once",
+            "type": "shell",
+            "command": "runuser -u www-data -- php admin/cli/cron.php",
+            "problemMatcher": []
+        },
+        {
+            "label": "Moodle: reinitialise PHPUnit and Behat",
+            "detail": "Needed after DB schema changes (install.xml / upgrade.php) or new behat steps",
+            "type": "shell",
+            "command": "XDEBUG_MODE=off php public/admin/tool/phpunit/cli/init.php && XDEBUG_MODE=off php public/admin/tool/behat/cli/init.php --add-core-features-to-theme",
+            "problemMatcher": []
+        },
+        {
+            "label": "Grunt: build AMD modules",
+            "type": "shell",
+            "command": "grunt amd",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Grunt: watch",
+            "type": "shell",
+            "command": "grunt watch",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "Grunt: stylelint",
+            "type": "shell",
+            "command": "grunt stylelint",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "CI: moodle-plugin-ci checks",
+            "detail": "phplint, phpmd, phpcs, phpdoc, validate, savepoints, grunt",
+            "type": "shell",
+            "command": "fail=''; for c in phplint phpmd phpcs phpdoc validate savepoints grunt; do echo \"=== $c\"; moodle-plugin-ci $c public/theme/snap || fail=\"$fail $c\"; done; if [ -n \"$fail\" ]; then echo \"FAILED:$fail\"; exit 1; fi; echo 'All checks passed'",
+            "options": {
+                "cwd": "/var/www/html",
+                "env": {
+                    "MOODLE_DIR": "/var/www/html"
+                }
+            },
+            "problemMatcher": []
+        }
+    ]
+}

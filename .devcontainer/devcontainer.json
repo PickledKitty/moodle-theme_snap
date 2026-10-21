@@ -1,0 +1,59 @@
+{
+    "name": "Moodle 5.3 Snap Theme Dev",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "moodle",
+    "workspaceFolder": "/var/www/html/public/theme/snap",
+    "hostRequirements": {
+        "cpus": 4,
+        "memory": "8gb",
+        "storage": "32gb"
+    },
+    "forwardPorts": [
+        80,
+        "db:5432",
+        "mailpit:8025",
+        "selenium:4444",
+        "selenium:7900"
+    ],
+    "portsAttributes": {
+        "80": {
+            "label": "Moodle",
+            "onAutoForward": "openBrowserOnce"
+        },
+        "db:5432": {
+            "label": "PostgreSQL",
+            "onAutoForward": "silent"
+        },
+        "mailpit:8025": {
+            "label": "Mailpit (Email)",
+            "onAutoForward": "notify"
+        },
+        "selenium:4444": {
+            "label": "Selenium",
+            "onAutoForward": "silent"
+        },
+        "selenium:7900": {
+            "label": "Selenium VNC (watch tests)",
+            "onAutoForward": "notify"
+        }
+    },
+    "postCreateCommand": "bash ${containerWorkspaceFolder}/.devcontainer/setup.sh",
+    "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/cron.sh",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "xdebug.php-debug",
+                "bmewburn.vscode-intelephense-client",
+                "obliviousharmony.vscode-php-codesniffer",
+                "LMSCloud.mdlcode",
+                "dbaeumer.vscode-eslint",
+                "stylelint.vscode-stylelint",
+                "Blodwynn.featurehighlight",
+                "neilbrayfield.php-docblocker",
+                "danilopolani.yet-another-phpunit",
+                "crystal-spider.jsdoc-generator",
+                "eamodio.gitlens"
+            ]
+        }
+    }
+}

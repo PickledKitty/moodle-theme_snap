@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // VS Code and PHP share the same container, so no pathMappings are needed.
+            // Xdebug uses trigger mode: set the XDEBUG_TRIGGER cookie (browser
+            // extension) or run CLI scripts with XDEBUG_TRIGGER=1.
+            "name": "Listen for Xdebug",
+            "type": "php",
+            "request": "launch",
+            "port": 9003,
+            "skipEntryPaths": [
+                "**/vendor/**/*.php"
+            ]
+        }
+    ]
+}

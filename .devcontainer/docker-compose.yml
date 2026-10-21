@@ -1,0 +1,70 @@
+services:
+  moodle:
+    image: moodlehq/moodle-php-apache:8.3
+    volumes:
+      - moodledata:/var/www/moodledata
+      - moodleroot:/var/www/html
+      # This repo (the Snap theme) is mounted straight into the Moodle tree.
+      - ..:/var/www/html/public/theme/snap:cached
+    environment:
+      # Moodle 5.1+ serves from public/. Set explicitly because Moodle is only
+      # cloned by setup.sh after the container's first start.
+      APACHE_DOCUMENT_ROOT: /var/www/html/public
+      PHP_EXTENSION_xdebug: 1
+      # VS Code's debug adapter runs inside this container, so connect to localhost.
+      # Trigger mode: set the XDEBUG_TRIGGER cookie (browser) or env var (CLI) to debug.
+      # develop: formatted error messages with stack traces and local variables.
+      PHP_INI-xdebug.mode: develop,debug
+      PHP_INI-xdebug.start_with_request: trigger
+      PHP_INI-xdebug.client_host: localhost
+      PHP_INI-xdebug.client_port: 9003
+      PHP_INI-xdebug.max_nesting_level: 1500
+      # Log errors to a file readable from the dev container terminal (AJAX/web service
+      # errors, early fatals and error_log() output never reach the page).
+      PHP_INI-log_errors: "On"
+      PHP_INI-error_log: /var/log/php_errors.log
+      # pcov collects PHPUnit code coverage, much faster than Xdebug's coverage mode.
+      PHP_EXTENSION_pcov: 1
+    ports:
+      # For local Docker only; Codespaces uses forwardPorts in devcontainer.json.
+      - "8080:80"
+    depends_on:
+      - db
+      - selenium
+      - mailpit
+    networks:
+      - moodle_net
+
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: moodle
+      POSTGRES_USER: moodle
+      POSTGRES_PASSWORD: moodle
+    volumes:
+      # Postgres 18+ keeps data in a versioned subdirectory of /var/lib/postgresql.
+      - pgdata:/var/lib/postgresql
+    networks:
+      - moodle_net
+
+  selenium:
+    image: selenium/standalone-chrome:155.0-20261010
+    shm_size: 2gb
+    environment:
+      - SE_NODE_MAX_SESSIONS=3
+      - SE_NODE_SESSION_TIMEOUT=300
+    networks:
+      - moodle_net
+
+  mailpit:
+    image: axllent/mailpit:v1.31
+    networks:
+      - moodle_net
+
+volumes:
+  moodledata:
+  moodleroot:
+  pgdata:
+
+networks:
+  moodle_net:
