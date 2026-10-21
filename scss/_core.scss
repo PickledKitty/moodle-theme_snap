@@ -1541,9 +1541,21 @@ $mr-nav-zindex: 1052;
     .usermenu {
         #user-menu-toggle {
             padding-top: 0.15em;
+            // Keep the first name (shown by core from xl up) beside the avatar. Stacked, it makes
+            // the header taller than its fixed 100px and pushes the custom menu over the content.
+            display: flex;
+            align-items: center;
             @include media-breakpoint-down(md) {
                 padding: 0;
             }
+        }
+
+        .userfirstname {
+            margin-inline: 0.5rem;
+            max-width: 20ch;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
         .userpicture,
