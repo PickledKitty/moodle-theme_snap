@@ -6705,6 +6705,14 @@ span[data-flexitour="container"]:has(> div[data-role="flexitour-step"]) {
 
 // Fix header position in grader view.
 #page-mod-assign-grader.theme-snap {
+    // Bootstrap rows in the top bar and main area sit in unpadded containers, so their negative
+    // margins hang 15px past the window's edges and the page scrolls sideways.
+    .row.grading-main,
+    [data-region="grading-navigation-panel"] .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
     [data-region="grading-navigation-panel"] {
         @media (min-width: 767px) {
             // Starts at the very top, so no strip of page shows above the bar.
