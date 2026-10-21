@@ -162,6 +162,42 @@ php ${MOODLE_DIR}/admin/cli/upgrade.php --non-interactive
 echo "=== Activating Snap theme ==="
 php ${MOODLE_DIR}/admin/cli/cfg.php --name=theme --set=snap
 
+echo "=== Applying custom menu items ==="
+# Site administration > Appearance > Advanced theme settings > Custom menu items.
+# Re-applied on every rebuild; edits made in the admin UI are overwritten.
+# To use your own menu, put it in .devcontainer/custommenuitems.local (gitignored).
+CUSTOMMENU_LOCAL="${PLUGIN_DIR}/.devcontainer/custommenuitems.local"
+if [ -f "${CUSTOMMENU_LOCAL}" ]; then
+    CUSTOMMENUITEMS=$(cat "${CUSTOMMENU_LOCAL}")
+else
+    # Example menu: icons, section headings (no URL), dividers (##) and tooltips.
+    CUSTOMMENUITEMS=$(cat << 'EOF'
+<i class="fa fa-user"></i> <span class="custom-menu-text">Student Links</span>
+-STUDENT LINKS
+-##
+-Student Services|https://example.com/services
+-Student Support|https://example.com/support|Help with study, wellbeing and more
+-##
+-Enrolment Information|https://example.com/enrolment
+-Transcripts & Awards|https://example.com/transcripts
+<img src="/theme/snap/pix/library.svg" class="svg-icon icon library invert" alt="library icon"><span class="custom-menu-text">Library</span>
+-LIBRARY LINKS
+-##
+-Library catalogue|https://example.com/library|Search books, journals and databases
+-##
+-REFERENCING
+-##
+-<i class="fa fa-arrow-right fa-fw"></i> Referencing guide|https://example.com/referencing
+<i class="fa fa-question-circle-o"></i> <span class="custom-menu-text">Help</span>
+-HELP
+-##
+-Getting started|https://example.com/help
+-Contact support|https://example.com/contact
+EOF
+)
+fi
+php ${MOODLE_DIR}/admin/cli/cfg.php --name=custommenuitems --set="${CUSTOMMENUITEMS}"
+
 echo "=== Initialising PHPUnit ==="
 XDEBUG_MODE=off php ${MOODLE_DIR}/public/admin/tool/phpunit/cli/init.php
 
