@@ -113,9 +113,10 @@ $mobile-sidebar-peek-width: 10px;
 .snap-sidebar-menu-trigger {
     position: absolute;
     bottom: 30px;
-    left: -12px;
-    width: 24px;
-    height: 24px;
+    // Larger than the original 24px so it's an easier target to click or tap.
+    left: -20px;
+    width: 30px;
+    height: 30px;
     background-color: #ccc;
     border: 2px solid #fff;
     border-radius: 50%;
@@ -130,7 +131,7 @@ $mobile-sidebar-peek-width: 10px;
     }
 
     i {
-        font-size: 0.8rem;
+        font-size: 1rem;
         transition: transform $transition-speed ease;
         color: black !important;
         
