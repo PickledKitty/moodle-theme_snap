@@ -407,6 +407,127 @@
 }
 
 /**
+ * Rubrics, in the grader and the rubric editor.
+ * Columns are sized by how many levels there are and how wordy the text is, so level text doesn't
+ * break mid-word. The levels-N, levels-text-*, description-text-* and text-* classes come from
+ * theme_snap\output\gradingform_rubric_renderer.
+ */
+body.path-mod-assign,
+body.path-grade-grading {
+    .gradingform_rubric {
+        width: 100%;
+
+        .criteria {
+            max-width: 100%;
+
+            tbody {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+
+            tr {
+                display: flex;
+                flex: 0 0 100%;
+                flex-flow: row;
+                justify-content: center;
+            }
+
+            // .criterion outranks core's medium weight in the grade panel.
+            .criterion .description {
+                font-weight: 600;
+            }
+
+            .levels .level {
+                max-width: unset;
+            }
+
+            .levels table,
+            .levels table tbody {
+                display: flex;
+                flex: 0 0 100%;
+            }
+
+            .remark:not(:empty) textarea {
+                height: 100%;
+            }
+
+            &.levels-text-little {
+                &.description-text-little .description,
+                &.description-text-mid .description {
+                    flex: 1 20%;
+                }
+                &.description-text-lot .description {
+                    flex: 1 30%;
+                }
+                &.levels-2 .levels,
+                &.levels-3 .levels {
+                    flex: 1 10%;
+                }
+                &.levels-4 .levels,
+                &.levels-5 .levels {
+                    flex: 1 15%;
+                }
+                .remark:not(:empty) {
+                    flex: 1 20%;
+                }
+            }
+
+            &.levels-text-mid {
+                &.description-text-little .description {
+                    flex: 1 10%;
+                }
+                &.description-text-mid .description,
+                &.description-text-lot .description {
+                    flex: 1 20%;
+                }
+                &.levels-2 .levels,
+                &.levels-3 .levels {
+                    flex: 1 30%;
+                }
+                &.levels-4 .levels,
+                &.levels-5 .levels {
+                    flex: 1 50%;
+                }
+                .remark:not(:empty) {
+                    flex: 1 15%;
+                }
+            }
+
+            &.levels-text-lot {
+                &.description-text-little .description {
+                    flex: 1 10%;
+                }
+                &.description-text-mid .description,
+                &.description-text-lot .description {
+                    flex: 1 15%;
+                }
+                &.levels-2 .levels,
+                &.levels-3 .levels {
+                    flex: 1 30%;
+                }
+                &.levels-4 .levels,
+                &.levels-5 .levels {
+                    flex: 1 60%;
+                }
+                .remark:not(:empty) {
+                    flex: 1 10%;
+                }
+            }
+        }
+    }
+
+    #rubric-criteria {
+        margin-bottom: 20px;
+    }
+
+    // A popped-out grading field needs most of the screen, especially on phones.
+    [data-region="grade-panel"] .fitem.popout {
+        left: 5%;
+        right: 5%;
+    }
+}
+
+/**
  * Assign feedback PDF editor.
  * Prevent PDF edit area from displaying outside of dialogs.
  *
