@@ -2738,6 +2738,17 @@ body.snap-resource-card {
     color: #fff;
 }
 
+// A draft submission the student still has to submit.
+.snap-completion-meta a.snap-submission-draft {
+    &,
+    &:hover {
+        background-color: $brand-warning;
+        color: color-contrast($brand-warning);
+    }
+    border-radius: 1em;
+    margin-right: 5px;
+}
+
 // Activity dues date.
 .snap-due-date, .snap-open-date, .snap-opened-date {
     font-size: inherit;

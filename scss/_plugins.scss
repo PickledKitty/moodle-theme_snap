@@ -229,6 +229,34 @@
     .duedata {
         font-family: $font-family-system;
     }
+
+    // Make Submit assignment stand out from the other actions.
+    .container-fluid.mb-4 .btn-primary {
+        background-color: $brand-success;
+        border-color: $brand-success;
+        color: color-contrast($brand-success);
+        &:hover,
+        &:focus {
+            background-color: shade-color($brand-success, 15%);
+            border-color: shade-color($brand-success, 15%);
+            color: color-contrast($brand-success);
+        }
+    }
+
+    div.submissionstatustable {
+        margin-bottom: 0;
+    }
+
+    // A draft that still has to be submitted.
+    .submissionstatusdraft {
+        background-color: $brand-warning;
+        color: color-contrast($brand-warning);
+        a,
+        a:link,
+        a:visited {
+            color: inherit;
+        }
+    }
     // Rubric tables for grading criteria.
     .gradingmethodpreview {
         clear: both;

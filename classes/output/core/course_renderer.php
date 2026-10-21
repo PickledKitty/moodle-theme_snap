@@ -368,7 +368,9 @@ class course_renderer extends \core_course_renderer {
                 $warningstr = $meta->reopened ? $meta->reopenedstr : $warningstr;
                 $message = $warningstr;
             }
-            return \core\output\html_writer::link($url, $message);
+            // A draft still has to be submitted, so mark it for highlighting.
+            $attributes = ($meta->draft && !$meta->submitted && !$meta->reopened) ? ['class' => 'snap-submission-draft'] : [];
+            return \core\output\html_writer::link($url, $message, $attributes);
         }
         return '';
     }
