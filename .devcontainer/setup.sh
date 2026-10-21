@@ -111,12 +111,13 @@ $CFG->debugsmtp = true;
 $CFG->smtphosts = 'mailpit:1025';
 $CFG->noreplyaddress = 'noreply@example.com';
 
-// Theme development: SCSS, JS, templates and strings update on reload, no cache purge needed.
-// Expect slower page loads. Comment these out to check real-world performance.
-$CFG->themedesignermode = true;
-$CFG->cachejs = false;
-$CFG->cachetemplates = false;
-$CFG->langstringcache = false;
+// Theme development: uncomment these so SCSS, JS, templates and strings update on reload
+// without a cache purge. Off by default: through the Codespaces proxy they make pages very
+// slow (100+ uncached stylesheets per page). Purge caches after changes instead.
+// $CFG->themedesignermode = true;
+// $CFG->cachejs = false;
+// $CFG->cachetemplates = false;
+// $CFG->langstringcache = false;
 
 // Password for users created by the test site generator (tool_generator_000001 etc.).
 $CFG->tool_generator_users_password = 'Test1234!';

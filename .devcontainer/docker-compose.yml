@@ -10,7 +10,8 @@ services:
       # Moodle 5.1+ serves from public/. Set explicitly because Moodle is only
       # cloned by setup.sh after the container's first start.
       APACHE_DOCUMENT_ROOT: /var/www/html/public
-      PHP_EXTENSION_xdebug: 1
+      # Xdebug is off by default: it slows every request noticeably. Set to 1 and rebuild to step-debug.
+      PHP_EXTENSION_xdebug: 0
       # VS Code's debug adapter runs inside this container, so connect to localhost.
       # Trigger mode: set the XDEBUG_TRIGGER cookie (browser) or env var (CLI) to debug.
       # develop: formatted error messages with stack traces and local variables.
