@@ -1053,10 +1053,13 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
     [title="Rows per page"] {
         outline-color: $brand-primary;
 
-        &:focus,
+        &:focus {
+            box-shadow: none;
+        }
+
+        // Only when the browser shows focus (keyboard use), not after a mouse click.
         &:focus-visible {
             outline: 3px solid $brand-primary;
-            box-shadow: none;
         }
     }
 

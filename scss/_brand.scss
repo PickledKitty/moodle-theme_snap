@@ -61,7 +61,7 @@ a {
 // Focus outline for keyboard tab users
 a,
 .dropdown-toggle {
-    &:focus {
+    &:focus-visible {
         outline: 3px solid $brand-primary;
     }
     &:active,
