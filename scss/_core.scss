@@ -3511,6 +3511,29 @@ body.snap-quizreport-cards#page-mod-quiz-report {
     width: 95%;
 }
 
+// Question bank: scroll the wide question list in its own box, not the page.
+#page-question-edit {
+    #question_table {
+        overflow-x: auto;
+
+        // Menus open upwards when they don't fit, but a short list has no room above either.
+        &:not(:has(tbody tr:nth-child(4))) {
+            padding-bottom: 15rem;
+        }
+    }
+
+    table.question-bank-table th {
+        font-size: 0.8rem;
+    }
+
+    // Room for the whole status ("Ready") in the narrow column.
+    .questionstatus .form-select {
+        padding-left: 0.5rem;
+        padding-right: 1.75rem;
+        background-position: right 0.4rem center;
+    }
+}
+
 #page-mod-quiz-edit .questioncontentcontainer div.randomquestionqlist {
     clear: both;
     background-color: transparent;

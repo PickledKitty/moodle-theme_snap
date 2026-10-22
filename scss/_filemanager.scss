@@ -101,6 +101,10 @@ div[data-fieldtype=filemanager] > p:nth-of-type(1) {
     .option .icon {
         padding: 0 .5rem;
     }
+
+    .option .typename {
+        font-size: 0.8rem;
+    }
 }
 
 .fitem_filepicker .fitemtitle label {
