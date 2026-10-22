@@ -3127,6 +3127,63 @@ ul.events-new + ul.events-underway {
     display: flex;
 }
 
+// Matching questions as a full-width list: each statement gets most of the row and its answer sits at the end,
+// with a line between rows. On narrower screens the answer goes under its statement.
+#page-mod-quiz-attempt,
+#page-mod-quiz-review {
+    .que.match table.answer {
+        width: 100%;
+
+        tbody {
+            display: block;
+        }
+
+        @media (min-width: 1024px) {
+            tr {
+                display: flex;
+                align-items: center;
+                border-bottom: 1px solid $gray-400;
+            }
+
+            td.text,
+            td.control {
+                padding: 0.5rem;
+            }
+
+            td.text {
+                flex: 3;
+
+                p {
+                    margin: 0.25rem 0;
+                }
+            }
+
+            td.control {
+                flex: 1;
+                display: flex;
+                justify-content: flex-end;
+
+                select {
+                    width: auto;
+                    max-width: 200px;
+                }
+            }
+        }
+
+        @media (max-width: 1023px) {
+            tr {
+                display: block;
+                margin-top: 1.5rem;
+            }
+
+            td {
+                display: block;
+                width: 100%;
+            }
+        }
+    }
+}
+
 #page-mod-quiz-review {
     .formulation {
         select {
@@ -6462,8 +6519,9 @@ div[id^=snap-create-activity-] .section-modchooser-link {
     max-height: none;
 }
 
-// Change color contrast for quiz timer in a quiz attempt.
-#page-mod-quiz-attempt.theme-snap #quiz-timer-wrapper #quiz-timer {
+// Change color contrast for quiz timer in a quiz attempt and on its summary page.
+#page-mod-quiz-attempt.theme-snap #quiz-timer-wrapper #quiz-timer,
+#page-mod-quiz-summary.theme-snap #quiz-timer-wrapper #quiz-timer {
     color: $gray-900;
 }
 
