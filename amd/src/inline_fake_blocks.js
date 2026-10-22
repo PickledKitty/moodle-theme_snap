@@ -49,8 +49,9 @@ export const init = () => {
     if (!blocks.length) {
         return;
     }
-    const drawerhasotherblocks = !!drawer.querySelector('.block:not(.block_fake), [data-key="addblock"]');
-    const drawerempty = () => WIDE.matches && !drawerhasotherblocks;
+    // Checked live: other scripts can move blocks out of the drawer after this runs, such as Snap
+    // moving the Administration block into its admin menu.
+    const drawerempty = () => WIDE.matches && !drawer.querySelector('.block:not(.block_fake), [data-key="addblock"]');
 
     // Don't let anything open the drawer while it would be empty, such as the quiz forcing it
     // open or a remembered open drawer being restored.
@@ -59,6 +60,15 @@ export const init = () => {
             e.preventDefault();
         }
     });
+
+    // Hide the drawer button, and close the drawer, while there's nothing in it.
+    const update = () => {
+        const empty = drawerempty();
+        document.body.classList.toggle(DRAWER_EMPTY_CLASS, empty);
+        if (empty && drawer.classList.contains('show')) {
+            Drawers.getDrawerInstanceForNode(drawer)?.closeDrawer({focusOnOpenButton: false, updatePreferences: false});
+        }
+    };
 
     const place = () => {
         const wide = WIDE.matches;
@@ -69,13 +79,10 @@ export const init = () => {
                 marker.after(block);
             }
         });
-        document.body.classList.toggle(DRAWER_EMPTY_CLASS, drawerempty());
-        if (drawerempty()) {
-            // Don't leave an empty drawer open.
-            Drawers.getDrawerInstanceForNode(drawer)?.closeDrawer({focusOnOpenButton: false, updatePreferences: false});
-        }
+        update();
     };
 
     place();
     WIDE.addEventListener('change', place);
+    new MutationObserver(update).observe(drawer, {childList: true, subtree: true});
 };
