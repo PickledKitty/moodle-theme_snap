@@ -223,5 +223,7 @@ if (isloggedin() && !isguestuser() && !$snapmfapending) {
             'opensidebar' => $opensidebar,
             'iscoursepage' => $iscoursepage
         ]);
+        // Close buttons for the panels that only close from their side menu button.
+        $PAGE->requires->js_call_amd('theme_snap/panel_close', 'init');
     }
 }

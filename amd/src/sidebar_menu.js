@@ -19,7 +19,6 @@
 // both consume it through jQuery. There's no non-jQuery way to intercept it.
 import $ from 'jquery';
 import {isSmall} from 'core/pagehelpers';
-import {addCloseButtonToBlockSettings} from './util';
 import {setUserPreferences, getUserPreferences} from 'core_user/repository';
 import * as FocusLock from 'core/local/aria/focuslock';
 import * as PubSub from 'core/pubsub';
@@ -731,7 +730,6 @@ const setupEventListeners = () => {
  * Initialize the sidebar menu functionality
  */
 export const init = () => {
-    addCloseButtonToBlockSettings();
     setupEventListeners();
     updateElementPositions();
     

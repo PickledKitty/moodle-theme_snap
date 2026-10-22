@@ -662,14 +662,19 @@ $setmode-off-color: #767676;
         padding-right: 2%;
     }
 
-    .card-title {
-        visibility: hidden;
-        position: absolute;
+    // The block's own "Administration" title and gear menu. The panel's tree has its own heading,
+    // and the hidden title still names the panel for screen readers.
+    .block-header {
+        display: none !important; // Overrides d-flex.
     }
 
-    // Hide a possible second gear menu
-    .block-controls {
-        visibility: hidden;
+    // Start the menu just under the close button, as in the messages drawer.
+    .card-body {
+        padding-top: 0 !important; // Overrides p-3.
+    }
+
+    .card-text {
+        margin-top: 0 !important; // Overrides mt-3.
     }
 
     .block_tree.list {
@@ -690,31 +695,6 @@ $setmode-off-color: #767676;
 
     #settingsnav {
         padding-top: 0!important;
-    }
-
-    #close-block-settings {
-        display: none;
-        position: absolute;
-        right: 1em;
-        font-size: 1.5rem;
-        opacity: .5;
-    }
-}
-
-// This allow us to test this on Behat sites.
-@media screen and (max-width: 600px) {
-    body.snap_drawer_open.behat-site #page-content .block_settings {
-        #close-block-settings {
-            display: block;
-        }
-    }
-}
-
-@media screen and (max-width: 480px) {
-    body.snap_drawer_open #page-content .block_settings {
-        #close-block-settings {
-            display: block;
-        }
     }
 }
 
@@ -862,6 +842,28 @@ body.limitedwidth .drawer.drawer-right {
                 max-width: none !important;
                 max-height: none !important;
             }
+        }
+    }
+}
+
+// The same cross on the site administration and personal feeds panels, added by
+// theme_snap/panel_close. It stays at the top while the panel scrolls.
+.snap-panel-close {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    justify-content: flex-end;
+    padding: 3px 0.5rem 0 0;
+    background-color: inherit;
+
+    .btn {
+        padding: 0;
+        border: 0;
+        line-height: 1;
+
+        .icon {
+            margin: 0;
         }
     }
 }
