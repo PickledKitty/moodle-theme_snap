@@ -50,6 +50,15 @@ export const init = () => {
         return;
     }
     const drawerhasotherblocks = !!drawer.querySelector('.block:not(.block_fake), [data-key="addblock"]');
+    const drawerempty = () => WIDE.matches && !drawerhasotherblocks;
+
+    // Don't let anything open the drawer while it would be empty, such as the quiz forcing it
+    // open or a remembered open drawer being restored.
+    document.addEventListener(Drawers.eventTypes.drawerShow, e => {
+        if (e.target === drawer && drawerempty()) {
+            e.preventDefault();
+        }
+    });
 
     const place = () => {
         const wide = WIDE.matches;
@@ -60,9 +69,8 @@ export const init = () => {
                 marker.after(block);
             }
         });
-        const drawerempty = wide && !drawerhasotherblocks;
-        document.body.classList.toggle(DRAWER_EMPTY_CLASS, drawerempty);
-        if (drawerempty) {
+        document.body.classList.toggle(DRAWER_EMPTY_CLASS, drawerempty());
+        if (drawerempty()) {
             // Don't leave an empty drawer open.
             Drawers.getDrawerInstanceForNode(drawer)?.closeDrawer({focusOnOpenButton: false, updatePreferences: false});
         }

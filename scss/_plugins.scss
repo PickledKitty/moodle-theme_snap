@@ -880,6 +880,25 @@ body.path-grade-grading {
     }
 }
 
+// Quiz navigation, moved beside the questions on wide screens by theme_snap/inline_fake_blocks.
+#page-mod-quiz-attempt,
+#page-mod-quiz-review {
+    @include media-breakpoint-up(lg) {
+        #snap-inline-fake-blocks {
+            float: right;
+            width: 22%;
+            margin-right: 4%;
+            position: sticky;
+            top: 80px;
+        }
+
+        &:has(#snap-inline-fake-blocks .block) #region-main-box {
+            float: left;
+            width: 70%;
+        }
+    }
+}
+
 // Nothing left in the blocks drawer once its blocks moved beside the content, so hide its button.
 body.snap-blocks-drawer-empty .blocks-drawer-button {
     display: none;
