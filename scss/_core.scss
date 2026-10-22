@@ -1745,11 +1745,16 @@ body > #page {
     // When right drawers are open
     &.offcanvas,
     &.show-drawer-right {
+        visibility: visible !important;
+    }
+    // Make room for whichever right drawer is open. Checked on the drawers themselves (the ones
+    // theme_snap/sidebar_menu checks), as the classes above can fall out of step when switching
+    // between drawers.
+    @at-root body:has(.drawer-right.drawer.show, .block_settings.block.state-visible,
+        #snap_feeds_side_menu.state-visible, .drawer:not(.hidden) .message-app) > #page {
         @include media-breakpoint-up(lg) {
             margin-right: 365px !important;
         }
-
-        visibility: visible !important;
     }
     // In tiles format, we need to make sure overlay takes available space
     div#format_tiles_overlay {

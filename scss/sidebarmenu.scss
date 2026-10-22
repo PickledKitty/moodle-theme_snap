@@ -308,6 +308,29 @@ $mobile-sidebar-peek-width: 10px;
     }
 }
 
+// Boost floats the right drawer beside limited-width content, which pushes it off the screen
+// past Snap's full-width content and side menu, and reveals it with a clip-path wipe. Keep it
+// beside the side menu, sliding in from the right like Snap's other drawers.
+@include media-breakpoint-up(lg) {
+    .pagelayout-standard .drawer.drawer-right,
+    body.limitedwidth .drawer.drawer-right {
+        left: auto;
+        right: calc(-#{$drawer-right-width} - 10px);
+        clip-path: none;
+        transition: right 0.3s ease, visibility 0.3s ease;
+
+        &.show {
+            left: auto;
+            right: $sidebar-width;
+            clip-path: none;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            transition: none;
+        }
+    }
+}
+
 #snap_feeds_side_menu.state-visible {
     z-index: 1017;
     right: $sidebar-width;

@@ -819,6 +819,53 @@ body:not(#page-my-index) .block.block_calendar_month .maincalendar .calendartabl
     }
 }
 
+// Close button like the messages drawer's: a plain cross on the right, next to the side menu
+// button that opened the drawer. Boost puts a boxed button on the left. Also on the pages where
+// Boost restyles the drawer header for limited-width content.
+.drawer.drawer-right,
+.pagelayout-standard .drawer.drawer-right,
+body.limitedwidth .drawer.drawer-right {
+    .drawerheader {
+        padding-top: 0;
+
+        .drawerheadertop {
+            flex-direction: row;
+            flex-grow: 1;
+            height: auto;
+            padding: 3px 0 0;
+        }
+    }
+
+    .draweractions {
+        display: flex;
+        height: auto;
+        margin-left: auto;
+
+        .btn.drawertoggle {
+            width: auto;
+            height: auto;
+            padding: 0;
+            border: 0;
+            border-radius: 0;
+            background-color: transparent;
+            line-height: 1;
+
+            &:hover {
+                background-color: rgba($black, 0.035);
+            }
+
+            // Sized like the messages drawer's cross, overriding .icon-size-3.
+            .icon {
+                font-size: 1rem !important;
+                width: 1.25em !important;
+                height: 1em !important;
+                max-width: none !important;
+                max-height: none !important;
+            }
+        }
+    }
+}
+
 body.notloggedin .drawer.drawer-right {
     margin-top: 0;
     height: 100vh;
