@@ -453,14 +453,15 @@ class core_renderer extends \theme_boost\output\core_renderer {
     /**
      * Whether this page shows its fake blocks beside the content on wide screens.
      *
-     * The lesson menu and quiz navigation are fake blocks that students need while they work,
+     * The book contents, lesson menu and quiz navigation are fake blocks that students need while they work,
      * so on wide screens they move out of the blocks drawer to a column beside the content.
      * See theme_snap/inline_fake_blocks.
      *
      * @return bool
      */
     public function has_inline_fake_blocks(): bool {
-        return in_array($this->page->pagetype, ['mod-lesson-view', 'mod-quiz-attempt', 'mod-quiz-review'], true);
+        $pagetypes = ['mod-book-view', 'mod-lesson-view', 'mod-quiz-attempt', 'mod-quiz-review'];
+        return in_array($this->page->pagetype, $pagetypes, true);
     }
 
     /**

@@ -51,21 +51,37 @@ export const init = () => {
     }
     // Checked live: other scripts can move blocks out of the drawer after this runs, such as Snap
     // moving the Administration block into its admin menu.
-    const drawerempty = () => WIDE.matches && !drawer.querySelector('.block:not(.block_fake), [data-key="addblock"]');
+    const noblocks = () => WIDE.matches && !drawer.querySelector('.block:not(.block_fake)');
+    const drawerempty = () => noblocks() && !drawer.querySelector('[data-key="addblock"]');
 
-    // Don't let anything open the drawer while it would be empty, such as the quiz forcing it
-    // open or a remembered open drawer being restored.
+    // In edit mode a drawer without blocks still has "Add a block", so it opens only when asked to,
+    // with its button. Only a real click counts: Snap's sidebar opens the drawer on some pages by
+    // clicking the button from script.
+    let asked = false;
+    document.addEventListener('click', e => {
+        if (e.isTrusted && e.target.closest(`[data-toggler="drawers"][data-target="${DRAWER_ID}"]`)) {
+            asked = true;
+        }
+    }, true);
+    const unwanted = () => drawerempty() || (noblocks() && !asked);
+
+    // Don't let anything else open the drawer while it has no blocks, such as the quiz or book forcing
+    // it open or a remembered open drawer being restored.
     document.addEventListener(Drawers.eventTypes.drawerShow, e => {
-        if (e.target === drawer && drawerempty()) {
+        if (e.target === drawer && unwanted()) {
             e.preventDefault();
         }
     });
+    document.addEventListener(Drawers.eventTypes.drawerHidden, e => {
+        if (e.target === drawer) {
+            asked = false;
+        }
+    });
 
-    // Hide the drawer button, and close the drawer, while there's nothing in it.
+    // Hide the drawer button while there's nothing in it, and close the drawer if it opened unasked.
     const update = () => {
-        const empty = drawerempty();
-        document.body.classList.toggle(DRAWER_EMPTY_CLASS, empty);
-        if (empty && drawer.classList.contains('show')) {
+        document.body.classList.toggle(DRAWER_EMPTY_CLASS, drawerempty());
+        if (unwanted() && drawer.classList.contains('show')) {
             Drawers.getDrawerInstanceForNode(drawer)?.closeDrawer({focusOnOpenButton: false, updatePreferences: false});
         }
     };

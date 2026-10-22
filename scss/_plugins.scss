@@ -721,6 +721,21 @@ body.path-grade-grading {
         font-size: medium;
         margin-left: 1em;
     }
+
+    // In edit mode, show the whole chapter title with its icons on the line underneath.
+    .book_toc .d-flex:has(> .action-list) {
+        flex-wrap: wrap;
+        margin-bottom: 0.25rem;
+
+        > .text-truncate {
+            flex: 0 0 100%;
+            white-space: normal;
+        }
+    }
+
+    .book_toc .action-list {
+        margin-left: 0 !important; // Overrides ms-auto.
+    }
 }
 #page-mod-book-mod.path-mod-book #id_general .fcontainer .checkbox {
     display: none;
@@ -783,6 +798,40 @@ body.path-grade-grading {
     @include media-breakpoint-up(md) {
         .tag_list.book-tags {
             margin: 0 1em;
+        }
+    }
+
+    // The book description shows on every chapter, so leave it out.
+    #intro {
+        display: none;
+    }
+
+    // Chapter headings a step below the activity title.
+    #region-main {
+        h2 {
+            font-size: 1.8em;
+            line-height: 1.8em;
+        }
+
+        h3 {
+            line-height: 1.6em;
+        }
+    }
+
+    // Tabs added with the editor.
+    .tab-content .card {
+        padding: 15px;
+    }
+
+    @include media-breakpoint-down(lg) {
+        .book_toc_numbered {
+            font-size: 0.8rem;
+        }
+    }
+
+    @include media-breakpoint-down(sm) {
+        .activity-navigation {
+            display: none;
         }
     }
 }
@@ -861,8 +910,9 @@ body.path-grade-grading {
     }
 }
 
-// The lesson menu, moved beside the lesson on wide screens by theme_snap/inline_fake_blocks.
-// On narrow screens it stays in the blocks drawer.
+// The book contents and lesson menu, moved beside the content on wide screens by theme_snap/inline_fake_blocks.
+// On narrow screens they stay in the blocks drawer.
+#page-mod-book-view,
 #page-mod-lesson-view {
     @include media-breakpoint-up(lg) {
         #snap-inline-fake-blocks {
