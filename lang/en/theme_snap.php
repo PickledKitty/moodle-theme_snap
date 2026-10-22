@@ -545,3 +545,6 @@ $string['makingaselectionpagechange'] = 'Making a selection from this dropdown w
 $string['coursefilterregion'] = 'Course filter';
 $string['coursefilterinstructions'] = 'The following text field filters the course results that follow as you type.';
 $string['themesettingstitle'] = 'Snap theme settings';
+$string['quizreportview'] = 'Results layout';
+$string['quizreportviewcards'] = 'Cards';
+$string['quizreportviewtable'] = 'Table';

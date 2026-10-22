@@ -1463,6 +1463,11 @@ HTML;
             $classes[] = 'contains-snap-custom_menu-spacer';
         }
 
+        // Quiz results as cards, if the person chose that view. Set here so the table doesn't flash first.
+        if ($this->page->pagetype === 'mod-quiz-report' && get_user_preferences('theme_snap_quizreport_view') === 'cards') {
+            $classes[] = 'snap-quizreport-cards';
+        }
+
         // Remove duplicates if necessary.
         $classes = array_unique($classes);
 

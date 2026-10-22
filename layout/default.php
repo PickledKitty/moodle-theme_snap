@@ -143,6 +143,11 @@ if ($PAGE->pagelayout === 'frontpage' && $PAGE->pagetype === 'site-index') {
     echo $OUTPUT->main_content();
 }
 
+if ($PAGE->pagetype === 'mod-quiz-report') {
+    // Table or cards view of the results, with each student's attempts banded together.
+    $PAGE->requires->js_call_amd('theme_snap/quiz_report_view', 'init');
+}
+
 echo $OUTPUT->activity_navigation();
 echo $OUTPUT->course_content_footer();
 if (stripos($PAGE->bodyclasses, 'format-singleactivity') !== false ) {

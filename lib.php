@@ -650,6 +650,14 @@ function theme_snap_user_preferences(): array {
             'default' => 'all',
             'permissioncallback' => [core_user::class, 'is_current_user'],
         ],
+        // How quiz results reports are shown: the standard table, or a card per attempt.
+        'theme_snap_quizreport_view' => [
+            'type' => PARAM_ALPHA,
+            'null' => NULL_NOT_ALLOWED,
+            'default' => 'table',
+            'choices' => ['table', 'cards'],
+            'permissioncallback' => [core_user::class, 'is_current_user'],
+        ],
     ];
 }
 

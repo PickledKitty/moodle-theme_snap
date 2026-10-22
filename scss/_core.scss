@@ -3127,6 +3127,229 @@ ul.events-new + ul.events-underway {
     display: flex;
 }
 
+// Quiz results reports (theme_snap/quiz_report_view).
+#page-mod-quiz-report {
+    .snap-quizreport-view {
+        margin-bottom: 1rem;
+    }
+
+    // Only used in cards view.
+    .snap-quizreport-break {
+        display: none;
+    }
+
+    // Marks that still need a teacher to grade them.
+    table#attempts td:has(.requiresgrading),
+    table#attempts tr.gradedattempt td:has(.requiresgrading) {
+        background-color: #f2d7b0;
+    }
+}
+
+// Table view: a strip down the left alternates per student, so each student's attempts read as one group.
+body:not(.snap-quizreport-cards)#page-mod-quiz-report {
+    table#attempts,
+    table#responses {
+        tr.snap-attempts-band-a > :first-child {
+            box-shadow: inset 5px 0 0 $gray-300;
+        }
+
+        tr.snap-attempts-band-b > :first-child {
+            box-shadow: inset 5px 0 0 $gray-600;
+        }
+    }
+}
+
+// Cards view: each attempt is a panel. A band across the top holds who, status, times and grade,
+// coloured per student; the marks or responses follow underneath. The column headings stay as a
+// panel at the top, so sorting and "select all" still work.
+// The column kinds (summary, time, mark, response, hidden) come from theme_snap/quiz_report_view.
+$snap-quizreport-band-a: #dae0e3;
+$snap-quizreport-band-b: #e4e0dd;
+
+body.snap-quizreport-cards#page-mod-quiz-report {
+    .table-responsive {
+        overflow: visible;
+    }
+
+    table#attempts,
+    table#responses {
+        display: block;
+        width: 100%;
+        border: 0;
+
+        thead,
+        tbody {
+            display: block;
+        }
+
+        tr {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            border: 1px solid $gray-500;
+            background-color: $white;
+        }
+
+        tr.emptyrow,
+        tr.snap-quizreport-blankrow,
+        .snap-quizreport-hidden {
+            display: none;
+        }
+
+        // No 20em cap on cells here (it's for the table), so the band and marks can stretch across.
+        th,
+        td {
+            display: block;
+            min-width: 0;
+            max-width: none;
+            padding: 5px;
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+            font-size: 0.85em;
+            text-align: left;
+            vertical-align: top;
+            overflow-wrap: anywhere;
+
+            // Marks are wrapped in span.que, which otherwise picks up the spacing meant for questions.
+            .que {
+                display: inline;
+                margin: 0;
+                padding: 0;
+                border: 0;
+            }
+        }
+
+        // The band: checkbox, name, identity fields, status, times and grade.
+        .snap-quizreport-summary,
+        .snap-quizreport-time {
+            flex: 0 0 10%;
+            border-right: 1px solid $gray-500;
+            border-bottom: 2px solid $gray-600;
+            background-color: $snap-quizreport-band-a;
+        }
+
+        tr.snap-attempts-band-b {
+            .snap-quizreport-summary,
+            .snap-quizreport-time {
+                background-color: $snap-quizreport-band-b;
+            }
+        }
+
+        tr > :first-child {
+            flex: 0 0 auto;
+        }
+
+        .snap-quizreport-col-firstname {
+            flex: 2 2 17.9%;
+        }
+
+        .snap-quizreport-col-firstname,
+        .snap-quizreport-col-state,
+        .snap-quizreport-col-sumgrades {
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .snap-quizreport-col-state,
+        .snap-quizreport-col-sumgrades {
+            text-align: center;
+        }
+
+        // Start, finish and time taken, labelled inline.
+        .snap-quizreport-time {
+            flex: 12 7 15%;
+        }
+
+        td.snap-quizreport-time::before {
+            content: attr(data-label) ": ";
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        // Empty cells keep their place in the band, without a label.
+        td.snap-quizreport-emptycell::before {
+            content: none;
+        }
+
+        .snap-quizreport-break {
+            display: block;
+            flex: 0 0 100%;
+            width: 100%;
+            max-width: none;
+            height: 0;
+            padding: 0;
+        }
+
+        // Marks for each question, ten across, labelled inline.
+        .snap-quizreport-mark {
+            flex: 0 0 10%;
+            border-right: 1px solid $gray-500;
+            border-bottom: 1px solid $gray-500;
+        }
+
+        td.snap-quizreport-mark::before {
+            content: attr(data-label) " ";
+        }
+
+        tr.gradedattempt td.snap-quizreport-mark {
+            background-color: #d9edf7;
+        }
+
+        // Still to be graded by a teacher (also coloured in table view, above).
+        tr td.snap-quizreport-mark:has(.requiresgrading) {
+            background-color: #f2d7b0;
+        }
+
+        // Responses, one to a line.
+        .snap-quizreport-response {
+            flex: 0 0 100%;
+            border-bottom: 1px solid $gray-500;
+        }
+
+        td.snap-quizreport-response::before {
+            content: attr(data-label) ": ";
+            font-weight: bold;
+        }
+
+        // In the headings panel, the response headings share a line.
+        th.snap-quizreport-response {
+            flex: 1 1 20%;
+        }
+
+        // Below 992px: name, status and grade on the first line, the times on the second,
+        // then the marks four to a line. Order only changes the layout, not the markup.
+        @include media-breakpoint-down(lg) {
+            .snap-quizreport-summary {
+                flex: 1 1 22%;
+                order: 1;
+            }
+
+            .snap-quizreport-col-firstname {
+                flex: 2 2 40%;
+            }
+
+            .snap-quizreport-time {
+                flex: 1 1 30%;
+                order: 2;
+            }
+
+            .snap-quizreport-break {
+                order: 3;
+            }
+
+            .snap-quizreport-mark,
+            .snap-quizreport-response {
+                order: 4;
+            }
+
+            .snap-quizreport-mark {
+                flex: 1 1 22%;
+            }
+        }
+    }
+}
+
 // Matching questions as a full-width list: each statement gets most of the row and its answer sits at the end,
 // with a line between rows. On narrower screens the answer goes under its statement.
 #page-mod-quiz-attempt,
