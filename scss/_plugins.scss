@@ -1131,6 +1131,31 @@ section#snap-add-new-section #summary-editor_parent #summary-editor_tbl {
     display: block;
 }
 
+/**
+ * Mod feedback.
+ */
+// The print view, kept to a readable width with space around it on screen (not on phones, where
+// it's narrow already, and not on paper).
+@media screen and (min-width: map-get($grid-breakpoints, md)) {
+    #page-mod-feedback-print {
+        #feedback_print_form {
+            max-width: 60%;
+            margin: 0 auto;
+        }
+
+        #page-content {
+            padding: 70px;
+        }
+    }
+}
+
+// The Continue buttons are for the screen only.
+@media print {
+    #page-mod-feedback-print .continuebutton {
+        display: none;
+    }
+}
+
 
 /**
  * CCM Plugin.
