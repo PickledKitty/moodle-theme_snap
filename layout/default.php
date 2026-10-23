@@ -36,6 +36,9 @@ $carouselheader = !empty($carousel) ? 'snap-carousel-header' : '';
 if ($PAGE->pagetype == 'admin-search') {
     $PAGE->set_secondary_navigation(false);
 }
+// Snap has its own activity navigation, so no Moodle Previous/Next footer bar. Set before the
+// activity header is rendered, so the header keeps the Mark as done button instead of the bar.
+$PAGE->set_show_navigation_footer(false);
 ?>
 
 <!-- Moodle js hooks -->

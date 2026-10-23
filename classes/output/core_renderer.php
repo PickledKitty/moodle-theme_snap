@@ -275,11 +275,51 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if ($COURSE->format !== 'singleactivity') {
             unset($headercontext['title']);
         }
+        $html = '';
         if (!empty($headercontext)) {
             $html = $this->render_from_template('core/activity_header', $headercontext);
-            return $this->relocate_button_after_maincontent($html);
+            $html = $this->relocate_button_after_maincontent($html);
         }
-        return '';
+        return $this->activity_header_actions() . $html;
+    }
+
+    /**
+     * The page header actions and extras, such as the Mark as done button and the activity dates.
+     *
+     * Moodle adds these to the page header while building the activity header, after Snap has
+     * printed its page header, so Snap shows them here instead, marked up as Boost does so the
+     * completion button keeps working.
+     *
+     * @return string
+     */
+    protected function activity_header_actions(): string {
+        // Only on activity pages: other pages, such as admin settings, have their own header actions.
+        if (!$this->page->cm) {
+            return '';
+        }
+        $groups = [
+            // Container name => [items, class for each item].
+            'header-actions-container' => [$this->page->get_header_actions(), 'header-action'],
+            'header-extras-container' => [$this->page->get_header_extras(), 'header-extra'],
+        ];
+        $containers = '';
+        foreach ($groups as $container => [$items, $itemclass]) {
+            $html = '';
+            foreach ($items as $item) {
+                // Some are empty, such as the forum search, which the forum shows in its own toolbar.
+                if (trim($item) !== '') {
+                    $html .= \core\output\html_writer::div($item, $itemclass);
+                }
+            }
+            if ($html === '') {
+                continue;
+            }
+            $containers .= \core\output\html_writer::div($html, $container, ['data-region' => $container]);
+        }
+        if ($containers === '') {
+            return '';
+        }
+        return \core\output\html_writer::div($containers, 'snap-header-actions', ['data-for' => 'page-heading']);
     }
 
     /**
