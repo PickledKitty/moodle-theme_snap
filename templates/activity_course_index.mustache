@@ -1,0 +1,75 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_snap/activity_course_index
+
+    The course index on activity pages: a drawer over the left of the page, closed to start with
+    and not remembered, and a tab that opens it and closes it again from the same place.
+
+    Context variables required for this template:
+    * courseindex - The course index, with Snap's search, progress bar and footer.
+
+    Example context (json):
+    {
+        "courseindex": "<nav class='courseindex'>Course index</nav>"
+    }
+}}
+{{< theme_boost/drawer }}
+    {{$id}}theme_boost-drawers-courseindex{{/id}}
+    {{$drawerheading}}{{> theme_boost/courseindexdrawercontrols}}{{/drawerheading}}
+    {{$drawerclasses}}drawer drawer-left{{/drawerclasses}}
+    {{$drawercontent}}
+        {{{courseindex}}}
+    {{/drawercontent}}
+    {{$drawerstate}}show-drawer-left{{/drawerstate}}
+    {{$tooltipplacement}}right{{/tooltipplacement}}
+    {{$closebuttontext}}{{#str}}closecourseindex, core{{/str}}{{/closebuttontext}}
+    {{$closebuttonicon}}
+        <span class="dir-rtl-hide">{{#pix}} e/sidebar_left, core {{/pix}}</span>
+        <span class="dir-ltr-hide">{{#pix}} e/sidebar_right, core {{/pix}}</span>
+    {{/closebuttonicon}}
+{{/ theme_boost/drawer}}
+<div class="drawer-toggles d-flex">
+    <div class="drawer-toggler drawer-left-toggle open-nav snap-courseindex-toggle d-print-none">
+        <button
+            class="btn btn-icon icon-size-3"
+            data-toggler="drawers"
+            data-action="toggle"
+            data-target="theme_boost-drawers-courseindex"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            data-activeselector="#theme_boost-drawers-courseindex.show"
+            data-opentitle="{{#str}}opendrawerindex, core{{/str}}"
+            data-closetitle="{{#str}}closecourseindex, core{{/str}}"
+            title="{{#str}}opendrawerindex, core{{/str}}"
+            aria-label="{{#str}}opendrawerindex, core{{/str}}"
+            aria-expanded="false"
+            aria-controls="theme_boost-drawers-courseindex"
+        >
+            <span class="snap-courseindex-toggle-open">
+                <span class="dir-rtl-hide">{{#pix}} e/sidebar_left, core {{/pix}}</span>
+                <span class="dir-ltr-hide">{{#pix}} e/sidebar_right, core {{/pix}}</span>
+            </span>
+            <span class="snap-courseindex-toggle-close">{{#pix}} e/cancel, core {{/pix}}</span>
+        </button>
+    </div>
+</div>
+{{#js}}
+require(['theme_snap/activity_course_index'], function(ActivityCourseIndex) {
+    ActivityCourseIndex.init();
+});
+{{/js}}

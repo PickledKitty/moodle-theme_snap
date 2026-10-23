@@ -71,6 +71,13 @@ echo $OUTPUT->custom_menu_spacer();
         }
         ?>
 </div>
+<?php
+if ($PAGE->cm && course_get_format($COURSE)->uses_course_index()) {
+    // The course index, as on the course page, to move around the course from any activity.
+    $snapactivitycourseindex = true;
+    require(__DIR__ . '/course_index_drawer.php');
+}
+?>
 <div id="region-main-box">
 <section id="region-main">
 <?php

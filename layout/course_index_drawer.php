@@ -87,14 +87,19 @@ $PAGE->requires->js_amd_inline("
     });
 ");
 
-$templatecontext = [
-    'iscourseindex' => true,
-    'courseindex' => $courseindex,
-    'courseindexopen' => $courseindexopen,
-];
-echo local::reset_usertours_container(
-    $OUTPUT->render_from_template('theme_boost/drawers', $templatecontext)
-);
+if (!empty($snapactivitycourseindex)) {
+    // Activity pages: just the drawer and its tab, closed to start with. See layout/default.php.
+    echo $OUTPUT->render_from_template('theme_snap/activity_course_index', ['courseindex' => $courseindex]);
+} else {
+    $templatecontext = [
+        'iscourseindex' => true,
+        'courseindex' => $courseindex,
+        'courseindexopen' => $courseindexopen,
+    ];
+    echo local::reset_usertours_container(
+        $OUTPUT->render_from_template('theme_boost/drawers', $templatecontext)
+    );
+}
 
 
 /**

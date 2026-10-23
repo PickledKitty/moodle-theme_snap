@@ -48,6 +48,7 @@ const SELECTORS = {
     PAGE_HEADER: 'page-header',
     DRAWER_LEFT: '.drawer-left.drawer',
     SNAP_COURSE_FOOTER: 'snap-course-footer',
+    SITE_FOOTER: 'moodle-footer',
     MODAL_BACKDROP: 'body > div > div.modal-backdrop',
     MESSAGE_APP_CLASS: 'div[id^=\'drawer-\'] > div.message-app',
     MESSAGE_DRAWER_TOGGLE: 'a[id^="message-drawer-toggle"]',
@@ -69,7 +70,8 @@ const CLASSES = {
 
 const DRAWERS = {
     SELECTORS: [
-        '.drawer:not(#theme_boost-drawers-courseindex)',
+        // The course index sits in the course page layout; on activity pages it's a panel like the rest.
+        '.drawer:not(.path-course-view #theme_boost-drawers-courseindex)',
         '.block_settings.block',
         '#snap_feeds_side_menu',
         '.drawer:has(.message-app)',
@@ -241,7 +243,8 @@ const updateElementPositions = (selectors = null) => {
      */
     const courseindexbutton = document.querySelector(SELECTORS.COURSE_INDEX_DRAWER_BUTTON);
     const drawer = document.querySelector(SELECTORS.DRAWER_LEFT);
-    const footer = document.getElementById(SELECTORS.SNAP_COURSE_FOOTER);
+    // The course page's own footer, or the site footer on other pages, such as activities.
+    const footer = document.getElementById(SELECTORS.SNAP_COURSE_FOOTER) || document.getElementById(SELECTORS.SITE_FOOTER);
 
     if (courseindexbutton && drawer) {
         const updateButtonVisibility = () => {

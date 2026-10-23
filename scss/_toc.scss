@@ -540,6 +540,37 @@ label[for="toc-search-input"]{
   overflow-y: auto;
   z-index: 1021;
 }
+// The course index on activity pages (theme_snap/activity_course_index) opens over the left of the
+// page, below the header like Snap's side panels, and its tab stays in place to close it again.
+.path-mod #theme_boost-drawers-courseindex {
+  position: fixed;
+  left: 0;
+  width: 22rem;
+  max-width: 85vw;
+  min-height: 0;
+  min-width: 0;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+}
+.drawer-toggles .snap-courseindex-toggle {
+  z-index: 1022;
+
+  .snap-courseindex-toggle-close {
+    display: none;
+  }
+
+  .btn[aria-expanded="true"] {
+    .snap-courseindex-toggle-open {
+      display: none;
+    }
+
+    .snap-courseindex-toggle-close {
+      display: inline;
+    }
+  }
+}
+body > #page.show-drawer-left .drawer-toggler.snap-courseindex-toggle {
+  display: block;
+}
 .path-course-view #page-wrapper {
   position: absolute;
 }
