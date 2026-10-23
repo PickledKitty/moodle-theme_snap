@@ -674,6 +674,30 @@ table img:not(.activityicon) {
     margin-left: 30%;
 }
 
+// Sticky footers (Previous/Next on activity pages, Save buttons on long forms, bulk actions and
+// more) scroll with the page in short windows, which includes zooming in, so they don't cover
+// the content.
+@media (max-height: 600px) {
+    #sticky-footer.stickyfooter {
+        position: relative;
+        clear: both; // Below Snap's two form columns.
+        transform: none;
+        box-shadow: none;
+        width: 100%;
+    }
+
+    // Moodle hides a footer that isn't in use, such as bulk editing before it's turned on, by
+    // sliding it off the screen, which no longer works here.
+    body:not(.hasstickyfooter) #sticky-footer.stickyfooter {
+        display: none;
+    }
+
+    // No space kept for it at the bottom of the page.
+    body.hasstickyfooter:has(#sticky-footer) {
+        --sticky-footer-total-height: 0px;
+    }
+}
+
 table.results td.graph > img {
     min-width: 0;
 }
