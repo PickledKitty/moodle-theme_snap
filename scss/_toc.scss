@@ -780,6 +780,92 @@ body > #page.show-drawer-left .drawer-toggler.snap-courseindex-toggle {
       color: white;
     }
   }
+
+  // The course index on phones: full screen on every page, with Collapse all and the close button in
+  // white at the right of the purple bar (added by theme_snap/snap), and no second "Contents" heading.
+  .theme-snap #theme_boost-drawers-courseindex {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    .drawerheader {
+      left: auto;
+      right: 0;
+      width: auto;
+      height: 3.5rem; // The purple bar's height, so the controls are centred in it.
+
+      .drawerheadertop {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.75rem;
+        height: 100%;
+        padding-right: 0.75rem;
+      }
+
+      #courseindexdrawercontrols .courseindex-collapsemenu {
+        margin: 0 !important;
+        color: $white;
+      }
+
+      #courseindexdrawercontrols .courseindex-collapsemenu .icon,
+      button.btn.drawertoggle .icon {
+        color: $white !important;
+      }
+
+      // Snap's focus outline is the brand colour, the same as the bar, so white here.
+      #courseindexdrawercontrols .courseindex-collapsemenu,
+      button.btn.drawertoggle {
+        &:focus-visible {
+          outline: 3px solid $white !important;
+          outline-offset: 2px;
+          box-shadow: none !important;
+        }
+      }
+
+      // The close icon is an image, so colour doesn't reach it.
+      button.btn.drawertoggle img.icon {
+        filter: brightness(0) invert(1);
+      }
+
+      // On the narrowest phones, just the icon. Text at size 0 still names the button for screen readers.
+      @media (max-width: 360px) {
+        #courseindexdrawercontrols .courseindex-collapsemenu span {
+          font-size: 0;
+
+          .icon {
+            font-size: 1rem;
+          }
+        }
+      }
+
+      button.btn.drawertoggle {
+        position: relative !important;
+        top: auto;
+        background-color: transparent;
+        color: $white;
+
+        // A bigger area to tap, without changing how it looks.
+        &::after {
+          content: "";
+          position: absolute;
+          inset: -10px;
+        }
+      }
+    }
+
+    // Room for the controls at the right of the bar, so the title wraps rather than running under them.
+    .snap-drawer-mobile-header h2 {
+      padding-right: 7rem;
+    }
+
+    #toc-desktop-menu-heading {
+      width: 100%;
+      justify-content: flex-end;
+
+      h2 {
+        display: none;
+      }
+    }
+  }
 }
 // -------------------------
 // Section progress indicator.
