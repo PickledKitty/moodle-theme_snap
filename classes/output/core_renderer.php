@@ -2216,6 +2216,10 @@ HTML;
     public function snap_content_bank() {
         $header = new stdClass();
         $header->headeractions = $this->page->get_header_actions();
+        // Without any actions it would be an empty box above the content bank.
+        if (empty($header->headeractions)) {
+            return '';
+        }
         return $this->render_from_template('core/full_header', $header);
     }
 

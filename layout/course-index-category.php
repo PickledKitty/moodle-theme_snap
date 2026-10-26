@@ -62,6 +62,11 @@ $mastimage = local::has_cover_image() ? 'mast-image' : '';
             ?>
         </div>
         <section id="region-main">
+            <?php
+            // Course management buttons, on the course listing only: other pages with this layout, such
+            // as a category's content bank, don't load the category they need.
+            if ($PAGE->pagetype === 'course-index-category') {
+            ?>
             <div class="d-inline-flex">
                 <?php
                 global $OUTPUT;
@@ -110,7 +115,8 @@ $mastimage = local::has_cover_image() ? 'mast-image' : '';
                     }
                     echo "</div>";
                 }
-                
+            }
+
                 echo $OUTPUT->main_content();
                 ?>
         </section>
