@@ -717,6 +717,12 @@ table img:not(.activityicon) {
     }
 }
 
+// Room at the bottom of the page footer for a pinned sticky footer, so it doesn't cover the footer's last
+// line at the end of the page. Nothing extra when the sticky footer isn't pinned (see above).
+body.hasstickyfooter #moodle-footer {
+    padding-bottom: calc(1em + var(--sticky-footer-total-height, 0px));
+}
+
 table.results td.graph > img {
     min-width: 0;
 }
