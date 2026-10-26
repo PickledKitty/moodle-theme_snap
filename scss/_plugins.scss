@@ -213,6 +213,21 @@
     z-index: 21 !important; // Overwrite inline style.
 }
 
+// H5P content embedded in a frame on other pages: the page footer's "Reset user tour on this page"
+// link would only add a scrollbar below the content.
+#page-h5p-embed .usertour {
+    display: none;
+}
+
+/**
+ * Mod external tool (LTI).
+ */
+// Moodle sizes an embedded tool to the space left below the page header, which is small in Snap.
+// Make it the height of the window, less the pinned activity navigation, once scrolled to.
+#page-mod-lti-view #contentframe {
+    min-height: calc(100vh - #{$stickyfooter-height} - 2rem);
+}
+
 /**
  * Mod assignment.
  */
