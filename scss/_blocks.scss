@@ -834,6 +834,19 @@ body.limitedwidth .drawer.drawer-right {
                 background-color: rgba($black, 0.035);
             }
 
+            // On phones and touch screens: in place at the top right (Snap's phone rule fixes drawer close
+            // buttons for the course index's header, which would put this one just off the screen), with a
+            // bigger area to tap that doesn't change how it looks.
+            @media screen and (max-width: 480px), (pointer: coarse) {
+                position: relative !important;
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    inset: -15px -13px;
+                }
+            }
+
             // Sized like the messages drawer's cross, overriding .icon-size-3.
             .icon {
                 font-size: 1rem !important;
@@ -864,6 +877,17 @@ body.limitedwidth .drawer.drawer-right {
 
         .icon {
             margin: 0;
+        }
+
+        // A bigger area to tap on phones and touch screens, as for the blocks drawer's cross.
+        @media screen and (max-width: 480px), (pointer: coarse) {
+            position: relative;
+
+            &::after {
+                content: "";
+                position: absolute;
+                inset: -15px -13px;
+            }
         }
     }
 }
