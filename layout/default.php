@@ -182,6 +182,10 @@ if ($PAGE->pagetype === 'mod-quiz-report') {
     // Table or cards view of the results, with each student's attempts banded together.
     $PAGE->requires->js_call_amd('theme_snap/quiz_report_view', 'init');
 }
+if (in_array($PAGE->pagetype, ['report-completion-index', 'report-progress-index'], true)) {
+    // The column headings stay in view when scrolling down.
+    $PAGE->requires->js_call_amd('theme_snap/report_sticky_headings', 'init');
+}
 
 echo $OUTPUT->course_content_footer();
 if (stripos($PAGE->bodyclasses, 'format-singleactivity') !== false ) {
