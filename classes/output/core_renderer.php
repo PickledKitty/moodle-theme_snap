@@ -1857,9 +1857,11 @@ HTML;
                 return '';
             }
 
-            // Remove links for Reports and Question Bank for INT-18042.
+            // Remove links for Reports and Question Bank for INT-18042. On a copy: the same node is the
+            // secondary navigation's Reports tab, which needs its link.
             $isreportslink = $item->key === 'coursereports';
             if ($isreportslink) {
+                $item = clone $item;
                 $item->action = null;
             }
 

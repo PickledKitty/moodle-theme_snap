@@ -3872,11 +3872,30 @@ body.path-course-index {
     }
 }
 
-body[id^='page-mod-data'] {
-    .secondary-navigation {
-        margin-bottom: 1em;
+// The secondary navigation tabs, with a settings icon before them.
+.secondary-navigation {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    .snap-secondary-navigation-icon {
+        flex: 0 0 auto;
+        margin-right: 0.5rem;
+        color: $gray-600;
+
+        .icon {
+            margin: 0;
+            font-size: 1.25rem;
+        }
     }
 
+    .moremenu {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+}
+
+body[id^='page-mod-data'] {
     .tertiary-navigation {
         margin-bottom: 1em;
     }

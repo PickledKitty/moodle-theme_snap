@@ -925,6 +925,12 @@ body.path-grade-grading {
     }
 }
 
+// The book's and lesson's heading and tabs, across the page above the contents column and the content.
+.snap-activity-heading-across {
+    clear: both;
+    padding: 0 4%;
+}
+
 // The book contents and lesson menu, moved beside the content on wide screens by theme_snap/inline_fake_blocks.
 // On narrow screens they stay in the blocks drawer.
 #page-mod-book-view,

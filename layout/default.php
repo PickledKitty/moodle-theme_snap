@@ -78,10 +78,38 @@ if ($PAGE->cm && course_get_format($COURSE)->uses_course_index()) {
     require(__DIR__ . '/course_index_drawer.php');
 }
 ?>
+<?php
+/**
+ * The secondary navigation tabs: Course, Settings, Participants... for a course, the activity's own pages for an
+ * activity. Built after the breadcrumbs, so they keep the whole trail.
+ *
+ * @return string
+ */
+$snapsecondarynavigation = function() use ($PAGE, $OUTPUT): string {
+    if (!$PAGE->has_secondary_navigation()) {
+        return '';
+    }
+    $tablistnav = $PAGE->has_tablist_secondary_navigation();
+    $moremenu = new \core\navigation\output\more_menu($PAGE->secondarynav, 'nav-tabs', true, $tablistnav);
+    return $OUTPUT->render_from_template('theme_snap/secondary_navigation',
+        ['secondarymoremenu' => $moremenu->export_for_template($OUTPUT)]);
+};
+
+// The book and lesson show their contents in a column beside the content, so their heading and tabs go
+// across the page above both columns.
+$headingacross = in_array($PAGE->pagetype, ['mod-book-view', 'mod-lesson-view'], true);
+if ($headingacross) {
+    echo html_writer::start_div('snap-activity-heading-across');
+    echo $OUTPUT->context_header();
+    echo $OUTPUT->activity_header();
+    echo $snapsecondarynavigation();
+    echo html_writer::end_div();
+}
+?>
 <div id="region-main-box">
 <section id="region-main">
 <?php
-if ($OUTPUT->snap_page_is_activity_view()) {
+if ($OUTPUT->snap_page_is_activity_view() && !$headingacross) {
     echo $OUTPUT->context_header();
 }
 echo $OUTPUT->course_content_header();
@@ -143,12 +171,9 @@ if ($PAGE->pagelayout === 'mycourses') {
 if ($PAGE->pagelayout === 'frontpage' && $PAGE->pagetype === 'site-index') {
     require(__DIR__.'/faux_site_index.php');
 } else {
-    echo $OUTPUT->activity_header();
-    if ($PAGE->has_secondary_navigation() && $PAGE->pagetype == 'mod-data-view') {
-        $tablistnav = $PAGE->has_tablist_secondary_navigation();
-        $moremenu = new \core\navigation\output\more_menu($PAGE->secondarynav, 'nav-tabs', true, $tablistnav);
-        $secondarynavigation = $moremenu->export_for_template($OUTPUT);
-        echo $OUTPUT->render_from_template('theme_snap/secondary_navigation', ['secondarymoremenu' => $secondarynavigation]);
+    if (!$headingacross) {
+        echo $OUTPUT->activity_header();
+        echo $snapsecondarynavigation();
     }
     echo $OUTPUT->main_content();
 }

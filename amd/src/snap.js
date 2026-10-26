@@ -993,11 +993,13 @@ define(['jquery', 'core/log', 'core/aria', 'theme_snap/headroom', 'theme_snap/ut
                     // Add a class to the body to show js is loaded.
                     $('body').addClass('snap-js-loaded');
 
-                    // Regroup activity naming to the correct placing in the DOM.
+                    // Regroup activity naming to the correct placing in the DOM. Not when it's across the page
+                    // on purpose, above a column beside the content (see layout/default.php).
                     if (document.querySelector('[id^="page-mod-"]')) {
                         let contextHeader = document.querySelector('div.page-context-header');
                         let regionMain = document.querySelector('#region-main');
-                        if (contextHeader !== null && regionMain !== null) {
+                        if (contextHeader !== null && regionMain !== null &&
+                                !contextHeader.closest('.snap-activity-heading-across')) {
                             regionMain.insertBefore(contextHeader, regionMain.firstChild);
                         }
                     }
