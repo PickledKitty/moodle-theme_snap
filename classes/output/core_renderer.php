@@ -2683,25 +2683,6 @@ HTML;
         // otherwise still reflects the order they were originally created in.
         $modinfo->sort_cm_array($mods);
 
-        // Now that $mods is in display order, build the activity dropdown list in the same order.
-        $activitylist = [];
-        foreach ($mods as $module) {
-            // No need to add the current module to the list for the activity dropdown menu.
-            if ($module->id == $this->page->cm->id) {
-                continue;
-            }
-            // Module name.
-            $modname = $module->get_formatted_name();
-            // Display the hidden text if necessary.
-            if (!$module->visible) {
-                $modname .= ' ' . get_string('hiddenwithbrackets');
-            }
-            // Module URL.
-            $linkurl = new moodle_url($module->url, ['forceview' => 1]);
-            // Add module URL (as key) and name (as value) to the activity list array.
-            $activitylist[$linkurl->out(false)] = $modname;
-        }
-
         $nummods = count($mods);
 
         // If there are only one or fewer mods then do nothing.
@@ -2728,7 +2709,8 @@ HTML;
             $nextmod = $mods[$modids[$position + 1]];
         }
 
-        $activitynav = new \core_course\output\activity_navigation($prevmod, $nextmod, $activitylist);
+        // No Jump to menu: the course index on activity pages does that job.
+        $activitynav = new \core_course\output\activity_navigation($prevmod, $nextmod);
         $renderer = $this->page->get_renderer('core', 'course');
         return $renderer->render($activitynav);
     }

@@ -17,12 +17,12 @@
 {{!
     @template core_course/activity_navigation
 
-    Displays the activity navigation
+    Displays the activity navigation: links to the previous and next activities. Snap leaves out
+    core's Jump to menu, as the course index on activity pages does that job.
 
     Context variables required for this template:
     * prevlink Object - The action link data for the previous activity link. Corresponds with the core/action_link context.
     * nextlink Object - The action link data for the next activity link. Corresponds with the core/action_link context.
-    * activitylist Object - The data for the activity selector menu. Corresponds with the core/url_select context.
 
     Example context (json):
     {
@@ -51,36 +51,15 @@
                 }
             ],
             "text": "Activity C ►"
-        },
-        "activitylist": {
-            "id": "url_select_test",
-            "action": "#",
-            "options": [
-                {"name": "Jump to activity", "value": "#0"},
-                {"name": "Activity A", "value": "#1"},
-                {"name": "Activity B", "value": "#2"},
-                {"name": "Activity C", "value": "#3"}
-            ]
         }
     }
 }}
 
-<nav class="m-t-2 m-b-1 activity-navigation" aria-label="{{#str}}activitynavigation, course{{/str}}">
-{{< core/columns-1to1to1}}
-    {{$column1}}
-        <div class="float-start">
-            {{#prevlink}}{{> core/action_link }}{{/prevlink}}
-        </div>
-    {{/column1}}
-    {{$column2}}
-        <div class="mdl-align">
-            {{#activitylist}}{{> core/url_select }}{{/activitylist}}
-        </div>
-    {{/column2}}
-    {{$column3}}
-        <div class="float-end">
-            {{#nextlink}}{{> core/action_link }}{{/nextlink}}
-        </div>
-    {{/column3}}
-{{/ core/columns-1to1to1}}
+<nav class="activity-navigation" aria-label="{{#str}}activitynavigation, course{{/str}}">
+    <div>
+        {{#prevlink}}{{> core/action_link }}{{/prevlink}}
+    </div>
+    <div>
+        {{#nextlink}}{{> core/action_link }}{{/nextlink}}
+    </div>
 </nav>

@@ -158,7 +158,6 @@ if ($PAGE->pagetype === 'mod-quiz-report') {
     $PAGE->requires->js_call_amd('theme_snap/quiz_report_view', 'init');
 }
 
-echo $OUTPUT->activity_navigation();
 echo $OUTPUT->course_content_footer();
 if (stripos($PAGE->bodyclasses, 'format-singleactivity') !== false ) {
     // Shared renderer is only loaded if required at this point.
@@ -177,6 +176,8 @@ if (stripos($PAGE->bodyclasses, 'format-singleactivity') !== false ) {
 
 require __DIR__.'/blocks_drawer.php';
 echo $OUTPUT->snap_feeds_side_menu();
+// Previous and next activity across the page, below any column beside the content.
+echo $OUTPUT->activity_navigation();
 ?>
 </div>
 

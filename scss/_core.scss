@@ -829,9 +829,7 @@ body#page-mod-resource-view.path-mod-resource.pagelayout-frametop {
     .activity-navigation {
         margin-top: 0 !important;
         margin-bottom: 0 !important;
-        .row .col-md-4 {
-            min-height: 3rem;
-        }
+        min-height: 3rem;
     }
     height: 80%;
 }
@@ -5900,16 +5898,6 @@ section#region-main {
     background-color: lighten($primary, 44%);
 }
 
-.activity-navigation {
-    .pull-right,
-    .pull-left,
-    .float-end,
-    .float-start {
-        a {
-            white-space: inherit;
-        }
-    }
-}
 
 #page-admin-tool-task-schedule_task section#region-main {
     max-width: 100% !important;

@@ -1063,18 +1063,49 @@ body.format-singleactivity {
     }
 }
 
+// Previous and next activity, across the page with the same side margins as the page header. On
+// wider screens it stays at the bottom of the window while the activity scrolls, and settles at the
+// end of the page; in short or zoomed-in windows it doesn't.
 .activity-navigation {
-    // Undo row negative margins.
-    margin-left: 15px;
-    margin-right: 15px;
+    clear: both;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 0 4%;
+
+    > div {
+        min-width: 0;
+    }
+
+    .btn-link {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    @media (min-width: map-get($grid-breakpoints, md)) and (min-height: 600px) {
+        position: sticky;
+        bottom: 0;
+        z-index: 3;
+        align-items: center;
+        min-height: $stickyfooter-height;
+        font-size: calc(#{$font-size-base} * 1.1);
+        background-color: $body-bg;
+        border-top: 1px solid $border-color;
+    }
 }
 
-#page-mod-quiz-attempt {
-    #region-main {
-        .activity-navigation {
-            display: none;
-        }
+// Keep the element with keyboard focus in view above the pinned bar.
+@media (min-width: map-get($grid-breakpoints, md)) and (min-height: 600px) {
+    html:has(.activity-navigation) {
+        scroll-padding-bottom: calc(#{$stickyfooter-height} + 1rem);
     }
+}
+
+#page-mod-quiz-attempt .activity-navigation {
+    display: none;
 }
 
 
