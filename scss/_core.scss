@@ -544,6 +544,25 @@ body {
     font-weight: 400;
 }
 
+// The footer sits at the bottom of the window on short pages: the body is a column at least the
+// window's height, and the page grows to fill it. As a flex item, #page also keeps the page header's
+// top margin inside it, instead of that margin pushing the whole body below the window.
+body {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 100%;
+}
+
+body > #page {
+    flex: 1 0 auto;
+}
+
+body > #moodle-footer {
+    flex-shrink: 0;
+    margin-left: 0; // Its auto margin would shrink it to its content in the column.
+}
+
 a {
     word-wrap: break-word;
     overflow-wrap: break-word;
