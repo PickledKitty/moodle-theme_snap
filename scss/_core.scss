@@ -4205,9 +4205,26 @@ table#user-grades tr.avg td.cell {
     display:none;
 }
 
+// Reports where the whole page scrolls sideways across a wide table, with the browser's scrollbar at the bottom
+// of the window. The footer's background carries on to the right, so it doesn't stop at the edge of the window.
+#page-grade-report-grader-index,
+#page-report-progress-index,
+#page-report-completion-index {
+    #moodle-footer {
+        // Far enough for any report: a window's width wasn't for a course with many columns.
+        box-shadow: 0 0 0 100000px $snap-footer-bg-color;
+        clip-path: inset(0 -100000px 0 0);
+    }
+}
+
 #page-grade-report-grader-index {
     section#region-main {
         display: grid;
+    }
+
+    // Some space between the name column's heading and its sort icon.
+    .arrow_link.py-1 {
+        margin-left: 0.5rem;
     }
     .gradeparent {
         th.header.user,
@@ -4295,6 +4312,8 @@ table#user-grades tr.avg td.cell {
 }
 
 // Whitelist - pages need to be full width.
+#page-report-completion-index,
+#page-report-progress-index,
 .path-mod-assign,
 .path-mod-hvp,
 .path-grade,

@@ -220,6 +220,30 @@
 }
 
 /**
+ * Gradebook and reports.
+ */
+// Gradebook settings forms: a line and some space between the collapsible sections.
+.path-grade form.mform fieldset.collapsible {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid $border-color;
+}
+
+// Completion reports: like the grader report, the whole page scrolls sideways across a wide table, with the
+// browser's scrollbar at the bottom of the window. The students' names stay in view.
+#page-report-progress-index,
+#page-report-completion-index {
+    // Single cells only: the course completion report's label cells above span the email column too, and
+    // pinned they'd cover the criteria headings.
+    table#completion-progress tr > :first-child:not([colspan]) {
+        position: sticky;
+        left: 0;
+        z-index: 1;
+        background-color: $body-bg;
+    }
+}
+
+/**
  * Mod external tool (LTI).
  */
 // Moodle sizes an embedded tool to the space left below the page header, which is small in Snap.
