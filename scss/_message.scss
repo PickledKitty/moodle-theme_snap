@@ -271,3 +271,63 @@
     }
   }
 }
+
+// The message app, in the drawer and on the Messages page.
+.message-app {
+    // Conversation lists: the names in near-black (white on the brand colour hover, from _brandcolor.scss).
+    a.list-group-item-action {
+        color: $gray-900;
+    }
+
+    // Sent messages on the right and received on the left, like messaging apps on phones.
+    .message.rounded {
+        max-width: 80%;
+        overflow-wrap: anywhere;
+    }
+
+    .message.send {
+        margin-left: auto !important;
+    }
+
+    // The message box grows with the message (messages.js), up to a cap that leaves room for the
+    // conversation, and scrolls inside past that.
+    textarea[data-region="send-message-txt"] {
+        max-height: 30vh;
+        overflow-y: auto;
+
+        // Phones zoom in on text boxes with text under 16px when they get focus.
+        @include media-breakpoint-down(sm) {
+            font-size: 16px;
+        }
+    }
+
+    // A bigger send button.
+    [data-action="send-message"] [data-region="send-icon-container"] .icon {
+        font-size: 1.5rem;
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+}
+
+// In the drawer, room beside the send button for the sidebar's collapse button, which overlaps it.
+[data-region="message-drawer"] [data-region="footer-container"] {
+    padding-right: 1.25rem;
+}
+
+// The Messages page on phones: one panel at a time, like the message drawer. The list of conversations, and
+// once one is open (or contacts or settings), only that, with its back button returning to the list.
+@include media-breakpoint-down(md) {
+    #page-message-index .message-app.main > .container-fluid > .row {
+        > .col-4,
+        > .col-8 {
+            flex: 0 0 100%;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        &:has(> .col-8 > .body-container > [data-region^="view-"]:not(.hidden)) > .col-4,
+        &:not(:has(> .col-8 > .body-container > [data-region^="view-"]:not(.hidden))) > .col-8 {
+            display: none !important; // Over the columns' d-flex.
+        }
+    }
+}
