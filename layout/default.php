@@ -185,6 +185,14 @@ if ($PAGE->pagetype === 'mod-quiz-report') {
 if (in_array($PAGE->pagetype, ['report-completion-index', 'report-progress-index'], true)) {
     // The column headings stay in view when scrolling down.
     $PAGE->requires->js_call_amd('theme_snap/report_sticky_headings', 'init');
+    // On tablets and phones the table scrolls in a box, with a scrollbar that's always shown.
+    $PAGE->requires->js_call_amd('theme_snap/scroll_box', 'init',
+        ['table#completion-progress', 'thead > tr:nth-last-child(-n+2)', '', 'thead > tr:last-child > th:first-child']);
+}
+if ($PAGE->pagetype === 'grade-report-grader-index') {
+    // On tablets and phones the report scrolls in a box, with a scrollbar that's always shown.
+    $PAGE->requires->js_call_amd('theme_snap/scroll_box', 'init',
+        ['.gradeparent', 'tr.heading', 'tr.lastrow:not(.userrow)', '#studentheader']);
 }
 
 echo $OUTPUT->course_content_footer();

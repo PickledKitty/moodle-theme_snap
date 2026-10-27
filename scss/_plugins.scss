@@ -229,6 +229,133 @@
     border-top: 1px solid $border-color;
 }
 
+// Wide reports on tablets and phones. Those widen the whole layout when a page scrolls sideways, pushing
+// the header's links and the sidebar out of view, so there Snap scrolls the content sideways instead. In
+// taller windows the report gets a box of its own, most of the window's height, so its pinned headings
+// work. Those browsers hide scrollbars, so theme_snap/scroll_box wraps the box with one that's always
+// shown, and fades along the bottom and right edges show there's more to see.
+@mixin snap-scroll-box {
+    overflow: auto;
+    max-height: 60dvh;
+    box-shadow: 0 0 0 1px $gray-500; // A clearer edge (a border would darken a table's cell lines too).
+
+    // The box's own vertical scrollbar would double up with the one beside it. The sideways one is
+    // thicker and in the brand colour, where browsers let it be styled.
+    &::-webkit-scrollbar:vertical {
+        width: 0;
+    }
+
+    &::-webkit-scrollbar:horizontal {
+        height: 0.75rem;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: $gray-200;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: 0.375rem;
+        background-color: $brand-primary;
+    }
+}
+
+.snap-scroll-box-bar {
+    display: none;
+}
+
+@media (min-height: 800px) {
+    .device-type-tablet,
+    .device-type-mobile {
+        .snap-scroll-box {
+            position: relative;
+            padding-right: 1.25rem; // Room for the scrollbar.
+
+            &::before,
+            &::after {
+                content: "";
+                position: absolute;
+                z-index: 5; // Over the reports' pinned rows and names.
+                pointer-events: none;
+                opacity: 0;
+
+                @media (prefers-reduced-motion: no-preference) {
+                    transition: opacity 0.2s;
+                }
+            }
+
+            // More rows below, above the sideways scrollbar where the browser shows one, and any pinned row.
+            &::before {
+                left: 1px;
+                right: calc(1.25rem + 1px);
+                bottom: calc(1px + var(--snap-scroll-box-scrollbar-height, 0px) + var(--snap-scroll-box-pinned-bottom, 0px));
+                height: 2.5rem;
+                background: linear-gradient(to bottom, rgba($body-bg, 0), $body-bg);
+            }
+
+            // More columns to the right.
+            &::after {
+                top: 1px;
+                bottom: calc(1px + var(--snap-scroll-box-scrollbar-height, 0px));
+                right: calc(1.25rem + 1px);
+                width: 2.5rem;
+                background: linear-gradient(to right, rgba($body-bg, 0), $body-bg);
+            }
+
+            &.snap-scroll-box-more-below::before,
+            &.snap-scroll-box-more-right::after {
+                opacity: 1;
+            }
+
+            // Not over a menu opened in the box.
+            &:has(.dropdown-menu.show)::before,
+            &:has(.dropdown-menu.show)::after {
+                opacity: 0;
+            }
+        }
+
+        .snap-scroll-box-bar {
+            display: block;
+            position: absolute;
+            right: 0;
+            width: 0.75rem;
+            border-radius: 0.375rem;
+            background-color: $gray-200;
+            box-shadow: inset 0 0 0 1px $gray-500;
+            touch-action: none; // Dragging the thumb doesn't scroll the page.
+            cursor: pointer;
+        }
+
+        .snap-scroll-box-thumb {
+            width: 100%;
+            border-radius: inherit;
+            background-color: $brand-primary;
+        }
+
+        // The grader report's heading row pins to the top of the box, and the overall average row to its
+        // bottom, rather than to the window.
+        // Snap lays the grader report's main region out as a grid; its column would widen to the table.
+        &#page-grade-report-grader-index section#region-main {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        &#page-grade-report-grader-index .gradeparent {
+            @include snap-scroll-box;
+
+            tr.heading {
+                top: 0 !important; // Over snap.js, which sets it inline to sit below the header.
+            }
+
+            tr.lastrow:not(.userrow) {
+                bottom: -1px; // Moodle's hack for spotting when the row is pinned, without the sticky footer.
+            }
+
+            > table {
+                margin-bottom: 0; // No blank space to scroll into below the overall average.
+            }
+        }
+    }
+}
+
 // Completion reports: like the grader report, the whole page scrolls sideways across a wide table, with the
 // browser's scrollbar at the bottom of the window. The students' names stay in view.
 #page-report-progress-index,
@@ -267,97 +394,13 @@
             }
         }
 
-        // Tablets and phones widen the whole layout to a page that scrolls sideways, pushing the header's
-        // links and the sidebar out of view. There Snap scrolls the content sideways instead, so the table
-        // gets a box of its own, most of the window's height, with the headings pinned to its top.
-        // Those browsers hide scrollbars, so report_sticky_headings.js adds one beside the rows that's
-        // always shown, and fades along the bottom and right edges show there's more to see.
+        // Tablets and phones: the table scrolls in a box of its own (see snap-scroll-box below), with the
+        // headings pinned to its top.
         &.device-type-tablet,
         &.device-type-mobile {
-            .snap-report-scroll {
-                position: relative;
-                padding-right: 1.25rem; // Room for the scrollbar.
-
-                &::before,
-                &::after {
-                    content: "";
-                    position: absolute;
-                    z-index: 3;
-                    pointer-events: none;
-                    opacity: 0;
-
-                    @media (prefers-reduced-motion: no-preference) {
-                        transition: opacity 0.2s;
-                    }
-                }
-
-                // More rows below, above the sideways scrollbar where the browser shows one.
-                &::before {
-                    left: 1px;
-                    right: calc(1.25rem + 1px);
-                    bottom: calc(1px + var(--snap-report-scrollbar-height, 0px));
-                    height: 2.5rem;
-                    background: linear-gradient(to bottom, rgba($body-bg, 0), $body-bg);
-                }
-
-                // More columns to the right.
-                &::after {
-                    top: 1px;
-                    bottom: calc(1px + var(--snap-report-scrollbar-height, 0px));
-                    right: calc(1.25rem + 1px);
-                    width: 2.5rem;
-                    background: linear-gradient(to right, rgba($body-bg, 0), $body-bg);
-                }
-
-                &.snap-report-more-below::before,
-                &.snap-report-more-right::after {
-                    opacity: 1;
-                }
-            }
-
-            .snap-report-scrollbar {
-                display: block;
-                position: absolute;
-                right: 0;
-                width: 0.75rem;
-                border-radius: 0.375rem;
-                background-color: $gray-200;
-                box-shadow: inset 0 0 0 1px $gray-500;
-                touch-action: none; // Dragging the thumb doesn't scroll the page.
-                cursor: pointer;
-            }
-
-            .snap-report-scrollbar-thumb {
-                width: 100%;
-                border-radius: inherit;
-                background-color: $brand-primary;
-            }
-
             table#completion-progress {
+                @include snap-scroll-box;
                 display: block;
-                overflow: auto;
-                max-height: 60dvh;
-                box-shadow: 0 0 0 1px $gray-500; // A clearer edge (a border would darken the cell lines too).
-                scroll-padding-top: var(--snap-report-thead-pinned, 0px);
-
-                // The table's own vertical scrollbar would double up with the one beside it. The sideways one
-                // is thicker and in the brand colour, where browsers let it be styled.
-                &::-webkit-scrollbar:vertical {
-                    width: 0;
-                }
-
-                &::-webkit-scrollbar:horizontal {
-                    height: 0.75rem;
-                }
-
-                &::-webkit-scrollbar-track {
-                    background-color: $gray-200;
-                }
-
-                &::-webkit-scrollbar-thumb {
-                    border-radius: 0.375rem;
-                    background-color: $brand-primary;
-                }
 
                 > thead {
                     top: calc(0px - var(--snap-report-thead-offset, 0px));
@@ -380,10 +423,6 @@
     width: 1.5em;
 }
 
-// Shown only where the table has a box of its own, above.
-.snap-report-scrollbar {
-    display: none;
-}
 
 // The course completion report's pinned heading cells draw their lines over the table's. The table draws
 // its lines under the pinned names, so the names would show through them when scrolling sideways.
