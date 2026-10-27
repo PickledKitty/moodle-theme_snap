@@ -193,9 +193,6 @@
     .message.rounded {
         border-radius: .25rem !important;
     }
-    &.main {
-        min-height: 600px !important;
-    }
     a[data-action="view-contact"] {
         img.rounded-circle {
             // Need to use px b/c height is hard coded in template.
@@ -226,38 +223,65 @@
     }
 }
 
-// Fix for message page to use the page height and scrolls to show messages.
+// The Messages page fills the window below the header, however tall: each level down to the message app
+// stretches to the space left (the body is a flex column, in _core.scss). The conversation list and the
+// conversation scroll inside it.
 #page-message-index {
     #page {
-        height: 100%;
+        display: flex;
+        flex-direction: column;
+        height: auto;
         overflow: hidden;
         margin-top: 2em;
     }
     &.contains-snap-custom_menu-spacer #page {
         margin-top: 0;
     }
-    #page-content {
-        height: 100%;
-        @media (min-width: 992px) {
-            height: 90%;
-        }
+    #page-content,
+    #moodle-page,
+    #region-main-box,
+    #region-main,
+    #region-main > div[role="main"],
+    .message-app.main {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0;
+        min-height: 0;
+        height: auto;
     }
-    #region-main-box {
-        height: 100%;
-        overflow: scroll;
+    // Edge to edge, without Snap's side margins on the main region: 4% on phones, and auto (centring it) on
+    // wider screens, which would shrink it to its content here.
+    #region-main {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
     }
-    #region-main .message-app .col-4 {
-        height: 90%;
+    // The panels' headers, conversation and list to the edges of their columns.
+    .message-app.main > .container-fluid,
+    .message-app.main > .container-fluid > .row > [class*="col-"] {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .message-app.main > .container-fluid > .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    // Room for the panels in a short window; the page scrolls below this.
+    .message-app.main {
+        min-height: 25rem !important;
+    }
+    // The list of conversations to the bottom of its column.
+    #region-main .message-app .col-4 > div {
+        display: flex;
+        flex-direction: column;
+
         .panel-body-container {
-            height: 90%;
-            overflow: scroll;
+            flex: 1 1 0;
+            min-height: 0;
+            overflow-y: auto;
         }
     }
-    #moodle-page {
-        height: 100%;
-        .message-app .view-overview-body .section {
-            max-height: 80%;
-        }
+    #moodle-page .message-app .view-overview-body .section {
+        max-height: 80%;
     }
 }
 
@@ -309,9 +333,16 @@
     }
 }
 
-// In the drawer, room beside the send button for the sidebar's collapse button, which overlaps it.
-[data-region="message-drawer"] [data-region="footer-container"] {
-    padding-right: 1.25rem;
+// In the drawer and at the foot of the Messages page, room beside the send button for the sidebar's collapse
+// button, which overlaps it.
+[data-region="message-drawer"] [data-region="footer-container"],
+#page-message-index .message-app.main [data-region="footer-container"] {
+    padding-right: 1.5rem;
+}
+
+// Space to the left of the message box on phones too (Moodle's padding there starts at the sm breakpoint).
+#page-message-index .message-app.main [data-region="content-messages-footer-container"] {
+    padding-left: 0.5rem !important; // Over Moodle's p-sm-2.
 }
 
 // The Messages page on phones: one panel at a time, like the message drawer. The list of conversations, and
@@ -329,5 +360,13 @@
         &:not(:has(> .col-8 > .body-container > [data-region^="view-"]:not(.hidden))) > .col-8 {
             display: none !important; // Over the columns' d-flex.
         }
+    }
+}
+
+// Conversations always have their back button (Snap's conversation header templates), but on the Messages page
+// on wider screens one opened from the list beside it doesn't need it, as in Moodle.
+@include media-breakpoint-up(md) {
+    #page-message-index .message-app.main [data-from-panel="true"] .snap-message-back {
+        display: none !important;
     }
 }
