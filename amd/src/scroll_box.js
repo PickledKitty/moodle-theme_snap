@@ -22,7 +22,8 @@
  * at the bottom, and marks the wrapper while there's more to see below or to the right, for fades along
  * those edges. The styles show the scrollbar only where the box is used.
  *
- * The scrollbar is a visual aid only: the box itself scrolls by swiping and from the keyboard.
+ * The scrollbar is a visual aid only: the box itself scrolls by swiping and from the keyboard. On every
+ * device, keyboard focus is kept clear of the report's pinned rows and column.
  *
  * @module     theme_snap/scroll_box
  * @copyright  2026 PickledKitty
@@ -38,6 +39,83 @@
  */
 const height = (box, selector) => selector === '' ? 0 :
     [...box.querySelectorAll(selector)].reduce((sum, el) => sum + el.getBoundingClientRect().height, 0);
+
+/**
+ * The area the elements matching a selector in the report cover on screen.
+ *
+ * @param {HTMLElement} report the report
+ * @param {string} selector the elements, or '' for none
+ * @returns {{top: number, bottom: number, left: number, right: number}|null} their area, or null for none
+ */
+const area = (report, selector) => {
+    const rects = selector === '' ? [] : [...report.querySelectorAll(selector)].map(el => el.getBoundingClientRect());
+    return rects.length === 0 ? null : {
+        top: Math.min(...rects.map(r => r.top)),
+        bottom: Math.max(...rects.map(r => r.bottom)),
+        left: Math.min(...rects.map(r => r.left)),
+        right: Math.max(...rects.map(r => r.right)),
+    };
+};
+
+/**
+ * Scroll whatever scrolls an element along one axis: the report's box, Snap's content area or the page.
+ *
+ * @param {HTMLElement} el the element
+ * @param {string} axis 'x' or 'y'
+ * @param {number} by how far, in pixels
+ */
+const scrollAlong = (el, axis, by) => {
+    for (let up = el.parentElement; up && up !== document.body; up = up.parentElement) {
+        const style = getComputedStyle(up);
+        const overflow = axis === 'x' ? style.overflowX : style.overflowY;
+        const room = axis === 'x' ? up.scrollWidth > up.clientWidth : up.scrollHeight > up.clientHeight;
+        if (room && (overflow === 'auto' || overflow === 'scroll')) {
+            up.scrollBy(axis === 'x' ? by : 0, axis === 'y' ? by : 0);
+            return;
+        }
+    }
+    window.scrollBy(axis === 'x' ? by : 0, axis === 'y' ? by : 0);
+};
+
+/**
+ * Keep keyboard focus clear of a report's pinned rows and column.
+ *
+ * Browsers scroll a focused control into view, but count one behind a pinned row or column as in view
+ * already: moving back along a row with Shift+Tab, a cell can land under the pinned names. So once the
+ * browser has scrolled, move a focused control that's still partly behind them into the clear. Pinned
+ * controls are always in view. On the document, as focus events go no further down on some pages.
+ *
+ * @param {HTMLElement} report the report
+ * @param {string} pinnedtop the rows pinned to the top
+ * @param {string} pinnedbottom the rows pinned to the bottom
+ * @param {string} pinnedleft the heading of the column pinned to the left
+ */
+const keepFocusClear = (report, pinnedtop, pinnedbottom, pinnedleft) => {
+    const reveal = el => {
+        for (let up = el; up !== report; up = up.parentElement) {
+            if (getComputedStyle(up).position === 'sticky') {
+                return;
+            }
+        }
+        const target = el.getBoundingClientRect();
+        const left = area(report, pinnedleft);
+        if (left && target.left < left.right && target.right > left.left) {
+            scrollAlong(el, 'x', target.left - left.right);
+        }
+        const top = area(report, pinnedtop);
+        const bottom = area(report, pinnedbottom);
+        if (top && target.top < top.bottom && target.bottom > top.top) {
+            scrollAlong(el, 'y', target.top - top.bottom);
+        } else if (bottom && target.bottom > bottom.top && target.top < bottom.bottom) {
+            scrollAlong(el, 'y', target.bottom - bottom.top);
+        }
+    };
+    document.addEventListener('focusin', e => {
+        if (report.contains(e.target)) {
+            requestAnimationFrame(() => reveal(e.target));
+        }
+    }, true);
+};
 
 /**
  * Wrap the box with the scrollbar.
@@ -68,7 +146,8 @@ const addScrollbar = (box, pinnedtop, pinnedbottom, pinnedleft) => {
         const scrollbar = box.offsetHeight - box.clientTop * 2 - box.clientHeight;
         wrapper.style.setProperty('--snap-scroll-box-scrollbar-height', `${scrollbar}px`);
         wrapper.style.setProperty('--snap-scroll-box-pinned-bottom', `${bottom}px`);
-        // Keyboard focus moving through the box scrolls the focused cell clear of the pinned rows and column.
+        // Keyboard focus moving through the box scrolls the focused cell clear of the pinned rows and column,
+        // where browsers keep to it.
         box.style.scrollPaddingTop = `${top}px`;
         box.style.scrollPaddingBottom = `${bottom}px`;
         box.style.scrollPaddingLeft = `${pinnedleft === '' ? 0 : box.querySelector(pinnedleft)?.offsetWidth ?? 0}px`;
@@ -80,37 +159,6 @@ const addScrollbar = (box, pinnedtop, pinnedbottom, pinnedleft) => {
         wrapper.classList.toggle('snap-scroll-box-more-below', box.scrollTop < range - 1);
         wrapper.classList.toggle('snap-scroll-box-more-right', box.scrollLeft < box.scrollWidth - box.clientWidth - 1);
     };
-
-    // Browsers don't always keep to the scroll padding when focus moves, so move a focused control that's
-    // still partly behind the pinned rows or column into the clear, once the browser has scrolled to it.
-    // Pinned controls are always in view.
-    const reveal = el => {
-        for (let up = el; up !== box; up = up.parentElement) {
-            if (getComputedStyle(up).position === 'sticky') {
-                return;
-            }
-        }
-        const target = el.getBoundingClientRect();
-        const area = box.getBoundingClientRect();
-        const style = box.style;
-        const left = area.left + box.clientLeft + parseFloat(style.scrollPaddingLeft);
-        const top = area.top + parseFloat(style.scrollPaddingTop);
-        const bottom = area.top + box.clientTop + box.clientHeight - parseFloat(style.scrollPaddingBottom);
-        if (target.left < left) {
-            box.scrollLeft -= left - target.left;
-        }
-        if (target.top < top) {
-            box.scrollTop -= top - target.top;
-        } else if (target.bottom > bottom) {
-            box.scrollTop += target.bottom - bottom;
-        }
-    };
-    // On the document, as focus events go no further down on some pages.
-    document.addEventListener('focusin', e => {
-        if (box.contains(e.target)) {
-            requestAnimationFrame(() => reveal(e.target));
-        }
-    }, true);
 
     // Scroll the box to put the thumb's top at a point on the track.
     const scrollTo = thumbtop => {
@@ -147,7 +195,8 @@ const addScrollbar = (box, pinnedtop, pinnedbottom, pinnedleft) => {
 };
 
 /**
- * Add the scrollbar to a report's box, on tablets and phones.
+ * Keep keyboard focus clear of a report's pinned rows and column, and on tablets and phones add the
+ * scrollbar to its box.
  *
  * @param {string} selector the report's scrolling box
  * @param {string} pinnedtop the rows pinned to the top of the box once scrolled
@@ -156,7 +205,11 @@ const addScrollbar = (box, pinnedtop, pinnedbottom, pinnedleft) => {
  */
 export const init = (selector, pinnedtop, pinnedbottom = '', pinnedleft = '') => {
     const box = document.querySelector(selector);
-    if (!box || !document.body.matches('.device-type-tablet, .device-type-mobile')) {
+    if (!box) {
+        return;
+    }
+    keepFocusClear(box, pinnedtop, pinnedbottom, pinnedleft);
+    if (!document.body.matches('.device-type-tablet, .device-type-mobile')) {
         return;
     }
     const update = addScrollbar(box, pinnedtop, pinnedbottom, pinnedleft);
