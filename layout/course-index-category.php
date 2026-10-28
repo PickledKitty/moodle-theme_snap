@@ -67,11 +67,14 @@ $mastimage = local::has_cover_image() ? 'mast-image' : '';
             // as a category's content bank, don't load the category they need.
             if ($PAGE->pagetype === 'course-index-category') {
             ?>
-            <div class="d-inline-flex">
+            <div class="snap-category-buttons">
                 <?php
                 global $OUTPUT;
                 $context = get_category_or_system_context(empty($cat) ? 0 : $cat->id);
-                if($iscoursecat) {
+                $button = function(\core\url $url, string $text): string {
+                    return \core\output\html_writer::link($url, $text, ['class' => 'btn btn-secondary']);
+                };
+                if ($iscoursecat) {
                     if (has_capability('moodle/course:create', $context)) {
                         // Print link to create a new course, for the 1st available category.
                         if ($cat->id) {
@@ -79,52 +82,48 @@ $mastimage = local::has_cover_image() ? 'mast-image' : '';
                         } else {
                             $url = new \core\url('/course/edit.php', ['category' => $CFG->defaultrequestcategory, 'returnto' => 'topcat']);
                         }
-                        echo '<div><a class="btn btn-secondary" href="' . $url . '">' .
-                            get_string('addnewcourse', 'moodle') . '</a></div>';
+                        echo $button($url, get_string('addnewcourse', 'moodle'));
                     }
                     if (has_capability('moodle/category:manage', $context)) {
-                        $addsubcaturl = new \core\url('/course/editcategory.php', array('parent' => $cat->id));
-                        echo '<div><a class="btn btn-secondary ms-3" href="' . $addsubcaturl . '">' .
-                            get_string('addsubcategory', 'moodle') . '</a></div>';
+                        echo $button(new \core\url('/course/editcategory.php', ['parent' => $cat->id]),
+                            get_string('addsubcategory', 'moodle'));
                     }
                     if ($manageurl) {
-                        echo '<p><a class="btn btn-secondary ms-3" href="' . $manageurl . '">';
-                        echo get_string('managecourses', 'moodle') . '</a></p>';
+                        echo $button($manageurl, get_string('managecourses', 'moodle'));
                     }
-                    if (!empty($editcatagory)) {
-                        echo $editcatagory;
+                    // Here, with the rest, rather than in the page header (core_renderer::snap_page_header()).
+                    if (can_edit_in_category($cat->id)) {
+                        echo $button(new \core\url('/course/editcategory.php', ['id' => $cat->id]),
+                            get_string('categoryedit', 'theme_snap'));
                     }
-                    echo $OUTPUT->container_start('buttons ms-3');
+                    echo $OUTPUT->container_start('buttons');
                     if (\core_course_category::is_simple_site() == 1) {
                         snap_print_course_request_buttons(\context_system::instance());
                     } else {
                         snap_print_course_request_buttons($context);
                     }
                     echo $OUTPUT->container_end();
-                    echo "</div>";
-                }else {
+                } else {
                     if ($manageurl) {
-                        echo '<p><a class="btn btn-secondary" href="' . $manageurl . '">';
-                        echo get_string('managecourses', 'moodle') . '</a></p>';
+                        echo $button($manageurl, get_string('managecourses', 'moodle'));
                     }
                     if (has_capability('moodle/course:create', $context)) {
                         // Print link to create a new course, for the 1st available category.
-                        $url = new \core\url('/course/edit.php', ['category' => $CFG->defaultrequestcategory, 'returnto' => 'topcat']);
-                        echo '<div><a class="btn btn-secondary ms-3" href="' . $url . '">' .
-                            get_string('addnewcourse', 'moodle') . '</a></div>';
+                        echo $button(new \core\url('/course/edit.php', ['category' => $CFG->defaultrequestcategory, 'returnto' => 'topcat']),
+                            get_string('addnewcourse', 'moodle'));
                     }
-                    echo "</div>";
                 }
+                ?>
+            </div>
+            <?php
             }
 
                 echo $OUTPUT->main_content();
                 ?>
         </section>
         </div>
-        <div id="moodle-blocks" class="clearfix">
-            <?php echo $OUTPUT->custom_block_region('side-pre'); ?>
-        </div>
         <?php
+        // The side blocks are in the blocks drawer only: here as well, they'd be a hidden second copy.
         require __DIR__.'/blocks_drawer.php';
         echo $OUTPUT->snap_feeds_side_menu();
         ?>

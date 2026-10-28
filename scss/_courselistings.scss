@@ -179,3 +179,41 @@
         font-size: $font-size-sm;
     }
 }
+
+// The course listing: the category's name in the header without breadcrumbs, and its buttons in a row across
+// the page, sharing the width, with a line under them.
+#page-course-index-category {
+    #page-header .breadcrumb-nav {
+        display: none;
+    }
+
+    .snap-category-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid $brand-primary;
+
+        > .btn,
+        > .buttons .btn {
+            flex: 1 1 auto;
+            font-size: 0.875rem;
+        }
+
+        // The course request buttons are forms of their own: their buttons share the row too.
+        > .buttons,
+        > .buttons > *,
+        > .buttons form {
+            display: contents;
+        }
+    }
+}
+
+// The course listing's cover image in a slim band, the height of its title and button, rather than a course's 6:1
+// banner (as specific as the rule in _core.scss that sets that for this page).
+body#page-course-index-category #moodle-page #page-header.mast-image {
+    aspect-ratio: auto;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}

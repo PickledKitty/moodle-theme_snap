@@ -1194,7 +1194,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
                     $data->summary = format_text($catdescription, $cat->descriptionformat, $options);
                 }
 
-                if (can_edit_in_category($cat->id)) {
+                // On the course listing, it's with the other buttons (layout/course-index-category.php).
+                if (can_edit_in_category($cat->id) && $pagetype !== 'course-index-category') {
                     $editurl = new \core\url('/course/editcategory.php', ['id' => $cat->id]);
                     $data->edit_category_button = [
                         'url' => $editurl->out(),
