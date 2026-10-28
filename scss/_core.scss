@@ -956,8 +956,9 @@ select,
 // Buttons, faux buttons styling & resets
 // -------------------------
 
+// Not ReadSpeaker's volume and speed sliders, which this would squash.
 select,
-input,
+input:not(.rs-slider),
 textarea {
     max-width: 100%;
 }
