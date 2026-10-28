@@ -244,6 +244,9 @@ function theme_snap_pluginfile($course, $cm, $context, $filearea, $args, $forced
         $pluginpath = __DIR__.'/';
         // Typically CDN fall backs would go in vendorjs.
         $path = $pluginpath.'vendorjs/'.implode('/', $args);
+        if (!is_file($path)) {
+            send_file_not_found();
+        }
         send_file($path, basename($path));
         return true;
     } else if ($filearea === 'hvp' || $filearea === 'hvpcustomcss') {
