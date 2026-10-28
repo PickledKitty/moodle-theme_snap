@@ -193,3 +193,23 @@ body#page-course-view-participants {
         flex-direction: row;
     }
 }
+
+// Suspended users: greyed out, wherever Moodle marks them (the grader report, assignment grading, a course
+// profile's heading), and on the participants page by their status. The pause sign beside them (Snap's
+// icon_system_fontawesome) shows it too, so it isn't colour alone. Over Snap's link colour.
+.usersuspended,
+.usersuspended a,
+a.usersuspended,
+#participants tr:has(.snap-status-suspended) th.c1 a {
+    color: $gray-600 !important;
+}
+
+// The participants page has no pause sign of its own: one after the name, as the status says it in words.
+// (The suspended status badge by Snap's own class, from its core_user/status_field template: Bootstrap's
+// classes and attribute selectors in :has() trip up the compiler's @extend.)
+#participants tr:has(.snap-status-suspended) th.c1 a::after {
+    content: "\f04c";
+    margin-left: 0.4em;
+    font: var(--fa-font-solid);
+    font-size: 0.8em;
+}

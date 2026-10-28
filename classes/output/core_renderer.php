@@ -1057,9 +1057,30 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $contextheader = new \core\output\context_header($heading, $headinglevel, $imagedata, $userbuttons, $prefix);
             return $this->render($contextheader); // Only context header for course modules.
         } else if ($context->contextlevel == CONTEXT_COURSE) {
+            // A user's course profile: greyed, with a pause sign, while their enrolment in the course is suspended.
+            if (!empty($headerinfo['user']) && $this->page->course->id != SITEID &&
+                    $this->user_enrolment_suspended($headerinfo['user']->id, $this->page->course->id)) {
+                $headerinfo['heading'] = \core\output\html_writer::span($heading, 'usersuspended') . ' ' .
+                    $this->pix_icon('i/enrolmentsuspended', get_string('userenrolmentsuspended', 'grades'));
+            }
             return parent::context_header($headerinfo, $headinglevel);
         }
         return ''; // Any other case we fall back to the Snap header.
+    }
+
+    /**
+     * Whether a user's enrolment in a course is suspended (any of their enrolments in it).
+     *
+     * @param int $userid
+     * @param int $courseid
+     * @return bool
+     */
+    protected function user_enrolment_suspended(int $userid, int $courseid): bool {
+        global $DB;
+        return $DB->record_exists_sql(
+            'SELECT 1 FROM {user_enrolments} ue JOIN {enrol} e ON e.id = ue.enrolid
+              WHERE e.courseid = :courseid AND ue.userid = :userid AND ue.status = :suspended',
+            ['courseid' => $courseid, 'userid' => $userid, 'suspended' => ENROL_USER_SUSPENDED]);
     }
 
     /**

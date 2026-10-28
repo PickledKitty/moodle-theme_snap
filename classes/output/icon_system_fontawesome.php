@@ -42,6 +42,8 @@ class icon_system_fontawesome extends \core\output\icon_system_fontawesome {
         $iconmap['core:i/notifications'] = 'fa-bell-o';
         $iconmap['core:a/search'] = 'fa-search';
         $iconmap['core:i/fa-file-arrow-up'] = 'fa-file-arrow-up';
+        // A suspended enrolment: a pause sign reads more clearly than a person with a cross.
+        $iconmap['core:i/enrolmentsuspended'] = 'fa-pause';
         return $iconmap;
     }
 }
