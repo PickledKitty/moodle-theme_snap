@@ -914,3 +914,16 @@ body.notloggedin .drawer.drawer-right {
     content: "" !important;
   }
 }
+
+// A block's edit menu: items wrap onto a second line rather than ending in an ellipsis, so they can be told apart
+// (Hide and Delete <block name> look the same cut short).
+.block .block-controls .dropdown-menu .dropdown-item {
+    display: flex;
+    align-items: baseline;
+    white-space: normal;
+
+    // The second line lined up with the first, beside the icon.
+    .icon {
+        flex: 0 0 auto;
+    }
+}
