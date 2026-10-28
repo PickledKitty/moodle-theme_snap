@@ -4052,3 +4052,14 @@ body:not(.editing) .divider.bulk-hidden {
 #page-h5p-edit .drawer-toggler.drawer-left-toggle.open-nav {
   display: none;
 }
+
+// Activity pages: a long title wraps beside the activity's icon, rather than dropping below it.
+.path-mod .page-context-header {
+    .page-header-image {
+        flex: 0 0 auto;
+    }
+    .page-header-headings {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+}
