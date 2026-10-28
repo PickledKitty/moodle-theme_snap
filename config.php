@@ -64,7 +64,9 @@ $THEME->scss = function($theme) {
 $THEME->csspostprocess = 'theme_snap_process_css';
 $THEME->supportscssoptimisation = false;
 
-$THEME->editor_sheets = array('editor');
+$THEME->editor_sheets = [];
+// Alerts and the classes for course content in the editor, as on the page.
+$THEME->editor_scss = ['editor'];
 
 $THEME->rendererfactory = 'theme_overridden_renderer_factory';
 

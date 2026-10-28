@@ -30,4 +30,11 @@
     <version>1.6.2</version>
     <license>MIT</license>
   </library>
+  <library>
+    <location>fonts</location>
+    <name>Roboto (https://fonts.google.com/specimen/Roboto), files roboto-*.woff2</name>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <version>v51 (Google Fonts)</version>
+  </library>
 </libraries>
