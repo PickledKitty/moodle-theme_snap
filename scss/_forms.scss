@@ -121,6 +121,15 @@ body[id^="page-mod-"][id$="-mod"] {
 
 }
 
+// A field with an error: a dotted border round it and its label, as well as Moodle's icons and message,
+// so it stands out in a long form.
+.mform .fitem.has-danger {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    border: 1px dotted $brand-danger;
+    border-radius: 5px;
+}
+
 .mform .fitem {
     &.fitem_fcheckbox:not(#fitem_id_onlygraded) {
         .fitemtitle {

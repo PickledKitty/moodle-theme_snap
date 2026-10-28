@@ -1175,7 +1175,14 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
         }
     }
 
-    div[tabindex]:focus.modal-dialog.modal-dialog-scrollable .modal-content {
+    // Modals and pop-ups, such as glossary entries: Moodle focuses the dialogue as it opens, so it gets a ring in
+    // the brand colour that makes it stand out, however it was opened, without Boost's faint blue glow round it.
+    .modal-dialog[tabindex="0"].focus .modal-content,
+    .modal-dialog[tabindex="0"]:focus .modal-content {
+        box-shadow: none;
+    }
+
+    div[tabindex]:focus.modal-dialog .modal-content {
         outline: 3px auto $brand-primary;
     }
 

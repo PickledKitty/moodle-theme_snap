@@ -4630,6 +4630,17 @@ body.hascontinuecancel.path-site #page {
     }
 }
 
+// The file picker: wider on wide screens (Moodle sizes it at 873px), but never wider than the window.
+// Its inner container, which some repositories fill, without a maximum width of its own.
+.moodle-dialogue-base .filepicker {
+    min-width: 60%;
+    max-width: calc(100vw - 2rem);
+
+    .container {
+        max-width: none;
+    }
+}
+
 .moodle-dialogue-base .filepicker .alert-warning {
     margin: 0 1px 18px;
 }
