@@ -64,8 +64,8 @@
         }
     }
 
-    // Hide button text on small screens.
-    @include media-breakpoint-down(xs) {
+    // Hide button text on small screens (Bootstrap 5's breakpoint-down(xs) has no limit, which hid it on all).
+    @include media-breakpoint-down(sm) {
         .header-button-title {
             display: none;
         }
@@ -95,8 +95,10 @@
                     @include make-col(3);
                     border: none;
                     flex: 0 0 auto !important;
-                    width: 25% !important;
-                    max-width: 25% !important;
+                    // Four across, with a gap between the boxes.
+                    width: calc(25% - 0.5rem) !important;
+                    max-width: calc(25% - 0.5rem) !important;
+                    margin: 0.25rem;
                     display: flex !important;
                     flex-direction: column !important;
                 }
@@ -192,6 +194,26 @@ body#page-course-view-participants {
         display: flex;
         flex-direction: row;
     }
+}
+
+// Profile pages: each section in a box (the sections are in Snap's order, from theme_snap\output\core_user).
+#page-user-profile,
+.path-course.path-user {
+    .userprofile .profile_tree .node_category {
+        border: 1px solid #ccc;
+        border-radius: 0.25rem;
+
+        .card-body {
+            padding: 1rem 1.1rem;
+        }
+    }
+}
+
+// A user's course profile takes the course page's layout, which leaves its content without side margins
+// (#page-course-view-topics #region-main and the like, whatever the course format).
+body.path-user.pagelayout-mypublic #page #region-main {
+    padding-left: 4%;
+    padding-right: 4%;
 }
 
 // Suspended users: greyed out, wherever Moodle marks them (the grader report, assignment grading, a course
