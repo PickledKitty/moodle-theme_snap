@@ -31,14 +31,43 @@
         display: inline-block;
         margin: 0 0.5rem;
     }
+    // The summary at the course name's size (smaller than the page's text), and its teachers smaller again.
+    .content {
+        font-size: $h6-font-size;
+
+        .teachers {
+            font-size: 0.85rem;
+        }
+    }
+    // Opens and closes the summary: kept once it has loaded, so it can be closed again, with an arrow for
+    // whether it's open.
     .moreinfo {
         float: right;
         margin-left: auto;
-    }
-    &.loaded {
-        .moreinfo {
-            display: none;
+
+        a {
+            display: inline-flex;
+            align-items: center;
+
+            &::after {
+                content: "";
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                margin-left: 0.125rem;
+                background: center / 16px 16px no-repeat;
+            }
         }
+    }
+    &.collapsed .moreinfo a::after {
+        background-image: url([[pix:t/collapsed]]);
+    }
+    &:not(.collapsed) .moreinfo a::after {
+        background-image: url([[pix:t/expanded]]);
+    }
+    // Closed again once loaded (Boost's courselisting.scss rule, which Snap doesn't import).
+    &.collapsed > .content {
+        display: none;
     }
     .content .courseimage {
         flex: none;
@@ -206,6 +235,25 @@
         > .buttons > *,
         > .buttons form {
             display: contents;
+        }
+    }
+}
+
+// Opens or closes all the summaries (theme_snap/category_toggle), at the right above the courses, like
+// Moodle's control for the subcategories above, and outlined for keyboard focus only.
+.coursebox-expand-all-wrapper {
+    margin: 0 0 0.5rem;
+    text-align: right;
+
+    .coursebox-expand-all {
+        font-size: 1.1rem;
+        color: $brand-primary;
+        text-decoration: none;
+
+        // Over Snap's :focus outline for buttons (_brandcolor.scss), which a mouse click would show too.
+        &:focus:not(:focus-visible) {
+            outline: none !important;
+            box-shadow: none;
         }
     }
 }

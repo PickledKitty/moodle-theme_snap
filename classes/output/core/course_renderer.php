@@ -1250,6 +1250,15 @@ class course_renderer extends \core_course_renderer {
     protected function coursecat_courses(\coursecat_helper $chelper, $courses, $totalcount = null) {
         $content = parent::coursecat_courses($chelper, $courses, $totalcount);
 
+        // A category's course listing, where the summaries open and close: a control to open or close them all.
+        if ($this->page->pagetype === 'course-index-category' && trim($content) !== '' &&
+                $chelper->get_show_courses() < self::COURSECAT_SHOW_COURSES_EXPANDED) {
+            $this->page->requires->js_call_amd('theme_snap/category_toggle', 'init');
+            $toggle = \core\output\html_writer::tag('button', get_string('expandall'),
+                ['type' => 'button', 'class' => 'btn btn-link p-0 coursebox-expand-all']);
+            return \core\output\html_writer::div($toggle, 'coursebox-expand-all-wrapper') . $content;
+        }
+
         // This is just for the front page course lists, everything else uses core rendering.
         if ($this->page->pagetype !== 'site-index' || trim($content) === '') {
             return $content;
