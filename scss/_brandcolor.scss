@@ -1466,6 +1466,12 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
                             background-color: darken(rgba($brand-primary, 0.9), 10%);
                             outline: darken($brand-primary, 10%);
                         }
+
+                        // The darker background alone is too close to the bar's colour to show keyboard focus.
+                        &:focus-visible {
+                            outline: 3px solid $custom-menu-text-color;
+                            outline-offset: -3px;
+                        }
                     }
                 }
 
