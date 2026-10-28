@@ -190,6 +190,10 @@ if (in_array($PAGE->pagetype, ['report-completion-index', 'report-progress-index
     $PAGE->requires->js_call_amd('theme_snap/scroll_box', 'init',
         ['table#completion-progress', 'thead > tr:nth-last-child(-n+2)', '', 'thead > tr:last-child > th:first-child']);
 }
+if ($PAGE->pagetype === 'mod-assign-view') {
+    // Text beside the plus that shows the rest of the feedback comments.
+    $PAGE->requires->js_call_amd('theme_snap/assign_feedback_more', 'init');
+}
 if ($PAGE->pagetype === 'grade-report-grader-index') {
     // Keyboard focus kept clear of the pinned rows and names; on tablets and phones the report scrolls in a box,
     // with a scrollbar that's always shown.

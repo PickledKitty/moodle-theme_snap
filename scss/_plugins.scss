@@ -2111,3 +2111,10 @@ body#page-enrol-programs-catalogue-index {
     left: 50% !important;
     transform: translate(-50%, -50%);
 }
+
+// Assignment page: the text beside the plus that shows the rest of the feedback comments
+// (theme_snap/assign_feedback_more).
+.snap-assign-feedback-more {
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}

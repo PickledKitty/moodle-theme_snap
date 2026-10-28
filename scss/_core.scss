@@ -4410,41 +4410,7 @@ table#user-grades tr.avg td.cell {
 // -------------------------
 // Moodle notice/alerts etc
 // -------------------------
-// bootstrap alerts
-
-.alert {
-    &.alert-info,
-    &.alert-success,
-    &.alert-danger,
-    &.alert-warning {
-        clear: both;
-        border: 0;
-        border-left: 3em solid;
-    };
-    &.alert-info {
-        color: $brand-info;
-        background-color: mix($brand-info, white, 10%);
-        border-color: $brand-info;
-    };
-    &.alert-success {
-        color: $brand-success;
-        background-color: mix($brand-success, white, 5%);
-        border-color: $brand-success;
-    };
-    &.alert-danger {
-        color: $brand-danger;
-        background-color: mix($brand-danger, white, 5%);
-        border-color: $brand-danger;
-    };
-    &.alert-warning {
-        color: $brand-warning;
-        background-color: mix($brand-warning, white, 5%);
-        border-color: $brand-warning;
-    };
-    .btn-close {
-        float: right;
-    }
-}
+// Alerts are in _content.scss, with the classes for course content, for the editor too.
 
 #notice {
     background-color: #eee;

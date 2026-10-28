@@ -39,6 +39,7 @@ $string['appendices'] = 'Tools';
 $string['arialabelfeaturespot'] = 'feature spot';
 $string['arialabelnewsarticle'] = 'news article';
 $string['assigndraft'] = 'Draft requires your confirmation';
+$string['assignfeedbackmore'] = 'Click the plus for more feedback';
 $string['assignreopened'] = 'Reopened';
 $string['at'] = 'at';
 $string['attempted'] = 'Attempted';
