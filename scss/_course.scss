@@ -2759,7 +2759,8 @@ body.snap-resource-card {
         padding: 0.5em;
         font-weight: 500;
 
-        + a {
+        // A line between links, but not before a badge (the dates), which has its own shape and space.
+        + a:not(.tag) {
             border-left: 1px solid;
         }
     }
