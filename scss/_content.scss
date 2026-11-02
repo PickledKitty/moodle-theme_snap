@@ -47,11 +47,21 @@
         $band: nth($colours, 1);
         $text: nth($colours, 2);
         &.alert-#{$kind} {
+            --snap-alert-band: #{$band};
             clear: both;
             border: 1px solid $band;
-            border-left: 2em solid $band;
             background-color: #fff;
             color: $text;
+
+            // The band is a stripe painted inside the thin border, not a wide left border: where a wide border side
+            // meets a thin one at a rounded corner, browsers (Firefox especially, at some zoom levels) leave a
+            // hairline of the background showing in the join. The text keeps its place beside the band.
+            padding-left: calc(var(--snap-alert-band-width, 2em) + var(--#{$prefix}alert-padding-x));
+            background-image: linear-gradient(to right, var(--snap-alert-band) var(--snap-alert-band-width, 2em),
+                transparent 0);
+            // Backgrounds aren't printed by default; the band was a border, which is.
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
 
             // Over Snap's link colour, a rule made very specific by its list of exceptions.
             a,
@@ -68,7 +78,7 @@
 
     // A narrower band.
     &.alert-thin {
-        border-left-width: 1em;
+        --snap-alert-band-width: 1em;
     }
     .btn-close {
         float: right;

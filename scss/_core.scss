@@ -196,9 +196,11 @@ table.boxwidthwide {
         padding: 1em;
     }
     .loginerrors .alert-danger {
+        // Bootstrap's alert padding, rather than a padding shorthand, which would cover the room left for the band.
+        --#{$prefix}alert-padding-x: 1.25rem;
+        --#{$prefix}alert-padding-y: 0.65rem;
         border-radius: 5px;
         font-size: 0.8em;
-        padding: 0.65rem 1.25rem;
     }
     #base-login form#login {
         input#username,
@@ -1156,6 +1158,7 @@ a.yui3-button,
     td.alert.alert-warning, {
         border-left: none;
         padding-left: 4em;
+        background-image: none; // These cells draw their band themselves, below.
     }
     td.alert.alert-info::before,
     td.alert.alert-success::before,
