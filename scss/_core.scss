@@ -7051,6 +7051,23 @@ span[data-flexitour="container"]:has(> div[data-role="flexitour-step"]) {
 
 // Fix header position in grader view.
 #page-mod-assign-grader.theme-snap {
+    // The layout buttons (submission, both, grade): their icons are images in a dark grey, which is too faint on
+    // the chosen button's brand colour, so it's white there. The focus ring sits outside the button, as one in
+    // the brand colour can't be seen against the chosen button.
+    .collapse-review-panel,
+    .collapse-none,
+    .collapse-grade-panel {
+        &:focus-visible {
+            outline: 3px solid $brand-primary;
+            outline-offset: 2px;
+            z-index: 3;
+        }
+
+        &.active img.icon {
+            filter: brightness(0) invert(1);
+        }
+    }
+
     // Bootstrap rows in the top bar and main area sit in unpadded containers, so their negative
     // margins hang 15px past the window's edges and the page scrolls sideways.
     .row.grading-main,
