@@ -44,7 +44,7 @@ if (\theme_snap\local::show_on_login_page('navbarlogin')) {
         // If the homepage is set to Dashboard, then the home icon link must redirect to dashboard.
         $homepage = get_home_page();
         if ($homepage === 1) {
-            $defaulthomeurl = $CFG->wwwroot.'/my';
+            $defaulthomeurl = $CFG->wwwroot.'/my/';
         } else if ($homepage === 3) {
             $defaulthomeurl = $CFG->wwwroot.'/my/courses.php';
         } else {

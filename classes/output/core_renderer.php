@@ -2415,7 +2415,7 @@ HTML;
                 // Dashboard link.
                 $dashboardlink = new stdClass();
                 $dashboardlink->itemtype = 'link';
-                $dashboardlink->url = new moodle_url('/my');
+                $dashboardlink->url = new moodle_url('/my/');
                 $dashboardlink->link = $dashboardlink->itemtype == 'link';
                 $dashboardlink->title = get_string('myhome');
                 $dashboardlink->titleidentifier = 'myhome,moodle';
