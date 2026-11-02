@@ -1306,6 +1306,8 @@ body.snap-resource-card li.snap-resource:not(.label) {
     >.no-overflow,
     .summary-container {
         background-color: $color-bk-resource;
+        // Boost's grey for descriptions is too faint on the panel.
+        color: var(--#{$prefix}secondary-color);
         border-radius: 0.5em;
         padding: 1em;
         margin: 1em 0;
@@ -1313,6 +1315,12 @@ body.snap-resource-card li.snap-resource:not(.label) {
             border-radius: 0.5em;
         }
     }
+}
+
+// A page's read more and close buttons: the focus ring sits outside the button's own border.
+.theme-snap .modtype_page .btn.snap-action-icon:focus-visible:not(:disabled) {
+    outline: 3px solid $brand-primary;
+    outline-offset: 2px;
 }
 .section .activity-item .activity-actions .actions {
     align-items: center;

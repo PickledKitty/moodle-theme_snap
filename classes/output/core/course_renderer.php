@@ -627,8 +627,9 @@ class course_renderer extends \core_course_renderer {
             <button 
                 class='btn collapsed pagemod-readmore readmore-button snap-action-icon btn-outline-primary p-2'
                 {$pmcontextattribute}
-                aria-expanded='false'>
-                <i aria-hidden='true' class='icon fa fa-chevron-down fa-fw m-0' title='{$expand} {$page->name}'></i>
+                aria-expanded='false' title='{$expand} {$page->name}'>
+                <i aria-hidden='true' class='icon fa fa-chevron-down fa-fw m-0'></i>
+                <span class='visually-hidden'>{$expand} {$page->name}</span>
             </button>
         ";
         $o = "
