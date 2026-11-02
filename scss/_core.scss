@@ -8006,6 +8006,11 @@ li.section.main {
   }
 }
 
+// Test sites still show the footer pop-up, whose links are told from the text around them only by colour.
+.footer-content-popover a {
+  text-decoration: underline;
+}
+
 // Fix help button width for snap_hide_in_toc checkbox to match other form elements.
 #id_snap_toc_settingscontainer {
     .checkbox {
