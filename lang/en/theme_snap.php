@@ -357,6 +357,7 @@ $string['privacy:metadata:theme_snap_course_favorites'] = 'Stores users\' course
 $string['problemsfound'] = 'Problems Found';
 $string['progress'] = 'Progress';
 $string['readmore'] = 'Read more&nbsp;»';
+$string['readmorebutton'] = 'Read more';
 $string['recentactivity'] = 'Recent Activity';
 $string['recentfeedback'] = 'Feedback';
 $string['region-main'] = 'Main';

@@ -595,9 +595,10 @@ class course_renderer extends \core_course_renderer {
             }
         }
 
-        $readmore = get_string('readmore', 'theme_snap');
-        $close = get_string('collapseicon', 'theme_snap');
-        $expand = get_string('expandicon', 'theme_snap');
+        // Buttons with visible text, and the page's name for screen readers, so each page's buttons are told apart.
+        $readmore = get_string('readmorebutton', 'theme_snap');
+        $close = get_string('closebuttontitle');
+        $pagename = format_string($page->name, true, ['context' => $mod->context]);
 
         $content = '';
         $contentloaded = 0;
@@ -624,12 +625,10 @@ class course_renderer extends \core_course_renderer {
 
         $pmcontextattribute = 'data-pagemodcontext="'.$mod->context->id.'"';
         $expandpagebutton = "
-            <button 
-                class='btn collapsed pagemod-readmore readmore-button snap-action-icon btn-outline-primary p-2'
+            <button class='btn collapsed pagemod-readmore readmore-button btn-outline-primary p-2'
                 {$pmcontextattribute}
-                aria-expanded='false' title='{$expand} {$page->name}'>
-                <i aria-hidden='true' class='icon fa fa-chevron-down fa-fw m-0'></i>
-                <span class='visually-hidden'>{$expand} {$page->name}</span>
+                aria-expanded='false'>
+                <i aria-hidden='true' class='icon fa fa-chevron-down fa-fw me-2'></i>{$readmore}<span class='visually-hidden'>: {$pagename}</span>
             </button>
         ";
         $o = "
@@ -640,16 +639,16 @@ class course_renderer extends \core_course_renderer {
         </div>";
         if ($showexpandicon) {
             $o .= "
-            <div class='readmore-container d-flex justify-content-center'>
+            <div class='readmore-container d-flex'>
                 {$expandpagebutton}
             </div>
             <div class=pagemod-content tabindex='-1' data-content-loaded={$contentloaded}>
                 <div id='pagemod-content-container'>
                     {$content}
                 </div>
-                <div class='d-flex justify-content-center w-100 pt-3'>
-                    <button class='snap-action-icon btn btn-outline-primary p-2 d-inline-flex' aria-expanded='true' title='{$close} {$page->name}'>
-                        <i aria-hidden='true' class='icon fa fa-chevron-up fa-fw m-0' title='{$expand} {$page->name}'></i>
+                <div class='d-flex w-100 pt-3'>
+                    <button class='btn pagemod-readmore btn-outline-primary p-2' aria-expanded='true'>
+                        <i aria-hidden='true' class='icon fa fa-chevron-up fa-fw me-2'></i>{$close}<span class='visually-hidden'>: {$pagename}</span>
                     </button>
                 </div>
             </div>";

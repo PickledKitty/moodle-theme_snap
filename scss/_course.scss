@@ -1380,7 +1380,7 @@ body.snap-resource-card li.snap-resource:not(.label) {
 }
 
 // A page's read more and close buttons: the focus ring sits outside the button's own border.
-.theme-snap .modtype_page .btn.snap-action-icon:focus-visible:not(:disabled) {
+.theme-snap .modtype_page .btn.pagemod-readmore:focus-visible:not(:disabled) {
     outline: 3px solid $brand-primary;
     outline-offset: 2px;
 }

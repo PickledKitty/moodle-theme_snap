@@ -48,7 +48,8 @@ define(
 
                 } else {
                     pageMod.attr('aria-expanded', 'false');
-                    pageMod.focus();
+                    // Back to the button that opened it.
+                    pageMod.find('.readmore-button').focus();
                 }
 
             });
