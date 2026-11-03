@@ -106,6 +106,20 @@
 
 }
 
+[data-bs-theme="dark"] {
+    // Notifications: Snap's hover and time colours, set over core's.
+    #nav-notification-popover-container {
+        .content-item-container:hover {
+            background-color: var(--bs-tertiary-bg) !important;
+            color: var(--bs-body-color) !important;
+        }
+
+        .content-item-footer .timestamp {
+            color: var(--bs-secondary-color) !important;
+        }
+    }
+}
+
 #nav-intellicart-popover-container,
 #nav-notification-popover-container {
     @media (max-width: 600px) {
@@ -239,6 +253,10 @@
     max-height: 60dvh;
     box-shadow: 0 0 0 1px $gray-500; // A clearer edge (a border would darken a table's cell lines too).
 
+    @include dark-mode {
+        box-shadow: 0 0 0 1px $gray-600;
+    }
+
     // The box's own vertical scrollbar would double up with the one beside it. The sideways one is
     // thicker and in the brand colour, where browsers let it be styled.
     &::-webkit-scrollbar:vertical {
@@ -251,11 +269,20 @@
 
     &::-webkit-scrollbar-track {
         background-color: $gray-200;
+
+        @include dark-mode {
+            background-color: $gray-700;
+        }
     }
 
     &::-webkit-scrollbar-thumb {
         border-radius: 0.375rem;
         background-color: $brand-primary;
+
+        // The brand colour's lighter dark mode version, so the thumb stands out from the dark track.
+        @include dark-mode {
+            background-color: var(--snap-brand-dark);
+        }
     }
 }
 
@@ -290,6 +317,10 @@
                 bottom: calc(1px + var(--snap-scroll-box-scrollbar-height, 0px) + var(--snap-scroll-box-pinned-bottom, 0px));
                 height: 2.5rem;
                 background: linear-gradient(to bottom, rgba($body-bg, 0), $body-bg);
+
+                @include dark-mode {
+                    background: linear-gradient(to bottom, rgba($dark-surface-page, 0), $dark-surface-page);
+                }
             }
 
             // More columns to the right.
@@ -299,6 +330,10 @@
                 right: calc(1.25rem + 1px);
                 width: 2.5rem;
                 background: linear-gradient(to right, rgba($body-bg, 0), $body-bg);
+
+                @include dark-mode {
+                    background: linear-gradient(to right, rgba($dark-surface-page, 0), $dark-surface-page);
+                }
             }
 
             &.snap-scroll-box-more-below::before,
@@ -321,6 +356,11 @@
             border-radius: 0.375rem;
             background-color: $gray-200;
             box-shadow: inset 0 0 0 1px $gray-500;
+
+            @include dark-mode {
+                background-color: $gray-700;
+                box-shadow: inset 0 0 0 1px $gray-600;
+            }
             touch-action: none; // Dragging the thumb doesn't scroll the page.
             cursor: pointer;
         }
@@ -329,6 +369,10 @@
             width: 100%;
             border-radius: inherit;
             background-color: $brand-primary;
+
+            @include dark-mode {
+                background-color: var(--snap-brand-dark);
+            }
         }
 
         // The grader report's heading row pins to the top of the box, and the overall average row to its
@@ -366,7 +410,7 @@
         position: sticky;
         left: 0;
         z-index: 1;
-        background-color: $body-bg;
+        background-color: var(--bs-body-bg);
     }
 
     // In taller windows the column headings stay in view too, below Snap's header while it's shown.
@@ -390,7 +434,7 @@
             }
 
             th {
-                background-color: $body-bg;
+                background-color: var(--bs-body-bg);
             }
         }
 
@@ -1153,6 +1197,12 @@ body.path-grade-grading {
         span.label {
             color: white;
         }
+    }
+}
+
+[data-bs-theme="dark"] {
+    .path-mod-lesson .edit_pages_box tr {
+        background-color: transparent !important;
     }
 }
 

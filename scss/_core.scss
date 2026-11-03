@@ -120,6 +120,9 @@ table.boxwidthwide {
         max-width: 25rem;
         width: 100%;
         background-color: rgba(255, 255, 255, 0.9);
+        @include dark-mode {
+            background-color: rgba(var(--bs-body-bg-rgb), 0.9);
+        }
         #password {
             margin-top: 1em;
         }
@@ -130,6 +133,9 @@ table.boxwidthwide {
     .snap-login-option {
         background-color: #fff;
         border-radius: 5px;
+        @include dark-mode {
+            background-color: $dark-surface-raised;
+        }
     }
     .snap-login-box {
         margin: 2em auto;
@@ -296,6 +302,10 @@ table.boxwidthwide {
         Font-size: 1em;
         color: $body-color;
         padding-top: 5em !important;
+        @include dark-mode {
+            background-color: $dark-surface-raised;
+            color: var(--bs-body-color);
+        }
     }
 }
 #page-login-signup {
@@ -363,6 +373,27 @@ table.boxwidthwide {
     }
 
 }
+
+[data-bs-theme="dark"] {
+    // Login and sign-up pages: the floating label over a focused field, the restored account message, and the
+    // "stylish" login template's background and box.
+    #page-login-index .floating-label input:focus ~ label,
+    #page-login-signup .floating-label input:focus ~ label {
+        background-color: var(--bs-body-bg);
+    }
+
+    #page-login-index .loginerror-restoredaccount,
+    #page-login-signup .loginerror-restoredaccount {
+        background: $dark-surface-raised;
+    }
+
+    // The panel the login box sits on: the page colour, so the raised box stands out on it as it does on white.
+    #page-login-index .page-stylish-login,
+    #page-login-index .page-stylish-background,
+    #page-login-signup .page-stylish-background {
+        background-color: var(--bs-body-bg) !important;
+    }
+}
 // Mirror the Stylish template so the login form sits on the right and the image shows on the left.
 #page-login-index .page-stylish-inverse-login {
     margin-left: auto;
@@ -397,6 +428,10 @@ table.boxwidthwide {
         background-color: #fff;
         Font-size: 1em;
         color: $body-color;
+        @include dark-mode {
+            background-color: $dark-surface-raised;
+            color: var(--bs-body-color);
+        }
     }
 }
 #page-login-signup #notice {
@@ -414,6 +449,9 @@ table.boxwidthwide {
         background-color: #fff;
         padding: 1em 3em;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, .2);
+        @include dark-mode {
+            background-color: $dark-surface-raised;
+        }
         .mform .fcontainer > .fitem {
             padding-left: 0;
         }
@@ -827,6 +865,10 @@ li.modtype_page {
             background-color: #f8f9fa;
             border-radius: 0.5em;
             padding: 1em;
+            // Dark mode: no panel, so the card is one colour.
+            @include dark-mode {
+                background-color: transparent;
+            }
         }
     }
 }
@@ -1049,6 +1091,10 @@ a.yui3-button,
     .user-grade td.oddd3,
     .user-grade th.oddd3 {
         background-color: #fff;
+
+        @include dark-mode {
+            background-color: var(--bs-body-bg);
+        }
     }
     #local_grademessenger {
         margin-bottom: 1em;
@@ -1341,6 +1387,13 @@ a.yui3-button,
 
 }
 
+[data-bs-theme="dark"] {
+    // Dates in the feeds panel.
+    .snap-media-object .snap-media-meta {
+        color: var(--bs-secondary-color);
+    }
+}
+
 // -------------------------
 // Layout of moodle/snap DOM structure
 // -------------------------
@@ -1485,6 +1538,21 @@ $mr-nav-zindex: 1052;
             background-color: darken($nav-login-bg, 8%);
             border-color: darken($nav-login-bg, 8%);
         }
+    }
+}
+
+[data-bs-theme="dark"] {
+    // The header bar above the custom menu.
+    #mr-nav,
+    #mr-nav #snap-header {
+        background-color: var(--bs-body-bg);
+    }
+}
+
+[data-bs-theme="dark"] {
+    // A focused link in the header's notification and message popovers, near black.
+    #mr-nav .popover-region-container a:focus {
+        color: var(--bs-emphasis-color);
     }
 }
 
@@ -1649,6 +1717,13 @@ $mr-nav-zindex: 1052;
             right: 0.75rem;
             position: absolute;
         }
+    }
+}
+
+[data-bs-theme="dark"] {
+    // The user menu matches the light header.
+    #snap-header .usermenu #user-action-menu {
+        background-color: var(--bs-dropdown-bg);
     }
 }
 
@@ -2012,6 +2087,12 @@ body.path-course #moodle-page #page-header {
     }
 }
 
+[data-bs-theme="dark"] {
+    .breadcrumb-nav {
+        background-color: var(--bs-body-bg);
+    }
+}
+
 .theme-snap {
   .breadcrumb {
       background-color: transparent;
@@ -2238,6 +2319,13 @@ body.path-course #moodle-page #page-header {
     }
 }
 
+[data-bs-theme="dark"] {
+    // The front page title box.
+    #page-site-index #page-mast {
+        background-color: rgba(var(--bs-body-bg-rgb), 0.9);
+    }
+}
+
 @include media-breakpoint-up(md) {
     #page-site-index #page-mast {
         width: 50%;
@@ -2256,6 +2344,10 @@ body.path-course #moodle-page #page-header {
 #snap-site-carousel {
     padding-bottom: 1.15em;
     background-color: white;
+
+    @include dark-mode {
+        background-color: var(--bs-body-bg);
+    }
 
     .carousel-slide {
         position: relative;
@@ -2587,6 +2679,11 @@ body.path-course #moodle-page #page-header {
     padding: 0 4% 4em;
     background-color: #eef0f6;
     @include clearfix;
+
+    // Dark mode: the recessed surface, with the articles raised on it, as in light mode.
+    @include dark-mode {
+        background-color: var(--bs-tertiary-bg);
+    }
     .text-center {
         .btn-secondary {
             margin-right: 1rem;
@@ -2605,6 +2702,13 @@ body.path-course #moodle-page #page-header {
 
 .news-article-inner {
     background-color: #fff;
+}
+
+.news-article,
+.news-article-inner {
+    @include dark-mode {
+        background-color: $dark-surface-raised;
+    }
 }
 
 .news-article-content {
@@ -3184,6 +3288,10 @@ ul.events-new + ul.events-underway {
 }
 
 // Quiz results reports (theme_snap/quiz_report_view).
+// Dark mode versions of the graded (light blue) and still-to-grade (light orange) colours.
+$snap-quiz-graded-dark: #1f3a4a;
+$snap-quizreport-grading-dark: #4a3a1f;
+
 #page-mod-quiz-report {
     .snap-quizreport-view {
         margin-bottom: 1rem;
@@ -3198,6 +3306,9 @@ ul.events-new + ul.events-underway {
     table#attempts td:has(.requiresgrading),
     table#attempts tr.gradedattempt td:has(.requiresgrading) {
         background-color: #f2d7b0;
+        @include dark-mode {
+            background-color: $snap-quizreport-grading-dark;
+        }
     }
 }
 
@@ -3221,6 +3332,9 @@ body:not(.snap-quizreport-cards)#page-mod-quiz-report {
 // The column kinds (summary, time, mark, response, hidden) come from theme_snap/quiz_report_view.
 $snap-quizreport-band-a: #dae0e3;
 $snap-quizreport-band-b: #e4e0dd;
+// Dark mode: a cool and a warm grey, and darker versions of the graded and still-to-grade colours.
+$snap-quizreport-band-a-dark: #2c363e;
+$snap-quizreport-band-b-dark: #37302a;
 
 body.snap-quizreport-cards#page-mod-quiz-report {
     .table-responsive {
@@ -3244,6 +3358,10 @@ body.snap-quizreport-cards#page-mod-quiz-report {
             margin-bottom: 1.5rem;
             border: 1px solid $gray-500;
             background-color: $white;
+            @include dark-mode {
+                border-color: $gray-600;
+                background-color: $dark-surface-raised;
+            }
         }
 
         tr.emptyrow,
@@ -3283,12 +3401,18 @@ body.snap-quizreport-cards#page-mod-quiz-report {
             border-right: 1px solid $gray-500;
             border-bottom: 2px solid $gray-600;
             background-color: $snap-quizreport-band-a;
+            @include dark-mode {
+                background-color: $snap-quizreport-band-a-dark;
+            }
         }
 
         tr.snap-attempts-band-b {
             .snap-quizreport-summary,
             .snap-quizreport-time {
                 background-color: $snap-quizreport-band-b;
+                @include dark-mode {
+                    background-color: $snap-quizreport-band-b-dark;
+                }
             }
         }
 
@@ -3350,11 +3474,17 @@ body.snap-quizreport-cards#page-mod-quiz-report {
 
         tr.gradedattempt td.snap-quizreport-mark {
             background-color: #d9edf7;
+            @include dark-mode {
+                background-color: $snap-quiz-graded-dark;
+            }
         }
 
         // Still to be graded by a teacher (also coloured in table view, above).
         tr td.snap-quizreport-mark:has(.requiresgrading) {
             background-color: #f2d7b0;
+            @include dark-mode {
+                background-color: $snap-quizreport-grading-dark;
+            }
         }
 
         // Responses, one to a line.
@@ -3474,6 +3604,11 @@ body.snap-quizreport-cards#page-mod-quiz-report {
                 cursor: not-allowed;
                 background-color: #eceeef !important;
                 padding-right: 5em;
+
+                @include dark-mode {
+                    color: var(--bs-secondary-color) !important;
+                    background-color: var(--bs-secondary-bg) !important;
+                }
             }
             width: auto !important;
         }
@@ -3485,6 +3620,11 @@ body.snap-quizreport-cards#page-mod-quiz-report {
         input.form-control[readonly] {
             background-color: #eceeef !important;
             opacity: 1;
+
+            // Dark mode: the student's answer in the page's light text, on a recessed box.
+            @include dark-mode {
+                background-color: var(--bs-secondary-bg) !important;
+            }
         }
     }
 
@@ -4026,6 +4166,10 @@ body.snap-quizreport-cards#page-mod-quiz-report {
 .user-grade th.b2b,
 .user-grade thead {
     border-color: #ccc;
+
+    @include dark-mode {
+        border-color: var(--bs-border-color);
+    }
     border-left: 0 !important;
     border-right: 0 !important;
 }
@@ -4051,6 +4195,10 @@ table#user-grades tr.avg td.cell,
 
 table#user-grades tr.avg td.cell {
     color: #66666f;
+
+    @include dark-mode {
+        color: var(--bs-secondary-color);
+    }
 }
 
 #page-blocks-reports-view .mr_html_filter,
@@ -4418,6 +4566,9 @@ table#user-grades tr.avg td.cell {
 
 #notice {
     background-color: #eee;
+    @include dark-mode {
+        background-color: $dark-surface-raised;
+    }
     font-size: 2em;
     width: 100%;
     padding: 1em 4%;
@@ -4489,6 +4640,11 @@ body.hascontinuecancel.path-site #page {
     background-color: $body-bg;
     font-size: $font-size-base;
     left: 0;
+
+    @include dark-mode {
+        color: var(--bs-body-color);
+        background-color: $dark-surface-raised;
+    }
 }
 
 #page-user-policy #notice,
@@ -4833,6 +4989,15 @@ http://css-spinners.com/css/spinner/three-quarters.css
     }
 }
 
+[data-bs-theme="dark"] {
+    #footer-error-cont,
+    #footer-error-cont h3,
+    #footer-error-cont .h3 {
+        background-color: $dark-surface-raised;
+        color: var(--bs-body-color);
+    }
+}
+
 // yui-bs overrides (note SNAP specific)
 .yui-bootstrapped:not(.ie11) {
 
@@ -5049,6 +5214,23 @@ table th img.iconhelp {
     text-align: center;
     .snap-feature {
         background-color: $feature-spot-background-color;
+
+        // Dark mode: a light spot colour (white by default) becomes a raised dark box, and the title and text
+        // colours, chosen for it, lighter shades that can be read there. A dark spot colour is kept as it is.
+        @if lightness($feature-spot-background-color) > 50% {
+            @include dark-mode {
+                background-color: $dark-surface-raised;
+
+                .snap-feature-text {
+                    color: dark-readable($feature-spot-description-color);
+                }
+
+                h3.snap-feature-title,
+                a.snap-feature-link {
+                    color: dark-readable($feature-spot-title-color);
+                }
+            }
+        }
         display: flex;
         flex-direction: column;
         height: 100%;
@@ -5135,6 +5317,24 @@ table th img.iconhelp {
     margin-bottom: 1em;
     .coursebox {
         border: unset;
+    }
+}
+
+[data-bs-theme="dark"] {
+    // Front page lists.
+    #snap-featured-categories,
+    #snap-featured-courses,
+    #frontpage-course-list {
+        background-color: var(--bs-tertiary-bg);
+    }
+
+    .snap-featured-category-title,
+    .snap-featured-course-title,
+    .snap-home-course-title,
+    .snap-featured-category .card-header,
+    .snap-featured-course .card-header,
+    .snap-home-course .card-header {
+        background-color: var(--bs-tertiary-bg);
     }
 }
 .snap-featured-categories-heading,
@@ -5691,6 +5891,13 @@ body#page-course-index-category #page-header:not(.mast-image) #page-mast h1 {
     }
 }
 
+[data-bs-theme="dark"] {
+    // The front page's theme settings button, white like the cover image buttons (_brandcolor.scss).
+    #page-header #page-mast a[href*="themesettingsnap"]:not(:hover, :focus, :focus-visible) {
+        background-color: var(--bs-body-bg);
+    }
+}
+
 #snap-changecoverimageconfirmation {
     position: relative;
     display: inline-block;
@@ -5776,6 +5983,10 @@ label.state-visible[for="snap-coverfiles"] {
 
 .snap-alert-cover-image {
     background-color: white;
+
+    @include dark-mode {
+        background-color: $dark-surface-raised;
+    }
     width: auto;
     text-align: left;
     margin: 1em 0;
@@ -5916,11 +6127,21 @@ section#region-main {
 #id_error_newpassword {
     // #d9534f was 3.96:1 on white; $brand-danger is 8.43:1.
     color: $brand-danger;
+
+    // On a dark page the dark red can't be read, so a lighter shade of it.
+    @include dark-mode {
+        color: dark-readable($brand-danger, $dark-surface-page);
+    }
 }
 
 // Core uses lighten($primary, 40%), which leaves $body-color at 4.48:1. 44% clears AA.
 .matchtext {
     background-color: lighten($primary, 44%);
+
+    // Dark mode: a dark shade instead, behind the page's light text.
+    @include dark-mode {
+        background-color: shade-color($primary, 50%);
+    }
 }
 
 
@@ -6211,6 +6432,10 @@ section#region-main {
 .invalid-feedback {
     color: $brand-danger;
     font-family: $font-family-system;
+
+    @include dark-mode {
+        color: dark-readable($brand-danger, $dark-surface-page);
+    }
 }
 
 // Fix width for tables when adding a new member to a group in a course.
@@ -6811,6 +7036,13 @@ div[id^=snap-create-activity-] .section-modchooser-link {
 #page-mod-quiz-attempt.theme-snap #quiz-timer-wrapper #quiz-timer,
 #page-mod-quiz-summary.theme-snap #quiz-timer-wrapper #quiz-timer {
     color: $gray-900;
+
+    // Dark mode: the page's light text until the last minutes, when Moodle's pale red background comes in.
+    &:not([class*="timeleft"]) {
+        @include dark-mode {
+            color: var(--bs-body-color);
+        }
+    }
 }
 
 // Modify icon design for help button in the header for CCM in Snap.
@@ -7052,8 +7284,8 @@ span[data-flexitour="container"]:has(> div[data-role="flexitour-step"]) {
 // Fix header position in grader view.
 #page-mod-assign-grader.theme-snap {
     // The layout buttons (submission, both, grade): their icons are images in a dark grey, which is too faint on
-    // the chosen button's brand colour, so it's white there. The focus ring sits outside the button, as one in
-    // the brand colour can't be seen against the chosen button.
+    // the chosen button's brand colour, so it's white there. In dark mode the others are light grey. The focus
+    // ring sits outside the button, as one in the brand colour can't be seen against the chosen button.
     .collapse-review-panel,
     .collapse-none,
     .collapse-grade-panel {
@@ -7065,6 +7297,12 @@ span[data-flexitour="container"]:has(> div[data-role="flexitour-step"]) {
 
         &.active img.icon {
             filter: brightness(0) invert(1);
+        }
+
+        &:not(.active) img.icon {
+            @include dark-mode {
+                filter: brightness(0) invert(0.87);
+            }
         }
     }
 
@@ -7084,9 +7322,12 @@ span[data-flexitour="container"]:has(> div[data-role="flexitour-step"]) {
             padding-top: 1rem;
         }
 
-        // A dark bar sets the navigation apart from the marking area.
+        // A dark bar sets the navigation apart from the marking area. In dark mode, the colour of raised boxes.
         color: #fff;
         background-color: $gray-600;
+        @include dark-mode {
+            background-color: $dark-surface-raised;
+        }
 
         // !important to beat the theme-wide link colour.
         a:not(.dropdown-item) {
@@ -7122,10 +7363,18 @@ span[data-flexitour="container"]:has(> div[data-role="flexitour-step"]) {
                 border-radius: 3px;
                 background-color: $gray-100;
                 color: $body-color !important;
+                @include dark-mode {
+                    border-color: var(--bs-border-color);
+                    background-color: var(--bs-body-bg);
+                    color: var(--bs-body-color) !important;
+                }
 
                 &::before {
                     content: fa-content($fa-var-circle-arrow-up);
                     color: $gray-700;
+                    @include dark-mode {
+                        color: var(--bs-secondary-color);
+                    }
                 }
             }
 
@@ -7394,6 +7643,9 @@ span[data-flexitour="container"]:has(> div[data-role="flexitour-step"]) {
                 .card-grid  {
                     padding: 2em;
                     background-color: white;
+                    @include dark-mode {
+                        background-color: var(--bs-body-bg);
+                    }
                 }
             }
             [data-region="paging-control-container"] {
@@ -7402,6 +7654,9 @@ span[data-flexitour="container"]:has(> div[data-role="flexitour-step"]) {
             .block-myoverview-content {
                 padding: 2em 3em;
                 background-color: #eef0f6;
+                @include dark-mode {
+                    background-color: var(--bs-tertiary-bg);
+                }
             }
             .snap-page-my-courses-options  {
                 float: right;
@@ -7770,6 +8025,11 @@ body#page-mod-assign-grading.path-mod-assign .gradingtable {
 .courseindex .courseindex-item.active {
     background-color: #f8f9fa;
     border-color: #dee2e6;
+
+    @include dark-mode {
+        background-color: $dark-surface-raised;
+        border-color: var(--bs-border-color);
+    }
 }
 .courseindex .courseindex-item.dimmed .courseindex-link,
 .courseindex .courseindex-item.dimmed .courseindex-chevron {
@@ -7784,11 +8044,20 @@ body#page-mod-assign-grading.path-mod-assign .gradingtable {
 .courseindex .courseindex-item .completioninfo {
     min-width: 24px;
 }
+// Dark mode: the emphasis colours, as Boost's course index uses, since these dark ones don't reach 3:1 on the drawer.
 .courseindex .courseindex-item .completioninfo.completion_complete {
     color: #357a32;
+
+    @include dark-mode {
+        color: var(--bs-success-text-emphasis);
+    }
 }
 .courseindex .courseindex-item .completioninfo.completion_fail {
     color: #ca3120;
+
+    @include dark-mode {
+        color: var(--bs-danger-text-emphasis);
+    }
 }
 .courseindex .courseindex-item.indented {
     margin-left: 1rem;
@@ -7856,6 +8125,18 @@ body#page-mod-assign-grading.path-mod-assign .gradingtable {
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     transition: padding 200ms;
 }
+
+[data-bs-theme="dark"] {
+    // The course index and blocks drawer buttons, light grey pills, as Boost's are in dark mode.
+    .drawer-toggles .drawer-toggler .btn {
+        background-color: var(--bs-gray-300);
+
+        .icon,
+        i.icon {
+            color: var(--bs-body-color);
+        }
+    }
+}
 .drawer-toggles .drawer-toggler .btn .icon {
     width: auto;
     height: auto;
@@ -7908,6 +8189,9 @@ div#snap-course-wrapper #toc-desktop-menu-heading {
       font-size: 1.1rem;
       // gray (#808080) was 3.95:1 on white; $body-color is 7.34:1.
       color: $body-color;
+      @include dark-mode {
+        color: var(--bs-body-color);
+      }
     }
     #toc-search:focus-within {
         width: 90%;
@@ -8047,6 +8331,11 @@ li.section.main {
 code {
     background-color: #f0f0f0;
     color: unset;
+
+    // Dark mode: a raised box, so the page's light text can be read in it.
+    @include dark-mode {
+        background-color: $dark-surface-raised;
+    }
     border-radius: 0.5rem;
     font-style: italic;
     padding: 0.3rem;
@@ -8112,6 +8401,14 @@ code {
                 color: #555;
             }
         }
+    }
+}
+
+[data-bs-theme="dark"] {
+    // The course tools cards.
+    .row #coursetools-list li.tool-card {
+        background-color: var(--bs-tertiary-bg);
+        border-color: var(--bs-border-color);
     }
 }
 

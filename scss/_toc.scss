@@ -333,6 +333,15 @@ label[for="toc-search-input"]{
   margin-left: -3em;
 }
 
+[data-bs-theme="dark"] {
+    // The course index's search box, white while it's in use.
+    #toc-search-input.state-active,
+    #toc-search-input:focus,
+    #toc-search-input.state-active ~ label[for="toc-search-input"] {
+        background-color: var(--bs-body-bg);
+    }
+}
+
 .drawerheader {
   display: flex;
   align-items: center;
@@ -652,44 +661,44 @@ body > #page.show-drawer-left .drawer-toggler.snap-courseindex-toggle {
         }
 
         &.activity-communication img.activityicon {
-            @include recolor-icon($activity-icon-communication-bg, 1);
+            @include snap-recolor-icon($activity-icon-communication-bg, 1);
         }
         &.activity-assessment img.activityicon {
-            @include recolor-icon($activity-icon-assessment-bg, 1);
+            @include snap-recolor-icon($activity-icon-assessment-bg, 1);
         }
         &.activity-collaboration img.activityicon {
-            @include recolor-icon($activity-icon-collaboration-bg, 1);
+            @include snap-recolor-icon($activity-icon-collaboration-bg, 1);
         }
         &.activity-interactivecontent img.activityicon {
-            @include recolor-icon($activity-icon-interactivecontent-bg, 1);
+            @include snap-recolor-icon($activity-icon-interactivecontent-bg, 1);
         }
         &.activity-administration img.activityicon {
-            @include recolor-icon($activity-icon-administration-bg, 1);
+            @include snap-recolor-icon($activity-icon-administration-bg, 1);
         }
 
         &.lightboxgalleryicon img.activityicon {
-            @include recolor-icon($color-lightbox, 1);
+            @include snap-recolor-icon($color-lightbox, 1);
         }
         &.bookicon img.activityicon {
-            @include recolor-icon($color-book, 1);
+            @include snap-recolor-icon($color-book, 1);
         }
         &.urlicon, &.kalvidresicon {
             img.activityicon {
-                @include recolor-icon($color-url, 1);
+                @include snap-recolor-icon($color-url, 1);
             }
         }
         &.labelicon img.activityicon {
-            @include recolor-icon($color-label, 1);
+            @include snap-recolor-icon($color-label, 1);
         }
         &.pageicon img.activityicon {
-            @include recolor-icon($color-page, 1);
+            @include snap-recolor-icon($color-page, 1);
         }
         &.foldericon img.activityicon {
-            @include recolor-icon($color-folder, 1);
+            @include snap-recolor-icon($color-folder, 1);
         }
         &.resourceicon {
             img.activityicon {
-                @include recolor-icon($activity-icon-content-bg, 1);
+                @include snap-recolor-icon($activity-icon-content-bg, 1);
             }
         }
     }
@@ -743,6 +752,14 @@ body > #page.show-drawer-left .drawer-toggler.snap-courseindex-toggle {
       }
     }
   }
+}
+
+[data-bs-theme="dark"] {
+    // The course index's progress box, which is white.
+    .drawer.drawer-left #course-toc-progress-bar {
+        background-color: transparent;
+        color: var(--bs-body-color);
+    }
 }
 
 .snap-drawer-mobile-header {
@@ -875,6 +892,9 @@ body > #page.show-drawer-left .drawer-toggler.snap-courseindex-toggle {
     border-radius: 0.5rem;
     padding: 0.2rem 0.75rem;
     margin: .3rem 0 .5rem 2rem;
+    @include dark-mode {
+      background-color: $dark-surface-raised;
+    }
 
     .snap-section-progress-content {
       display: flex;
@@ -888,10 +908,16 @@ body > #page.show-drawer-left .drawer-toggler.snap-courseindex-toggle {
       font-size: 0.9rem;
       color: #565656;
       margin: 0;
+      @include dark-mode {
+        color: var(--bs-secondary-color);
+      }
     }
 
     .snap-section-progress-icon {
       color: #357a32;
+      @include dark-mode {
+        color: dark-readable(#357a32);
+      }
       font-size: 0.9rem;
       display: none;
       flex-shrink: 0;
@@ -900,6 +926,9 @@ body > #page.show-drawer-left .drawer-toggler.snap-courseindex-toggle {
     &.snap-section-progress-complete {
         .snap-section-progress-text {
           color: #357a32;
+          @include dark-mode {
+            color: dark-readable(#357a32);
+          }
         }
     }
 }

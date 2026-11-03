@@ -29,6 +29,12 @@
 
 }
 
+[data-bs-theme="dark"] {
+    #snap-course-footer {
+        background-color: var(--bs-tertiary-bg);
+    }
+}
+
 #snap-course-footer-recent-activity,
 #snap-course-footer-about,
 #snap-course-footer-summary,

@@ -856,6 +856,13 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
     // -------------------------
     // Navigation bar
     // -------------------------
+    // Dark mode: the bar takes the page's dark background, so the bar's text colours (which an admin can set) get
+    // a lighter shade that can be read on it, and on the raised menus that open from it. The My Courses button
+    // keeps its colour when it has a fill of its own.
+    $nav-text-color-dark: dark-readable($nav-text-color);
+    $nav-color-dark: dark-readable($nav-color);
+    $nav-button-color-dark: if(alpha($nav-button-bg) == 0, dark-readable($nav-button-color), $nav-button-color);
+
     #mr-nav {
         a {
             color: $nav-text-color;
@@ -863,6 +870,14 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
             &:hover,
             &:focus {
                 color: darken($nav-text-color, 8%);
+            }
+
+            @include dark-mode {
+                &,
+                &:hover,
+                &:focus {
+                    color: $nav-text-color-dark;
+                }
             }
         }
 
@@ -906,14 +921,22 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
             &:hover {
                 color: darken($nav-color, 8%);
             }
+
+            @include dark-mode {
+                &,
+                &:hover {
+                    color: $nav-color-dark;
+                }
+            }
         }
 
-        #snap-my-courses-trigger {
-            color: $nav-button-color;
-        }
-
+        #snap-my-courses-trigger,
         #snap-home:not(.logo) {
             color: $nav-button-color;
+
+            @include dark-mode {
+                color: $nav-button-color-dark;
+            }
         }
 
         // Edit mode toggle.
@@ -922,6 +945,10 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
             .input-group {
                 label {
                     color: $nav-button-color !important;
+
+                    @include dark-mode {
+                        color: $nav-button-color-dark !important;
+                    }
                 }
             }
             .form-check-input:checked~.form-check-label::before {
@@ -946,6 +973,10 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
             // Bell icon.
             .icon.fa-bell {
                 color: $nav-color;
+
+                @include dark-mode {
+                    color: $nav-color-dark;
+                }
             }
         }
 
@@ -1197,6 +1228,12 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
     .snap-category-header #page-mast a,
     .bulkEnable {
         background-color: white !important;
+        // White so they show on any cover image; the page colour in dark mode, apart from on hover and focus.
+        @include dark-mode {
+            &:not(:hover, :focus, :focus-visible) {
+                background-color: var(--bs-body-bg) !important;
+            }
+        }
         color: $brand-primary!important;
         border-radius: 0.25rem;
         font-size: initial;
@@ -1832,6 +1869,11 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
             .nav .nav-item {
                 .nav-link {
                     background: $brand-primary;
+
+                    // The icons are masks over this fill, so in dark mode they take the lighter brand colour.
+                    @include dark-mode {
+                        background: var(--snap-brand-dark);
+                    }
                 }
                 &.active{
                     border-top: 4px solid $brand-primary;

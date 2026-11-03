@@ -391,6 +391,12 @@ body.path-site .block.block_settings {
     }
 }
 
+[data-bs-theme="dark"] {
+    #snap_feeds_side_menu .snap-feeds section {
+        background-color: var(--bs-body-bg);
+    }
+}
+
 .snap-sidebar-menu-more svg {
     width: 16px;
     margin-left: 4px;
@@ -494,22 +500,22 @@ $setmode-off-color: #767676;
 .snap-media-object,
 .block_activity_modules a {
     &.activity-communication > img {
-        @include recolor-icon($activity-icon-communication-bg, 1);
+        @include snap-recolor-icon($activity-icon-communication-bg, 1);
     }
     &.activity-assessment > img {
-        @include recolor-icon($activity-icon-assessment-bg, 1);
+        @include snap-recolor-icon($activity-icon-assessment-bg, 1);
     }
     &.activity-collaboration > img {
-        @include recolor-icon($activity-icon-collaboration-bg, 1);
+        @include snap-recolor-icon($activity-icon-collaboration-bg, 1);
     }
     &.activity-content > img {
-        @include recolor-icon($activity-icon-content-bg, 1);
+        @include snap-recolor-icon($activity-icon-content-bg, 1);
     }
     &.activity-interactivecontent > img {
-        @include recolor-icon($activity-icon-interactivecontent-bg, 1);
+        @include snap-recolor-icon($activity-icon-interactivecontent-bg, 1);
     }
     &.activity-administration > img {
-        @include recolor-icon($activity-icon-administration-bg, 1);
+        @include snap-recolor-icon($activity-icon-administration-bg, 1);
     }
 }
 
@@ -698,6 +704,12 @@ $setmode-off-color: #767676;
     }
 }
 
+[data-bs-theme="dark"] {
+    #page-content .block_settings {
+        background-color: var(--bs-tertiary-bg) !important;
+    }
+}
+
 .block_settings .contains_branch[aria-expanded="true"] #frontpagesettings_group {
     display: grid;
 
@@ -796,6 +808,14 @@ body:not(#page-my-index) .block.block_calendar_month .maincalendar .calendartabl
     transition: right 0.3s ease, bottom 0.3s ease, top 0.3s ease, height 0.3s ease, visibility 0.3s ease, transform 0.5s ease;
     .card {
         border-radius: 0.5rem;
+    }
+}
+
+[data-bs-theme="dark"] {
+    // Side panels: blocks, the admin menu and feeds.
+    .drawer.drawer-right,
+    #snap_feeds_side_menu {
+        background-color: var(--bs-tertiary-bg);
     }
 }
 

@@ -149,3 +149,35 @@
     border-bottom-color: rgba(250, 250, 250, 0.5);
     border-left-color: rgba(250, 250, 250, 0.5);
 }
+
+// Recolours a monochrome icon, as Boost's recolor-icon() does, and in dark mode in a lighter shade of the same
+// colour, so it can be seen on the dark background.
+@mixin snap-recolor-icon($color, $opacity: 1) {
+    @include recolor-icon($color, $opacity);
+    @include dark-mode {
+        @include recolor-icon(dark-readable($color), $opacity);
+    }
+}
+
+// An activity card's coloured top border, in the same lighter shade as its icon in dark mode.
+@mixin snap-activity-border-top($color) {
+    border-top-color: $color;
+    @include dark-mode {
+        border-top-color: dark-readable($color);
+    }
+}
+
+// The off-white panel behind resource descriptions and content. In dark mode there's no panel: the card is one colour.
+@mixin snap-resource-panel {
+    background-color: $color-bk-resource;
+    @include dark-mode {
+        background-color: transparent;
+    }
+}
+
+// Dark mode: dark tints of the status colours, behind light text, for boxes that are pale green, yellow, red or blue
+// on a light page (submission statuses, messages, highlighted rows).
+$snap-dark-success-bg: mix($success, $dark-surface-page, 30%);
+$snap-dark-warning-bg: mix($warning, $dark-surface-page, 12%);
+$snap-dark-danger-bg: mix($danger, $dark-surface-page, 30%);
+$snap-dark-info-bg: mix($info, $dark-surface-page, 25%);

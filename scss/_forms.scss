@@ -128,6 +128,10 @@ body[id^="page-mod-"][id$="-mod"] {
     padding-bottom: 0.25rem;
     border: 1px dotted $brand-danger;
     border-radius: 5px;
+
+    @include dark-mode {
+        border-color: dark-readable($brand-danger, $dark-surface-page, 3);
+    }
 }
 
 .mform .fitem {
@@ -395,6 +399,9 @@ a[aria-controls="snap-collapse-help"] {
         display: block;
         padding: 1em;
         background-color: #eee;
+        @include dark-mode {
+            background-color: $dark-surface-raised;
+        }
     }
     .dndupload-message {
         font-family: $font-family-system;
@@ -529,6 +536,10 @@ form.mform {
         fieldset > .fcontainer {
             border: 3px solid $gray-lighter;
             border-radius: 5px;
+            // Dark mode: Bootstrap's border colour, as the light grey stands out too much on a dark page.
+            @include dark-mode {
+                border-color: var(--bs-border-color);
+            }
         }
         // Make sure buttons fit container.
         button,

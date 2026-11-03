@@ -333,6 +333,13 @@
     }
 }
 
+[data-bs-theme="dark"] {
+    // Names in the conversation lists.
+    .message-app a.list-group-item-action {
+        color: var(--bs-emphasis-color);
+    }
+}
+
 // In the drawer and at the foot of the Messages page, room beside the send button for the sidebar's collapse
 // button, which overlaps it.
 [data-region="message-drawer"] [data-region="footer-container"],

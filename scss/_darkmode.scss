@@ -1,0 +1,117 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Dark mode, when Moodle's colour modes are turned on (Boost's "Enable colour modes" setting).
+ *
+ * Bootstrap and Boost darken the page. Text, borders and outlines in the brand colour get a lighter
+ * version of it from theme_snap_add_dark_brand_colors() in lib.php, also set as --snap-brand-dark.
+ *
+ * Where the rest is:
+ * - Snap's own styles have their dark mode next to them, in the same partial: a [data-bs-theme="dark"]
+ *   block after the rule, or Boost's dark-mode mixin inside it. The dark tints of the status colours are
+ *   in _mixins.scss.
+ * - This file: two lists that cut across the theme, lines and boxes Snap draws in fixed light greys.
+ *
+ * @package   theme_snap
+ * @copyright 2026 PickledKitty
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+// ------------------------------------------------------------
+// Snap's fixed light greys
+// ------------------------------------------------------------
+[data-bs-theme="dark"] {
+    // Lines Snap draws in fixed light greys, mostly copies of Boost's light mode rules, which glare on a dark
+    // page. Boost's border colour instead.
+    .section_footer,
+    .max-section-alert,
+    .next_section .nav_icon,
+    .previous_section .nav_icon,
+    .coursebox,
+    #coursetools-list li,
+    div#snap-course-wrapper #toc-desktop-menu-heading,
+    .tertiary-navigation.full-width-bottom-border,
+    .theme-snap #tertiary-navigation,
+    body[id^="page-grade-"] #region-main .tertiary-navigation,
+    .path-grade-report-grader .gradeparent .heading.floating,
+    .path-grade form.mform fieldset.collapsible,
+    .path-course.path-user .userinfobox,
+    #page-user-profile .userprofile .profile_tree .node_category,
+    .path-course.path-user .userprofile .profile_tree .node_category,
+    .snap-form-required #fgroup_id_buttonar,
+    #page-content .block_settings.state-visible,
+    .block_settings:target,
+    .userpicture.defaultuserpic,
+    .block .minicalendar td.today > a,
+    .maincalendar .today .day,
+    .calendar-event-panel .yui3-overlay-content,
+    .yui-skin-sam .yui-calcontainer .yui-calendar td.calcell,
+    .yui-bootstrapped .yui-calcontainer .yui-calendar td.calcell,
+    #page-mod-quiz-edit .editq div.question,
+    #page-mod-quiz-attempt .que.match table.answer tr,
+    #page-mod-quiz-review .que.match table.answer tr,
+    .forumheaderlist tbody tr.discussion,
+    #page-contentbank.theme-snap .content-bank-container.view-list .cb-column,
+    #page-contentbank.theme-snap .content-bank-container.view-list .cb-heading,
+    #page-contentbank.theme-snap .content-bank-container.view-list .cb-listitem,
+    #mr-nav #snap-header #nav-local-accessibility-popover-container div.local-accessibility-panel > .card-body,
+    #moodle-footer #snap-custom-menu-footer ul.snap-navbar-content li.nav-item .dropdown-menu[role="menu"] .dropdown-divider[role="presentation"],
+    #page-admin-setting-themesettingsnap .tab-pane:not(#themesnapcolorcategories) #admin-customisenavbutton,
+    #page-admin-setting-themesettingsnap .tab-pane:not(#themesnapcolorcategories) #admin-customisecustommenu,
+    #page-admin-setting-themesettingsnap .tab-pane:not(#themesnapcolorcategories) .currentcolour {
+        border-color: var(--bs-border-color);
+    }
+
+    .path-grade-report-grader .gradeparent table#user-grades tr.heading th {
+        border-top-color: var(--bs-border-color) !important;
+    }
+
+    .tertiary-navigation .navitem-divider {
+        background-color: var(--bs-border-color);
+    }
+
+    // Other boxes and panels in fixed light colours.
+    .snap-form-required #fgroup_id_buttonar,
+    #page-admin-reportbuilder-edit .dynamictabs ul.nav,
+    #snap_feeds_side_menu .snap-feeds-mobile-menu .nav,
+    #snap_feeds_side_menu .snap-feeds-mobile-menu .snap-feeds-mobile-sections > .feed-section {
+        background-color: var(--bs-body-bg);
+    }
+
+    #snap_feeds_side_menu .snap-feeds-mobile-menu,
+    .cover-image-change #page-header {
+        background: var(--bs-tertiary-bg);
+    }
+
+    #snap-collapse-help {
+        background-color: var(--bs-secondary-bg);
+    }
+
+    .filemanager-loading,
+    #page-course-index-category .snap-category-description,
+    #page-course-index .snap-category-description,
+    #mr-nav #snap-header #nav-local-accessibility-popover-container div.local-accessibility-panel div.card-body,
+    .calendar-event-panel,
+    #dateselector-calendar-panel .yui3-calendar-content,
+    .yui-skin-sam .yui-calcontainer,
+    .yui-bootstrapped .yui-calcontainer,
+    .yui-skin-sam .yui-navset .yui-content,
+    .yui-bootstrapped .yui-navset .yui-content,
+    .yui-skin-sam .yui-navset .yui-nav li > a,
+    .yui-bootstrapped .yui-navset .yui-nav li > a {
+        background: $dark-surface-raised;
+    }
+}

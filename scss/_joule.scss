@@ -16,6 +16,9 @@
 #block-reports-useraction-dragbox {
     background-color: $modal-backdrop-bg;
     border: 1px solid rgba(0, 0, 0, .2);
+    @include dark-mode {
+        background-color: $dark-surface-raised;
+    }
 }
 
 #block-reports-useraction-content {

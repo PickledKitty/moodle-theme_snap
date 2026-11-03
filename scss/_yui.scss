@@ -496,6 +496,38 @@
     }
 }
 
+[data-bs-theme="dark"] {
+    // The calendar box, white like Snap's backdrop.
+    .yui-calcontainer {
+        background-color: $dark-surface-raised;
+    }
+
+    // Snap's white backdrop behind YUI dialogues, black as the others are.
+    .yui-skin-sam .mask,
+    .yui-bootstrapped .mask {
+        background-color: $black;
+    }
+
+    // The date picker beside date fields (YUI's calendar): white days, grey month and weekday names, and the
+    // chosen or hovered day's white text, which the lighter brand colour given to the days would otherwise beat.
+    #dateselector-calendar-panel {
+        .yui3-calendar-header-label,
+        .yui3-calendar-weekday {
+            color: var(--bs-body-color);
+        }
+
+        .yui3-calendar-day {
+            background-color: transparent;
+        }
+
+        .yui3-calendar-day-selected,
+        .yui3-calendar-day:hover {
+            color: $white;
+            background-color: $brand-primary;
+        }
+    }
+}
+
 #page-blocks-reports-view {
     #fgroup_id_duedate_range_grp,
     #fgroup_id_filter_time_grp,

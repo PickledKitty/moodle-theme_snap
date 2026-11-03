@@ -56,6 +56,10 @@
                 height: 16px;
                 margin-left: 0.125rem;
                 background: center / 16px 16px no-repeat;
+                // The arrows are black images.
+                @include dark-mode {
+                    filter: invert(1);
+                }
             }
         }
     }
@@ -188,6 +192,43 @@
 
     .category.with_children.collapsed > .info > .categoryname {
         background-image: url([[pix:moodle|t/collapsed]]);
+    }
+
+    // Dark mode: the arrows are black images behind the category's name, so they're drawn in front of it
+    // instead, where they can be made white without the name.
+    @include dark-mode {
+        .category > .info > .categoryname {
+            position: relative;
+            background-image: none;
+
+            &::before {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: 0;
+                width: 16px;
+                height: 16px;
+                margin-top: -8px;
+                background: url([[pix:theme|collapsed_empty]]) center / 16px 16px no-repeat;
+                filter: invert(1);
+            }
+        }
+
+        .category.with_children > .info > .categoryname {
+            background-image: none;
+
+            &::before {
+                background-image: url([[pix:moodle|t/expanded]]);
+            }
+        }
+
+        .category.with_children.collapsed > .info > .categoryname {
+            background-image: none;
+
+            &::before {
+                background-image: url([[pix:moodle|t/collapsed]]);
+            }
+        }
     }
 }
 // Hide js actions until js loaded.

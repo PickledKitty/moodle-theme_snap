@@ -73,6 +73,23 @@
             a:hover {
                 color: darken($text, 16%) !important;
             }
+
+            // Dark mode: a raised dark box, its band and text light enough to see and read on it.
+            @include dark-mode {
+                --snap-alert-band: #{dark-readable($band, $dark-surface-page, 3)};
+                border-color: dark-readable($band, $dark-surface-page, 3);
+                background-color: $dark-surface-raised;
+                color: dark-readable($text);
+
+                a,
+                a:link {
+                    color: dark-readable($text) !important;
+                }
+
+                a:hover {
+                    color: tint-color(dark-readable($text), 25%) !important;
+                }
+            }
         }
     }
 
@@ -133,6 +150,11 @@
     border-top: 0;
     border-radius: 0 0 0.25rem 0.25rem;
     background-color: #fff;
+
+    @include dark-mode {
+        border-color: var(--bs-border-color);
+        background-color: $dark-surface-raised;
+    }
 }
 
 .accordion-btn[aria-expanded="false"] + .accordion-content {
@@ -147,26 +169,43 @@
     font-weight: bold;
 }
 
+// Dark mode: a tint of the box's colour on the dark page, its text a shade light enough to read on it.
+@mixin snap-decision-box-dark($colour) {
+    $background: mix($colour, $dark-surface-page, 15%);
+    @include dark-mode {
+        background-color: $background;
+        color: dark-readable($colour, $background);
+    }
+}
+
 .go-box {
     border-left: 6px solid #2ecc71;
     background-color: #eafaf1;
     color: #19703d;
+    @include snap-decision-box-dark(#2ecc71);
 }
 
 .stop-box {
     border-left: 6px solid #e74c3c;
     background-color: #fdecea;
     color: #922b21;
+    @include snap-decision-box-dark(#e74c3c);
 }
 
 .if-no {
     color: #1e7e34;
     font-weight: bold;
+    @include dark-mode {
+        color: dark-readable(#1e7e34);
+    }
 }
 
 .if-yes {
     color: #c0392b;
     font-weight: bold;
+    @include dark-mode {
+        color: dark-readable(#c0392b);
+    }
 }
 
 // Tables: light lines, and darker lines on bordered tables in content (Moodle's are faint, especially on
@@ -177,6 +216,9 @@
     border: 1px solid #e0e0e0;
     border-collapse: collapse;
     padding: 0.5rem 0.75rem;
+    @include dark-mode {
+        border-color: var(--bs-border-color);
+    }
 }
 
 .no-overflow,
@@ -189,6 +231,9 @@
     .table-bordered thead th,
     .table-bordered thead td {
         border-bottom: 2px solid #464646;
+        @include dark-mode {
+            border-bottom-color: $gray-500;
+        }
     }
 }
 
@@ -199,6 +244,9 @@ pre {
     border-radius: 0.25rem;
     font-size: 1em;
     white-space: pre-wrap;
+    @include dark-mode {
+        border-color: rgba(255, 255, 255, 0.15);
+    }
 
     p {
         margin: 1% 0;
@@ -232,6 +280,9 @@ hr {
     user-select: none;
     -webkit-touch-callout: none;
     color: #c00;
+    @include dark-mode {
+        color: dark-readable(#c00);
+    }
 }
 
 .uppercase {

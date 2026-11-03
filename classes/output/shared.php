@@ -535,6 +535,10 @@ EOF;
         $PAGE->requires->js_call_amd('theme_snap/snap', 'snapInit', $initvars);
         // Accordions in course content.
         $PAGE->requires->js_call_amd('theme_snap/content_accordion', 'init');
+        // Chart colours in dark mode, on pages with a chart.
+        $PAGE->requires->js_call_amd('theme_snap/chart_colours', 'init');
+        // Dark mode pages print in light colours.
+        $PAGE->requires->js_call_amd('theme_snap/print_colours', 'init');
         if (!empty($CFG->calendar_adminseesall) && is_siteadmin()) {
             $PAGE->requires->js_call_amd('theme_snap/adminevents', 'init');
         }

@@ -42,3 +42,14 @@ body {
 body.mce-content-body a {
     color: $brand-primary;
 }
+
+// Dark mode: Tiny copies the page's colour mode to the editor, so the text and links are light enough to read.
+[data-bs-theme="dark"] {
+    body {
+        color: var(--bs-body-color);
+    }
+
+    body.mce-content-body a {
+        color: dark-readable($brand-primary);
+    }
+}

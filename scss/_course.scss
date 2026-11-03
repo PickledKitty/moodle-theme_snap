@@ -311,6 +311,57 @@ li.section:focus {
     }
 }
 
+[data-bs-theme="dark"] {
+    // Edit mode: a section's more actions button, in Bootstrap's half black, and the menu's icons, which are
+    // Moodle's black images (Snap only makes them white on hover). The link icon isn't faded either.
+    .snap-section-editing {
+        .snap-extra-actions .text-black-50 {
+            color: var(--bs-secondary-color) !important;
+        }
+
+        // The light circle behind a focused section button.
+        a[role="button"]:focus {
+            background-color: $dark-surface-raised;
+        }
+
+        .extra-actions-menu .dropdown-item .menu-icon {
+            filter: brightness(0) invert(0.87);
+        }
+
+        .snap-permalink {
+            &::before,
+            &::after {
+                filter: none;
+            }
+        }
+    }
+}
+
+[data-bs-theme="dark"] {
+    // Edit mode: hovered and pressed section buttons and the editing hints, in fixed light colours.
+    .section .snap-section-editing a[role=button]:hover,
+    .snap-progress-circle.snap-progressbar-link:hover,
+    .snap-progress-circle.snap-progressbar-link:focus {
+        background-color: $dark-surface-raised;
+    }
+
+    .snap-section-editing a:hover,
+    .snap-section-editing a[data-action="sectionShow"],
+    .snap-section-editing a[aria-pressed="true"] {
+        background-color: $gray-700;
+    }
+
+    span.editinstructions {
+        background-color: $dark-surface-raised;
+        color: var(--bs-info-text-emphasis);
+    }
+
+    .row #coursetools-list li .snap-participant-icons .userinitials {
+        background-color: $gray-700;
+        color: var(--bs-body-color);
+    }
+}
+
 .snap-section-editing {
     max-width: 100%;
     min-width: 0;
@@ -627,7 +678,7 @@ body.snap-resource-card.format-topics {
             background-color: transparent;
 
             img.activityicon {
-                @include recolor-icon($activity-icon-content-bg, 1);
+                @include snap-recolor-icon($activity-icon-content-bg, 1);
             }
         }
     }
@@ -978,57 +1029,57 @@ body.format-singleactivity {
         }
 
         &:has(:where(.activityiconcontainer.communication)) {
-            border-top-color: $activity-icon-communication-bg;
+            @include snap-activity-border-top($activity-icon-communication-bg);
         }
         &:has(:where(.activityiconcontainer.assessment)) {
-            border-top-color: $activity-icon-assessment-bg;
+            @include snap-activity-border-top($activity-icon-assessment-bg);
         }
         &:has(:where(.activityiconcontainer.collaboration)) {
-            border-top-color: $activity-icon-collaboration-bg;
+            @include snap-activity-border-top($activity-icon-collaboration-bg);
         }
         &:has(:where(.activityiconcontainer.content)) {
-            border-top-color: $activity-icon-content-bg;
+            @include snap-activity-border-top($activity-icon-content-bg);
         }
         &:has(:where(.activityiconcontainer.interactivecontent)) {
-            border-top-color: $activity-icon-interactivecontent-bg;
+            @include snap-activity-border-top($activity-icon-interactivecontent-bg);
         }
         &:has(:where(.activityiconcontainer.administration)) {
-            border-top-color: $activity-icon-administration-bg;
+            @include snap-activity-border-top($activity-icon-administration-bg);
         }
         &:has(.modtype_lightboxgallery) {
-            border-top-color: $color-lightbox;
+            @include snap-activity-border-top($color-lightbox);
             .activity-icon img {
-                @include recolor-icon($color-lightbox, 1);
+                @include snap-recolor-icon($color-lightbox, 1);
             }
         }
         &:has(.modtype_book) {
-            border-top-color: $color-book;
+            @include snap-activity-border-top($color-book);
             .activity-icon img {
-                @include recolor-icon($color-book, 1);
+                @include snap-recolor-icon($color-book, 1);
             }
         }
         &:has(.modtype_url) {
-            border-top-color: $color-url;
+            @include snap-activity-border-top($color-url);
             .activity-icon img {
-                @include recolor-icon($color-url, 1);
+                @include snap-recolor-icon($color-url, 1);
             }
         }
         &:has(.modtype_label) {
             border-top-width: 1px;
             .activity-icon img {
-                @include recolor-icon($color-label, 1);
+                @include snap-recolor-icon($color-label, 1);
             }
         }
         &:has(.modtype_page) {
-            border-top-color: $color-page;
+            @include snap-activity-border-top($color-page);
             .activity-icon img {
-                @include recolor-icon($color-page, 1);
+                @include snap-recolor-icon($color-page, 1);
             }
         }
         &:has(.modtype_folder) {
-            border-top-color: $color-folder;
+            @include snap-activity-border-top($color-folder);
             .activity-icon img {
-                @include recolor-icon($color-folder, 1);
+                @include snap-recolor-icon($color-folder, 1);
             }
         }
         .quickeditlink.aalink:focus {
@@ -1094,6 +1145,13 @@ body.format-singleactivity {
         font-size: calc(#{$font-size-base} * 1.1);
         background-color: $body-bg;
         border-top: 1px solid $border-color;
+    }
+}
+
+[data-bs-theme="dark"] {
+    // Previous and next activity.
+    .activity-navigation {
+        background-color: var(--bs-body-bg);
     }
 }
 
@@ -1228,6 +1286,10 @@ body.format-singleactivity {
     .snap-resource-figure-caption {
         padding: 0.5em 0;
         color: $gray;
+
+        @include dark-mode {
+            color: var(--bs-secondary-color);
+        }
     }
 }
 
@@ -1305,7 +1367,7 @@ body.snap-resource-card li.snap-resource:not(.label) {
     border: none;
     >.no-overflow,
     .summary-container {
-        background-color: $color-bk-resource;
+        @include snap-resource-panel;
         // Boost's grey for descriptions is too faint on the panel.
         color: var(--#{$prefix}secondary-color);
         border-radius: 0.5em;
@@ -1467,7 +1529,7 @@ body.snap-resource-card {
     }
     .activity-altcontent {
         .no-overflow {
-            background-color: $color-bk-resource;
+            @include snap-resource-panel;
             border-radius: 0.5em;
             padding: 1em;
             margin: 1em 0;
@@ -1835,7 +1897,7 @@ body.snap-resource-card {
       .activity-altcontent > .no-overflow {
         padding: 0.5em;
         margin-top: 0.5em;
-        background-color: $color-bk-resource;
+        @include snap-resource-panel;
         border-radius: 0.5em;
 
         .no-overflow {
@@ -1999,10 +2061,10 @@ body.snap-resource-card {
 
         &.modtype_lightboxgallery {
             .activity-item {
-                border-top-color: $color-lightbox;
+                @include snap-activity-border-top($color-lightbox);
             }
             .activityiconcontainer .activityicon {
-                @include recolor-icon($color-lightbox, 1);
+                @include snap-recolor-icon($color-lightbox, 1);
             }
         }
 
@@ -2014,19 +2076,19 @@ body.snap-resource-card {
 
         &.modtype_folder {
             .activity-item {
-                border-top-color: $color-folder;
+                @include snap-activity-border-top($color-folder);
             }
             .activityiconcontainer .activityicon {
-                @include recolor-icon($color-folder, 1);
+                @include snap-recolor-icon($color-folder, 1);
             }
         }
 
         &.modtype_url {
             .activity-item {
-                border-top-color: $color-url;
+                @include snap-activity-border-top($color-url);
             }
             .activityiconcontainer .activityicon {
-                @include recolor-icon($color-url, 1);
+                @include snap-recolor-icon($color-url, 1);
             }
         }
 
@@ -2035,16 +2097,16 @@ body.snap-resource-card {
                 border: 1px solid $gray-lighter;
             }
             .activityiconcontainer .activityicon {
-                @include recolor-icon($color-label, 1);
+                @include snap-recolor-icon($color-label, 1);
             }
         }
 
         &.modtype_book {
             .activity-item {
-                border-top-color: $color-book;
+                @include snap-activity-border-top($color-book);
             }
             .activityiconcontainer .activityicon {
-                @include recolor-icon($color-book, 1);
+                @include snap-recolor-icon($color-book, 1);
             }
             .summary-text.row {
                 justify-content: space-around;
@@ -2054,7 +2116,7 @@ body.snap-resource-card {
                     padding: 1em;
                 }
                 .content-row {
-                    background-color: $color-bk-resource;
+                    @include snap-resource-panel;
                     border-radius: 0.5em;
                 }
             }
@@ -2062,10 +2124,10 @@ body.snap-resource-card {
 
         &.modtype_page {
             .activity-item {
-                border-top-color: $color-page;
+                @include snap-activity-border-top($color-page);
             }
             .activityiconcontainer .activityicon {
-                @include recolor-icon($color-page, 1);
+                @include snap-recolor-icon($color-page, 1);
             }
             .asset-wrapper .snap-asset-content {
                 .contentafterlink {
@@ -2081,7 +2143,7 @@ body.snap-resource-card {
                         }
                     }
                     .summary-container {
-                        background-color: $color-bk-resource;
+                        @include snap-resource-panel;
                         border-radius: 0.5em;
                         overflow: hidden;
                         margin-bottom: 1em;
@@ -2112,7 +2174,7 @@ body.snap-resource-card {
                 }
             }
             .snap-resource-figure-caption {
-                background-color: $color-bk-resource;
+                @include snap-resource-panel;
                 border-radius: 0.5em;
                 margin-top: 1em;
                 padding: 1em 1em;
@@ -2128,22 +2190,22 @@ body.snap-resource-card {
 // -------------------------
 .theme-snap .activityiconcontainer {
     &.modicon_lightboxgallery img.activityicon:not(.nofilter) {
-        @include recolor-icon($color-lightbox, 1);
+        @include snap-recolor-icon($color-lightbox, 1);
     }
     &.modicon_book img.activityicon:not(.nofilter) {
-        @include recolor-icon($color-book, 1);
+        @include snap-recolor-icon($color-book, 1);
     }
     &.modicon_url img.activityicon:not(.nofilter) {
-        @include recolor-icon($color-url, 1);
+        @include snap-recolor-icon($color-url, 1);
     }
     &.modicon_label img.activityicon:not(.nofilter) {
-        @include recolor-icon($color-label, 1);
+        @include snap-recolor-icon($color-label, 1);
     }
     &.modicon_page img.activityicon:not(.nofilter) {
-        @include recolor-icon($color-page, 1);
+        @include snap-recolor-icon($color-page, 1);
     }
     &.modicon_folder img.activityicon:not(.nofilter) {
-        @include recolor-icon($color-folder, 1);
+        @include snap-recolor-icon($color-folder, 1);
     }
 }
 
@@ -2180,24 +2242,24 @@ body.snap-resource-card {
         &.snap-mime-powerpoint,
         &.snap-mime-impress,
         &.snap-mime-archive {
-            border-top-color: $activity-icon-content-bg;
+            @include snap-activity-border-top($activity-icon-content-bg);
             .activityiconcontainer {
-                @include recolor-icon($activity-icon-content-bg, 1);
+                @include snap-recolor-icon($activity-icon-content-bg, 1);
             }
         }
 
         &.modtype_folder {
-            border-top-color: $color-folder;
+            @include snap-activity-border-top($color-folder);
         }
 
         &.modtype_url {
-            border-top-color: $color-url;
+            @include snap-activity-border-top($color-url);
         }
 
 
         &.modtype_lightboxgallery,
         &.snap-mime-bmp {
-            border-top-color: $color-lightbox;
+            @include snap-activity-border-top($color-lightbox);
         }
     }
 }
@@ -2369,22 +2431,22 @@ body.snap-resource-card {
         padding: unset;
 
         &[src*="snap/lightboxgallery/"] {
-            @include recolor-icon($color-lightbox, 1);
+            @include snap-recolor-icon($color-lightbox, 1);
         }
         &[src*="snap/book/"] {
-            @include recolor-icon($color-book, 1);
+            @include snap-recolor-icon($color-book, 1);
         }
         &[src*="snap/url/"] {
-            @include recolor-icon($color-url, 1);
+            @include snap-recolor-icon($color-url, 1);
         }
         &[src*="snap/label/"] {
-            @include recolor-icon($color-label, 1);
+            @include snap-recolor-icon($color-label, 1);
         }
         &[src*="snap/page/"] {
-            @include recolor-icon($color-page, 1);
+            @include snap-recolor-icon($color-page, 1);
         }
         &[src*="snap/folder/"] {
-            @include recolor-icon($color-folder, 1);
+            @include snap-recolor-icon($color-folder, 1);
         }
     }
     span.badge.text-bg-info {
@@ -2560,64 +2622,64 @@ body.snap-resource-card {
         .activityiconcontainer {
             &.communication:not(.isbranded) .activityicon:not(.nofilter),
             &.communication:not(.isbranded) .icon:not(.nofilter) {
-                @include recolor-icon($activity-icon-communication-bg, 1);
+                @include snap-recolor-icon($activity-icon-communication-bg, 1);
             }
 
             &.assessment:not(.isbranded) .activityicon:not(.nofilter),
             &.assessment:not(.isbranded) .icon:not(.nofilter) {
-                @include recolor-icon($activity-icon-assessment-bg, 1);
+                @include snap-recolor-icon($activity-icon-assessment-bg, 1);
             }
 
             &.collaboration:not(.isbranded) .activityicon:not(.nofilter),
             &.collaboration:not(.isbranded) .icon:not(.nofilter) {
-                @include recolor-icon($activity-icon-collaboration-bg, 1);
+                @include snap-recolor-icon($activity-icon-collaboration-bg, 1);
             }
 
             &.content:not(.isbranded) {
                 .activityicon:not(.nofilter),
                 .icon:not(.nofilter) {
-                    @include recolor-icon($activity-icon-content-bg, 1);
+                    @include snap-recolor-icon($activity-icon-content-bg, 1);
                 }
 
                 img.activityicon[src*="/lightboxgallery/"]:not(.nofilter),
                 img.icon[src*="/lightboxgallery/"]:not(.nofilter) {
-                    @include recolor-icon($color-lightbox, 1);
+                    @include snap-recolor-icon($color-lightbox, 1);
                 }
 
                 img.activityicon[src*="/book/"]:not(.nofilter),
                 img.icon[src*="/book/"]:not(.nofilter) {
-                    @include recolor-icon($color-book, 1);
+                    @include snap-recolor-icon($color-book, 1);
                 }
 
                 img.activityicon[src*="/folder/"]:not(.nofilter),
                 img.icon[src*="/folder/"]:not(.nofilter) {
-                    @include recolor-icon($color-folder, 1);
+                    @include snap-recolor-icon($color-folder, 1);
                 }
 
                 img.activityicon[src*="/url/"]:not(.nofilter),
                 img.icon[src*="/url/"]:not(.nofilter) {
-                    @include recolor-icon($color-url, 1);
+                    @include snap-recolor-icon($color-url, 1);
                 }
 
                 img.activityicon[src*="/label/"]:not(.nofilter),
                 img.icon[src*="/label/"]:not(.nofilter) {
-                    @include recolor-icon($color-label, 1);
+                    @include snap-recolor-icon($color-label, 1);
                 }
 
                 img.activityicon[src*="/page/"]:not(.nofilter),
                 img.icon[src*="/page/"]:not(.nofilter) {
-                    @include recolor-icon($color-page, 1);
+                    @include snap-recolor-icon($color-page, 1);
                 }
             }
 
             &.interactivecontent:not(.isbranded) .activityicon:not(.nofilter),
             &.interactivecontent:not(.isbranded) .icon:not(.nofilter) {
-                @include recolor-icon($activity-icon-interactivecontent-bg, 1);
+                @include snap-recolor-icon($activity-icon-interactivecontent-bg, 1);
             }
 
             &.administration:not(.isbranded) .activityicon:not(.nofilter),
             &.administration:not(.isbranded) .icon:not(.nofilter) {
-                @include recolor-icon($activity-icon-administration-bg, 1);
+                @include snap-recolor-icon($activity-icon-administration-bg, 1);
             }
         }
     }
@@ -2631,7 +2693,7 @@ body.snap-resource-card {
         .activityiconcontainer {
             img {
                 &[src*="lti"][src*="icon"], &[src*="lti"][src*="monologo"] {
-                    @include recolor-icon($activity-icon-content-bg, 1);
+                    @include snap-recolor-icon($activity-icon-content-bg, 1);
                 }
             }
         }
@@ -2902,6 +2964,26 @@ li.section.hidden {
     }
 }
 
+[data-bs-theme="dark"] {
+    // Activity cards: the sides and bottom only, so the coloured top edge stays. Labels and hidden activities
+    // have a grey top edge, made a darker grey too.
+    .theme-snap .section li.activity .activity-item {
+        border-right-color: var(--bs-border-color);
+        border-bottom-color: var(--bs-border-color);
+        border-left-color: var(--bs-border-color);
+    }
+
+    .theme-snap .section li.activity.modtype_subsection > .activity-item,
+    .theme-snap .section li.snap-activity.modtype_label .activity-item,
+    .theme-snap .section li.activity-wrapper.modtype_label .activity-item {
+        border-color: var(--bs-border-color);
+    }
+
+    .theme-snap .section li .activity-item.hiddenactivity {
+        border-top-color: $gray-600 !important;
+    }
+}
+
 // Stealth options in the dropdown.
 li.section .snap-asset {
     &.stealth {
@@ -3099,6 +3181,18 @@ form.togglecompletion {
 /* add bg colour for actions when editing */
 .editing .actions {
     background-color: rgba(255, 255, 255, 0.95);
+}
+
+[data-bs-theme="dark"] {
+    // Edit mode: action bars, which are nearly white.
+    .editing .actions {
+        background-color: rgba(var(--bs-body-bg-rgb), 0.95);
+    }
+
+    // Except the bulk editing footer's buttons, which sit on the footer's own colour, as they do in light mode.
+    .editing .bulkactions .actions {
+        background-color: transparent;
+    }
 }
 /* remove bg colour for actions when menu shown */
 .action-menu-shown .actions {
@@ -3573,6 +3667,33 @@ body.path-course {
     display: none;
 }
 
+[data-bs-theme="dark"] {
+    // The course page's add activity, add subsection and drop files boxes, and the places to drop a section or
+    // activity while moving it: thick near-white outlines. A mid grey, lighter on hover and focus as in light mode.
+    .snap-dropzone .snap-dropzone-label,
+    .snap-modchooser .section-modchooser-link,
+    .section-drop {
+        border-color: $gray-600;
+
+        &:hover,
+        &:focus {
+            border-color: $gray-400;
+        }
+    }
+
+    .snap-move-asset .snap-resource:not(.asset-moving) {
+        border-color: $gray-500;
+    }
+
+    .snap-move-asset .snap-drop.asset-drop {
+        color: var(--bs-secondary-color);
+    }
+
+    .dndupload-over .snap-dropzone {
+        background-color: var(--bs-tertiary-bg);
+    }
+}
+
 // Section moving drop zone.
 .section-drop {
     height: 125px;
@@ -3768,6 +3889,21 @@ body.path-course {
     }
 }
 
+[data-bs-theme="dark"] {
+    // Snap's white backdrop behind dialogues and the image lightbox, at the same opacity.
+    .modal-backdrop {
+        --bs-backdrop-bg: #{$black};
+    }
+
+    .yui3-skin-sam .yui3-widget-mask,
+    .moodle-dialogue-base .moodle-dialogue-lightbox,
+    .offcanvas-backdrop,
+    div[data-flexitour="backdrop"],
+    #snap-light-box {
+        background-color: $black;
+    }
+}
+
 #snap-light-box-content {
     width: 100%;
     padding: 1em 4%;
@@ -3854,6 +3990,9 @@ body.path-course-index {
         margin: 0;
         opacity: 1;
         background: #ffff;
+        @include dark-mode {
+            background: var(--bs-body-bg);
+        }
         & > div {
             height: 100%;
             width: 100%;
