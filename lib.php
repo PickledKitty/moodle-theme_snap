@@ -45,6 +45,7 @@ function theme_snap_process_site_coverimage() {
 function theme_snap_process_css($css, \core\output\theme_config $theme) {
 
     $css = theme_snap_set_category_colors($css, $theme);
+    $css = theme_snap_add_dark_brand_colors($css, $theme);
 
     // Set the background image for the logo.
     $logo = $theme->setting_file_url('logo', 'logo');
@@ -128,6 +129,116 @@ function theme_snap_set_category_colors($css, $theme) {
 
     $css = str_replace($tag, $replacement, $css);
     return $css;
+}
+
+/**
+ * A brand colour made lighter, in steps of 5%, until text in it has 4.5:1 contrast on the lightest dark mode surface.
+ *
+ * @param string $color The brand colour, as #rrggbb.
+ * @return string The lighter colour, as #rrggbb.
+ */
+function theme_snap_dark_brand_color(string $color): string {
+    // Bootstrap's $gray-800, the background of cards and secondary boxes in dark mode.
+    $surface = '#343a40';
+    [$r, $g, $b] = sscanf($color, '#%02x%02x%02x');
+    for ($tint = 0; $tint <= 100; $tint += 5) {
+        $lighter = sprintf('#%02x%02x%02x', ...array_map(fn($c) => round($c + (255 - $c) * $tint / 100), [$r, $g, $b]));
+        if (\theme_snap\color_contrast::calculate_luminosity_ratio($lighter, $surface) >= 4.5) {
+            return $lighter;
+        }
+    }
+    return '#ffffff';
+}
+
+/**
+ * Dark mode: text, borders and outlines in a brand colour get a lighter version of it.
+ *
+ * Snap sets the brand colour (and each category's) as text in many rules, which is too dark to read on dark
+ * backgrounds. After each rule that does, this adds a copy for dark mode with only those declarations, in the
+ * lighter colour. Brand colour backgrounds keep their white text, so they're left as they are. The site's
+ * lighter colour is also Bootstrap's link colour in dark mode, and --snap-brand-dark for other dark mode styles.
+ *
+ * @param string $css The CSS.
+ * @param \core\output\theme_config $theme
+ * @return string The updated CSS.
+ */
+function theme_snap_add_dark_brand_colors(string $css, \core\output\theme_config $theme): string {
+    $brands = [!empty($theme->settings->themecolor) ? $theme->settings->themecolor : '#3bcedb'];
+    $categorycolors = json_decode(get_config('theme_snap', 'category_color') ?: '[]', true);
+    if (is_array($categorycolors)) {
+        $brands = array_merge($brands, array_values($categorycolors));
+    }
+    // Each brand colour, and the darker shades of it that Snap's SCSS uses for hover and focus, to its lighter version.
+    $lighter = [];
+    foreach ($brands as $brand) {
+        $brand = strtolower($brand);
+        if (!preg_match('/^#[0-9a-f]{6}$/', $brand)) {
+            continue;
+        }
+        $light = theme_snap_dark_brand_color($brand);
+        $compiler = new core_scss();
+        $compiler->append_raw_scss('.x{' . implode('', array_map(fn($p) => "--d$p:#{darken($brand, $p%)};", range(0, 30))) . '}');
+        try {
+            preg_match_all('/--d\d+:\s*(#[0-9a-f]{3,6})\b/i', $compiler->to_css(), $shades);
+        } catch (Exception $e) {
+            $shades = [1 => [$brand]];
+        }
+        foreach ($shades[1] as $shade) {
+            $shade = strtolower($shade);
+            // The compiler writes #3366cc as #36c.
+            if (strlen($shade) === 4) {
+                $shade = preg_replace('/([0-9a-f])/', '$1$1', $shade);
+            }
+            $rgb = sscanf($shade, '#%02x%02x%02x');
+            if (max($rgb) < 48) {
+                // Nearly black: other text uses it too.
+                continue;
+            }
+            $lighter[$shade] = $light;
+            // The compressed CSS writes #3366cc as #36c.
+            if (preg_match('/^#(.)\1(.)\2(.)\3$/', $shade, $short)) {
+                $lighter["#$short[1]$short[2]$short[3]"] = $light;
+            }
+        }
+    }
+    if (empty($lighter)) {
+        return $css;
+    }
+
+    $colours = '(?:' . implode('|', array_map(fn($c) => preg_quote($c, '/'), array_keys($lighter))) . ')(?![0-9a-f])';
+    $properties = '(?:color|border(?:-(?:top|right|bottom|left))?(?:-color)?|outline(?:-color)?|text-decoration(?:-color)?|' .
+        'fill|stroke|caret-color|accent-color|-webkit-text-stroke-color)';
+
+    // Every innermost rule: a selector list, then declarations with no blocks in them.
+    $css = preg_replace_callback('/(?<=^|[{}])([^{}@]+)\{([^{}]*)\}/', function($rule) use ($lighter, $colours, $properties) {
+        [$whole, $selectors, $declarations] = $rule;
+        // Steps in @keyframes aren't selectors.
+        $keyframestep = '/^\s*(?:from|to|[\d.]+%)(?:\s*,\s*(?:from|to|[\d.]+%))*\s*$/';
+        if (strpos($declarations, '#') === false || preg_match($keyframestep, $selectors)) {
+            return $whole;
+        }
+        preg_match_all("/(?<=^|;)\\s*($properties\\s*:[^;]*{$colours}[^;]*)/i", $declarations, $matches);
+        if (empty($matches[1])) {
+            return $whole;
+        }
+        $dark = preg_replace_callback("/$colours/i", fn($c) => $lighter[strtolower($c[0])], implode(';', $matches[1]));
+        // The dark mode attribute adds nothing to the selector's specificity (:where), so the copy beats only the rule
+        // it follows: a later rule that overrides the light one, such as a focus ring, overrides the copy too.
+        $darkselectors = array_map(function($selector) {
+            $selector = trim($selector);
+            if (preg_match('/^(html|:root)(?![\w-])/', $selector, $root)) {
+                return $root[1] . ':where([data-bs-theme=dark])' . substr($selector, strlen($root[1]));
+            }
+            return ':where([data-bs-theme=dark]) ' . $selector;
+        }, preg_split('/,(?![^()]*\))/', $selectors));
+        return $whole . implode(',', $darkselectors) . '{' . $dark . '}';
+    }, $css);
+
+    // The site's own lighter brand colour, for links and other dark mode styles.
+    $site = $lighter[strtolower($brands[0])] ?? reset($lighter);
+    $rgb = implode(',', sscanf($site, '#%02x%02x%02x'));
+    return $css . "[data-bs-theme=dark]{--snap-brand-dark:$site;--bs-link-color:$site;--bs-link-color-rgb:$rgb;" .
+        "--bs-link-hover-color:$site;--bs-link-hover-color-rgb:$rgb;--bs-primary-text-emphasis:$site}";
 }
 
 /**

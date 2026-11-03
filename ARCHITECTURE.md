@@ -181,6 +181,7 @@ Appends any extra SCSS (minimal; most custom CSS is handled in pre/post).
 - `theme_snap_set_category_colors($css, $theme)` — injects per-category brand colours using `[[setting:categoryX_color]]` placeholder tags
 - `theme_snap_set_logo($css, $logo)` — replaces `[[setting:logo]]` placeholder
 - `theme_snap_set_customcss($css, $customcss)` — replaces `/**setting:customcss**/` placeholder
+- `theme_snap_add_dark_brand_colors($css, $theme)` — for dark mode, copies every rule that uses a brand colour (or its darker hover shades) as text, border or outline colour, with a lighter version of it that reads on dark backgrounds
 
 This placeholder/replacement approach means some CSS values cannot be set via SCSS variables — they are injected into the already-compiled CSS string.
 
