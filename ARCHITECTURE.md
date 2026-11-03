@@ -206,6 +206,7 @@ This placeholder/replacement approach means some CSS values cannot be set via SC
 | `_behat.scss` | Behat test-specific styles |
 | `_print.scss` | Print styles |
 | `_cropper.scss` | Image cropper widget |
+| `_darkmode.scss` | Dark mode (Boost's colour modes): the lines and boxes across the theme in fixed light greys, then patches for Moodle components' own styles, one section per component. Snap's own dark rules sit next to their light rules in the other partials |
 | + 6 more | joule, yui, filemanager, message, userprofile, coursefooter, coursemanagement, typefaces, custom |
 
 ---

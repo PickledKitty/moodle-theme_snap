@@ -23,7 +23,9 @@
  * - Snap's own styles have their dark mode next to them, in the same partial: a [data-bs-theme="dark"]
  *   block after the rule, or Boost's dark-mode mixin inside it. The dark tints of the status colours are
  *   in _mixins.scss.
- * - This file: two lists that cut across the theme, lines and boxes Snap draws in fixed light greys.
+ * - This file: first, two lists that cut across the theme (lines and boxes Snap draws in fixed light
+ *   greys), then the patches for the styles of Moodle's own components, one section per component, each
+ *   naming the files it patches.
  *
  * @package   theme_snap
  * @copyright 2026 PickledKitty
@@ -113,5 +115,793 @@
     .yui-skin-sam .yui-navset .yui-nav li > a,
     .yui-bootstrapped .yui-navset .yui-nav li > a {
         background: $dark-surface-raised;
+    }
+}
+
+// Patches for the styles of Moodle's own components, one section each, naming the files they patch.
+
+// ------------------------------------------------------------
+// Bootstrap
+// ------------------------------------------------------------
+// Bootstrap's popover header colour and text colour utilities, compiled with Snap's light mode colours.
+[data-bs-theme="dark"] {
+    // Popover headers: Bootstrap's header colour is compiled with Snap's text grey (pre.scss), for light pages.
+    .popover {
+        --bs-popover-header-color: var(--bs-body-color);
+    }
+
+    // Bootstrap's text colour utilities, such as the ticks and crosses in quiz results, keep their light mode
+    // colours. Its emphasis colours are the ones made for dark backgrounds.
+    @each $name in primary, secondary, success, info, warning, danger {
+        .text-#{$name} {
+            color: var(--bs-#{$name}-text-emphasis) !important;
+        }
+    }
+
+    // File type lists in forms use Bootstrap's dark text, which doesn't change with the colour mode.
+    .list-unstyled small.text-dark {
+        color: var(--bs-secondary-color) !important;
+    }
+}
+
+// ------------------------------------------------------------
+// Boost
+// ------------------------------------------------------------
+// Patches theme/boost/scss/moodle: search highlights (core.scss), the selected activity tab
+// (secondarynavigation.scss) and report builder's filter list (reportbuilder.scss).
+[data-bs-theme="dark"] {
+    // Search terms picked out in results, such as the admin search, in the info colour for a white page.
+    .highlight {
+        color: var(--bs-info-text-emphasis);
+    }
+
+    // The selected activity tab has a grey background of its own.
+    .mds-nav-pill--selected {
+        color: var(--bs-emphasis-color) !important;
+    }
+
+    // Report builder's filter list fades its scrolled edges into white, as Boost has it.
+    .reportbuilder-filters-sidebar {
+        @include scroll-shadow($dark-surface-raised);
+    }
+}
+
+// ------------------------------------------------------------
+// Icons
+// ------------------------------------------------------------
+// Boost inverts a list of Moodle's monochrome icons in dark mode (theme/boost/scss/moodle/icons.scss).
+// These are the ones it leaves out, and activity icons with no purpose colour or with their own brand colours.
+[data-bs-theme="dark"] {
+    // Question type icons are black images, in the chooser, on the quiz page and in the question bank.
+    img.icon[src*="/qtype_"] {
+        filter: invert(1);
+    }
+
+    // Activities with the "other" purpose, such as external tools, have no colour, so their icons stay Moodle's black.
+    // The course index marks them by module (ltiicon) rather than by purpose.
+    .activityiconcontainer.other:not(.isbranded) img.activityicon:not(.nofilter),
+    .activityiconcontainer.ltiicon img {
+        filter: brightness(0) invert(0.87);
+    }
+
+    // Branded icons keep their own colours, which can be too dark to see, so they get a light round backing.
+    // Only BigBlueButton is branded; the course index marks it by module rather than with isbranded.
+    .activityiconcontainer.isbranded img.activityicon,
+    .theme-snap .section li.activity .activity-item .activityiconcontainer.isbranded img.activityicon,
+    .activityiconcontainer.bigbluebuttonbnicon img {
+        border-radius: 50%;
+        background-color: var(--bs-body-color);
+    }
+
+    // The forum grader's show and hide panel buttons: black images.
+    img.icon[src*="-grader-panel"] {
+        filter: brightness(0) invert(0.87);
+    }
+
+    // The plain flag (the flagged one is red), which Boost's list of icons to invert leaves out.
+    img.questionflagimage[src*="/i/unflagged"] {
+        filter: invert(1);
+    }
+
+    // The folder tree's open and closed arrows, black background images in Boost's own styles.
+    .foldertree [role="treeitem"][aria-expanded] > p::before {
+        filter: invert(1);
+    }
+
+    // The database's field type icons are black images, also left out of Boost's list.
+    img.icon[src*="/datafield_"] {
+        filter: invert(1);
+    }
+
+    // Plugin logos in admin lists, such as Plugins overview and Manage activities, and activity icons beside grade
+    // items: Moodle's black monochrome logos, outside the coloured activity icon boxes. Turning the hue back round
+    // after inverting keeps the few coloured ones (BigBlueButton, H5P) close to their own colour, only lighter.
+    img.icon.pluginicon,
+    img.icon.itemicon,
+    .path-admin #region-main img.icon[src*="/monologo"]:not(.activityicon) {
+        filter: invert(1) hue-rotate(180deg);
+    }
+}
+
+// ------------------------------------------------------------
+// YUI dialogues
+// ------------------------------------------------------------
+// Patches the dialogues from lib/yui/src/notification and Boost's styles for the chooser inside them
+// (theme/boost/scss/moodle/core.scss).
+[data-bs-theme="dark"] {
+    // Moodle's older (YUI) dialogues, such as the question type chooser: white body and footer, and black
+    // question type icons.
+    .moodle-dialogue-base .moodle-dialogue-wrap,
+    .chooserdialogue .moodle-dialogue-wrap .moodle-dialogue-bd,
+    .jschooser .choosercontainer #chooseform .instruction,
+    .jschooser .choosercontainer #chooseform .typesummary {
+        background-color: var(--bs-body-bg);
+    }
+
+    .choosercontainer #chooseform .options,
+    .choosercontainer #chooseform .option label {
+        border-color: var(--bs-border-color);
+    }
+
+    .choosercontainer #chooseform .selected {
+        background-color: var(--bs-secondary-bg);
+    }
+}
+
+// ------------------------------------------------------------
+// Question types
+// ------------------------------------------------------------
+// Patches each question type's styles.css (question/type/NAME/styles.css): the editing forms' answer bands,
+// drag and drop choices, ordering items, feedback and essay answers.
+[data-bs-theme="dark"] {
+    // Question editing forms: each question type's own styles put answers, feedback, hints and so on in light grey
+    // bands. These are the same pages and fields, on the page's own background with no lines.
+    $question-type-pages: "calculated", "calculatedmulti", "calculatedsimple", "ddimageortext", "ddmarker", "match",
+        "multichoice", "numerical", "shortanswer";
+    $question-type-bands: "answer_", "answeroptions_", "answertolerance_", "answerdisplay_", "fraction_", "feedback_",
+        "drags_", "dragitem_", "draglabel_", "hint_", "hintoptions_", "hintshownumcorrect_", "hintclearwrong_",
+        "subquestions_", "subanswers_";
+    // Written out in full: attribute selectors inside :is() trip up the SCSS compiler's @extend.
+    $selectors: ();
+    @each $page in $question-type-pages {
+        @each $band in $question-type-bands {
+            @each $kind in "fitem_id_", "fgroup_id_" {
+                $selectors: append($selectors,
+                    unquote('#page-question-type-#{$page} div[id^="#{$kind}"][id*="#{$band}"]'), comma);
+            }
+        }
+    }
+    #{$selectors} {
+        border-color: transparent;
+        background: transparent;
+    }
+
+    // Every other answer a faint shade lighter, so each one reads as a group without lines round it. A field's
+    // id ends in its answer's number (from 0), and odd numbers end in an odd digit.
+    $striped: ();
+    @each $page in $question-type-pages {
+        @each $kind in "fitem_id_", "fgroup_id_" {
+            @each $digit in 1, 3, 5, 7, 9 {
+                $striped: append($striped, unquote('#page-question-type-#{$page} div[id^="#{$kind}"][id$="#{$digit}"]'),
+                    comma);
+            }
+        }
+    }
+    #{$striped} {
+        background: rgba(255, 255, 255, 0.04);
+    }
+
+    // Drag and drop questions: the choices keep their light group colours (each matches its gaps), so their text
+    // stays dark rather than taking the page's light text.
+    .que.ddwtos .draghome,
+    .que.ddwtos .drop,
+    .que.ddimageortext .draghome,
+    .que.ddimageortext .dropzone,
+    #id_droparea .droppreview {
+        color: $gray-900;
+    }
+
+    // Ordering questions: the items to put in order, white with a black border.
+    .que.ordering .sortablelist li {
+        border-color: var(--bs-border-color);
+        background-color: $dark-surface-raised;
+    }
+
+    // Question details beside each question (its number, mark and flag), in a fixed grey.
+    .que .info > div {
+        color: var(--bs-secondary-color);
+    }
+
+    // Feedback beside a chosen answer, from the question types' own styles.
+    .que:is(.multichoice, .multianswer, .calculatedmulti) .answer .specificfeedback,
+    .que:is(.multianswer, .calculatedmulti) .answer .specificfeedback *,
+    .que.multianswer .feedbackspan {
+        background: shade-color($warning, 70%);
+    }
+
+    .que.essay .qtype_essay_response.readonly {
+        background-color: $dark-surface-raised;
+    }
+}
+
+// ------------------------------------------------------------
+// Quiz
+// ------------------------------------------------------------
+// Patches mod/quiz/styles.css (the editing page, pinned columns, graded attempts and the report's
+// highlight) and Boost's darker ticks and crosses for the attempts table (theme/boost/scss/moodle/question.scss).
+[data-bs-theme="dark"] {
+    // The quiz editing page's editable numbers, headings and marks: a near-white box with black text.
+    #page-mod-quiz-edit .inplaceeditable {
+        background: transparent;
+
+        &.inplaceeditable-text {
+            color: var(--bs-body-color);
+        }
+
+        .quickeditlink {
+            color: var(--bs-primary-text-emphasis);
+        }
+    }
+
+    // Quizzes: Moodle's colours for graded attempts, pinned columns, the grading method note, question
+    // details, feedback and essay answers, which stay light.
+    body.path-mod-quiz {
+        table tbody tr > td.sticky-column,
+        table thead tr > th.sticky-column {
+            background-color: var(--bs-body-bg);
+        }
+
+        .gradedattempt,
+        table tbody tr.gradedattempt > td,
+        table tbody tr.gradedattempt > td.sticky-column {
+            background-color: $snap-quiz-graded-dark;
+            border-color: $gray-600;
+        }
+    }
+
+    #page-mod-quiz-report .highlight {
+        background-color: $snap-quiz-graded-dark;
+        border-color: $gray-600;
+        color: var(--bs-body-color);
+    }
+
+    // Boost darkens the quiz's ticks and crosses for light backgrounds, over Bootstrap's text utilities (_bootstrap.scss).
+    #attemptsform,
+    .formulation .answer {
+        @each $name in success, danger, warning {
+            .icon.text-#{$name} {
+                color: var(--bs-#{$name}-text-emphasis) !important;
+            }
+        }
+    }
+}
+
+// ------------------------------------------------------------
+// Assignment
+// ------------------------------------------------------------
+// Patches mod/assign/styles.css: submission statuses, the grader and the submissions table.
+[data-bs-theme="dark"] {
+    // Assignment submission statuses: black text on pale colours in the assignment's own styles, and "not graded"
+    // black on nothing. Light text here, on dark tints of the same green, yellow and red.
+    .path-mod-assign {
+        $statuses: (
+            "submissionstatus": transparent,
+            "submissionreopened": transparent,
+            "submissionnotgraded": transparent,
+            "submissionstatusdraft": $snap-dark-warning-bg,
+            "submissionlocked": $snap-dark-warning-bg,
+            "submissionstatussubmitted": $snap-dark-success-bg,
+            "submissiongraded": $snap-dark-success-bg,
+            "earlysubmission": $snap-dark-success-bg,
+            "latesubmission": $snap-dark-danger-bg,
+            "gradingreminder": $snap-dark-danger-bg,
+        );
+        @each $status, $background in $statuses {
+            td.#{$status},
+            div.#{$status},
+            a:link.#{$status} {
+                color: var(--bs-body-color);
+                background-color: $background;
+            }
+        }
+
+        // The grader: the grade panel and its parts, the filter popover, the review panel toggle and the overlay
+        // while it loads, all light in the assignment's own styles.
+        [data-region="grade-panel"],
+        [data-region="grade-panel"] .showmarkerdesc,
+        [data-region="grade-panel"] .showstudentdesc {
+            background-color: var(--bs-body-bg);
+        }
+
+        // The same as the panel, so it doesn't show as a box, but solid: expanding the grading form floats it
+        // over the submission.
+        [data-region="grade-panel"] .mform .fitem {
+            background-color: var(--bs-body-bg);
+        }
+
+        [data-region="grade-panel"] .gradingform_rubric .criterion .levels,
+        [data-region="configure-filters"],
+        [data-region="review-panel"] [data-region="review-panel-toggle"] {
+            background-color: $dark-surface-raised;
+        }
+
+        [data-region="configure-filters"]::after {
+            border-bottom-color: $dark-surface-raised;
+        }
+
+        [data-region="review-panel"] .drawingregion {
+            border-color: var(--bs-border-color);
+        }
+
+        [data-region="overlay"] {
+            background-color: var(--bs-tertiary-bg);
+        }
+
+        // The submissions table, white, with selected rows in pale yellow.
+        .gradingtable thead th,
+        .gradingtable tr.unselectedrow td {
+            background-color: var(--bs-body-bg);
+        }
+
+        .gradingtable tr.selectedrow td {
+            background-color: $snap-dark-warning-bg;
+        }
+
+        .overdue,
+        .overduesubmission,
+        [data-region="grade-panel"] td.submissionnotgraded,
+        [data-region="grade-panel"] div.submissionnotgraded {
+            color: dark-readable(#ca3120, $dark-surface-page);
+        }
+    }
+}
+
+// ------------------------------------------------------------
+// PDF annotation (assignment)
+// ------------------------------------------------------------
+// Patches mod/assign/feedback/editpdf/styles.css.
+[data-bs-theme="dark"] {
+    // Searching the PDF's comments.
+    .assignfeedback_editpdf_commentsearch ul li pre {
+        background-color: var(--bs-secondary-bg);
+
+        &:hover {
+            background-color: var(--bs-tertiary-bg);
+        }
+    }
+
+    // PDF annotation: the toolbar and the area round the pages, light greys, and the toolbar's black icons. The
+    // colour swatches and stamp previews are coloured, so only the plain icons are made light. The pages stay
+    // as they are.
+    .assignfeedback_editpdf_widget {
+        .pageheader {
+            border-color: var(--bs-border-color);
+            background-color: var(--bs-secondary-bg);
+        }
+
+        .drawingregion,
+        .drawingcanvas {
+            border-color: var(--bs-border-color);
+            background-color: var(--bs-tertiary-bg);
+        }
+
+        // The groups of toolbar buttons and the page picker, white boxes.
+        .pageheader select,
+        .pageheader .toolbar,
+        .pageheader .navigation-search,
+        .pageheader .navigation-expcol,
+        .pageheader .navigation {
+            border-color: var(--bs-border-color);
+            background-color: $dark-surface-raised;
+        }
+
+        .pageheader .navigation button,
+        .pageheader :is(.navigation, .toolbar) :is(button, select) + button {
+            border-color: var(--bs-border-color);
+        }
+
+        // The icons are grey (#888), too faint inverted, so they're made light grey, and white when their button is
+        // hovered, focused or the chosen tool.
+        @each $icon in nav_prev, nav_next, comment_search, comment_expcol, rotate_left, rotate_right, comment, drag,
+                select, pen, line, rectangle, oval, highlight, stamp, trash {
+            img.icon[src$="/#{$icon}"] {
+                filter: brightness(0) invert(0.87);
+            }
+
+            button:is(:hover, :focus-visible, .assignfeedback_editpdf_selectedbutton) img.icon[src$="/#{$icon}"] {
+                filter: brightness(0) invert(1);
+            }
+        }
+
+        // Hovered and chosen buttons: a lighter grey, rather than the white glow they have on a light page.
+        .pageheader button:hover,
+        .pageheader button:focus-visible {
+            background-color: $gray-700;
+            background-image: none;
+        }
+
+        .pageheader button.assignfeedback_editpdf_selectedbutton,
+        .pageheader button.assignfeedback_editpdf_selectedbutton:hover {
+            background-color: $gray-600;
+            background-image: none;
+        }
+    }
+}
+
+// ------------------------------------------------------------
+// Rubrics
+// ------------------------------------------------------------
+// Patches grade/grading/form/rubric/styles.css and the rubric in the unified grader.
+[data-bs-theme="dark"] {
+    // Rubrics: the rubric's own styles give odd rows white, the points dark green, light grey lines, and pale
+    // status, error and regrade boxes. Even rows already use Bootstrap's dark-aware grey.
+    .gradingform_rubric {
+        .criterion,
+        .criterion .levels .level,
+        .criterion .levels .level.last {
+            border-color: var(--bs-border-color);
+        }
+
+        .criterion.odd td {
+            background: var(--bs-body-bg);
+        }
+
+        .criterion .score {
+            color: dark-readable(#146c43);
+        }
+
+        .plainvalue.empty {
+            color: var(--bs-secondary-color);
+        }
+
+        .criterion .description.error,
+        .criterion .levels .level .definition.error,
+        .criterion .levels .level .score.error {
+            background: $snap-dark-danger-bg;
+        }
+    }
+
+    .gradingform_rubric-regrade {
+        border-color: $danger;
+        background: $snap-dark-danger-bg;
+    }
+
+    .gradingform_rubric-restored {
+        border-color: $warning;
+        background: $snap-dark-warning-bg;
+    }
+
+    .gradingform_rubric_editform .status {
+        border-color: var(--bs-border-color);
+
+        &.ready {
+            background-color: $snap-dark-success-bg;
+        }
+
+        &.draft {
+            background-color: $snap-dark-warning-bg;
+        }
+    }
+
+    .gradingpanel-gradingform_rubric [aria-checked="true"] {
+        border-color: var(--bs-emphasis-color);
+    }
+
+    // The chosen (and hovered) level when grading, pale green.
+    .gradingform_rubric.evaluate .criterion .levels .level:hover,
+    .gradingform_rubric.evaluate .criterion .levels .level.checked,
+    .gradingform_rubric .criterion .level.checked {
+        border-color: var(--bs-border-color);
+        background: mix($success, $dark-surface-page, 22%);
+    }
+}
+
+// ------------------------------------------------------------
+// Gradebook reports
+// ------------------------------------------------------------
+// Patches grade/report/user/styles.css (the user report) and theme/boost/scss/moodle/grade.scss
+// (gradebook setup).
+[data-bs-theme="dark"] {
+    // The user report (a student's own grades): the report's own styles put it on light grey with white name cells.
+    .path-grade-report-user,
+    .grade-report-user {
+        .user-report-container,
+        .user-grade thead th,
+        .user-grade tbody tr,
+        .user-grade td {
+            background-color: var(--bs-tertiary-bg);
+        }
+
+        .user-grade th.column-itemname:not(.header, .category, .baggt, .baggb),
+        .user-grade th.category {
+            border-color: var(--bs-border-color);
+            background-color: var(--bs-body-bg);
+        }
+
+        // The category and course totals, and the category's collapse arrow in near black.
+        .user-grade .baggt,
+        .user-grade .baggb {
+            background-color: var(--bs-tertiary-bg);
+        }
+
+        .user-grade th.category a.toggle-category i {
+            color: var(--bs-secondary-color);
+        }
+    }
+
+    // Gradebook setup: the category's expand and collapse arrow, compiled in Boost's near black.
+    .path-grade-edit-tree .gradetree-wrapper .setup-grades.table tr.category td.column-name div a.toggle-category i {
+        color: var(--bs-body-color);
+    }
+}
+
+// ------------------------------------------------------------
+// Book
+// ------------------------------------------------------------
+// Patches mod/book/styles.css.
+[data-bs-theme="dark"] {
+    // The book's previous and next chapter buttons, white in the book's own styles.
+    .path-mod-book .btn-previous,
+    .path-mod-book .btn-next {
+        border-color: var(--bs-border-color);
+        background-color: $dark-surface-raised;
+    }
+}
+
+// ------------------------------------------------------------
+// IMS content package
+// ------------------------------------------------------------
+// Patches mod/imscp/styles.css and the YUI 2 layout it uses, which has no dark mode.
+[data-bs-theme="dark"] {
+    // IMS content packages: the contents panel, buttons and the frame's surround are Moodle's, built with YUI 2,
+    // which has no dark mode. The package's own pages, in the frame, stay as their author made them.
+    #page-mod-imscp-view {
+        .yui-layout {
+            background-color: var(--bs-body-bg);
+        }
+
+        .yui-layout .yui-layout-unit div.yui-layout-bd {
+            border-color: var(--bs-border-color);
+            background-color: var(--bs-tertiary-bg);
+        }
+
+        .yui-layout .yui-layout-hd {
+            border-color: var(--bs-border-color);
+            background: var(--bs-secondary-bg);
+
+            h2 {
+                color: var(--bs-body-color);
+            }
+        }
+
+        // The chosen page in the contents, and the tree's dotted lines, which are black images.
+        .ygtvfocus,
+        .ygtvfocus .ygtvlabel {
+            background-color: var(--bs-secondary-bg);
+        }
+
+        // Only the line is inverted, not the highlight behind it.
+        td.ygtvcell:not(.ygtvcontent) {
+            background-color: transparent;
+            filter: invert(1);
+        }
+
+        .yui-button,
+        .yui-button .first-child {
+            border-color: var(--bs-border-color);
+        }
+
+        .yui-button {
+            background: $dark-surface-raised;
+        }
+    }
+}
+
+// ------------------------------------------------------------
+// Wiki
+// ------------------------------------------------------------
+// Patches mod/wiki/styles.css.
+[data-bs-theme="dark"] {
+    // Wikis: the contents box, the upload section, the added and deleted text when comparing versions, and links to
+    // pages not written yet, all in the wiki's own fixed colours.
+    .wiki-toc {
+        border-color: var(--bs-border-color);
+        background: var(--bs-tertiary-bg);
+    }
+
+    .wiki-toc-title {
+        color: var(--bs-secondary-color);
+    }
+
+    .wiki-upload-section {
+        border-color: var(--bs-border-color);
+    }
+
+    .ouw_deleted {
+        background: mix($warning, $dark-surface-page, 20%);
+        color: var(--bs-body-color);
+    }
+
+    .ouw_added {
+        background: $snap-dark-success-bg;
+        color: var(--bs-body-color);
+    }
+
+    a.wiki_newentry:link,
+    a.wiki_newentry:visited {
+        color: dark-readable(#f00, $dark-surface-page);
+    }
+}
+
+// ------------------------------------------------------------
+// Workshop
+// ------------------------------------------------------------
+// Patches mod/workshop/styles.css and mod/workshop/allocation/manual/styles.css.
+[data-bs-theme="dark"] {
+    // Workshops: the phase planner, submission, assessment and feedback boxes, messages, allocation results and the
+    // grading report, all in the workshop's own fixed light colours. The current phase stays green, and messages
+    // keep their green, red and blue, as dark tints with light text.
+    .path-mod-workshop {
+        .userplan,
+        .userplan dt,
+        .userplan dd,
+        .submission-full,
+        .submission-full .attachments .images div,
+        .assessment-full,
+        .assessment-full .overallfeedback .attachments .images div,
+        .grading-report,
+        .grading-report td,
+        .feedback,
+        #workshop-viewlet-yourgrades .finalgrades .grade {
+            border-color: var(--bs-border-color);
+        }
+
+        .userplan dt,
+        .userplan dd,
+        .userplan dd a,
+        .userplan dd a:link,
+        .userplan dd a:visited {
+            color: var(--bs-body-color);
+        }
+
+        .userplan dt,
+        .userplan dd {
+            background-color: var(--bs-tertiary-bg);
+        }
+
+        .userplan dt.active,
+        .userplan dd.active {
+            background: $snap-dark-success-bg;
+        }
+
+        .submission-full .header,
+        .assessment-full .header,
+        .feedback .header,
+        #workshop-viewlet-yourgrades .finalgrades .grade.assessmentgrade {
+            background-color: var(--bs-secondary-bg);
+        }
+
+        .submission-summary .userdate,
+        .submission-full .header .userdate {
+            color: var(--bs-secondary-color);
+        }
+
+        .submission-full .header .userdate.modified {
+            border-left-color: var(--bs-border-color);
+        }
+
+        .message,
+        .allocation-init-results {
+            &.ok,
+            .ok {
+                color: var(--bs-body-color);
+                background-color: $snap-dark-success-bg;
+            }
+
+            &.error,
+            .error {
+                color: var(--bs-body-color);
+                background-color: $snap-dark-danger-bg;
+            }
+
+            &.info,
+            .info {
+                color: var(--bs-body-color);
+                background-color: $snap-dark-info-bg;
+            }
+        }
+
+        .allocation-init-results .debug {
+            color: var(--bs-body-color);
+            background-color: var(--bs-secondary-bg);
+        }
+
+        .assessment-summary.graded .singlebutton input[type="submit"],
+        .example-summary.graded .singlebutton input[type="submit"] {
+            background-color: $snap-dark-success-bg;
+        }
+
+        .assessment-summary.notgraded .singlebutton input[type="submit"],
+        .example-summary.notgraded .singlebutton input[type="submit"] {
+            background-color: $snap-dark-danger-bg;
+        }
+
+        .grading-report tr.published td.submission,
+        #workshop-viewlet-yourgrades .finalgrades .grade.submissiongrade {
+            background-color: $snap-dark-info-bg;
+        }
+
+        .grading-report .givengrade.null .user,
+        .grading-report .receivedgrade.null .user {
+            color: dark-readable(#e00, $dark-surface-page);
+        }
+
+        // Manual allocation: striped rows, a pale yellow highlight on the people you're hovering over, light lines
+        // and grey notes, from the allocation plugin's own styles.
+        .manual-allocator .allocations {
+            tbody tr:nth-of-type(odd) {
+                background-color: var(--bs-tertiary-bg);
+            }
+
+            tbody tr:nth-of-type(odd).highlightreviewedby {
+                background-color: inherit;
+            }
+
+            .highlightreviewedby .reviewedby,
+            .highlightreviewerof .reviewerof {
+                background-color: $snap-dark-warning-bg;
+            }
+
+            tr td.peer {
+                border-color: var(--bs-border-color);
+            }
+
+            .reviewedby .info,
+            .peer .info,
+            .reviewerof .info {
+                color: var(--bs-secondary-color);
+            }
+        }
+
+        // The rubric assessment form's grid lines.
+        .mform.frozen #id_rubric-grid-wrapper th,
+        .mform.frozen #id_rubric-grid-wrapper td,
+        .assessmentform.rubric #id_rubric-grid-wrapper th,
+        .assessmentform.rubric #id_rubric-grid-wrapper td {
+            border-color: var(--bs-border-color);
+        }
+
+        // The planner's task icons are backgrounds behind the task's text: the "to do" one is black, the others
+        // dark green, red and teal. They're drawn in front instead, where they can be made lighter without the text.
+        .userplan dd.phasetasks li {
+            position: relative;
+            background-image: none;
+
+            &::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 15px;
+                height: 20px;
+                background: url([[pix:mod_workshop|userplan/task-todo]]) 0 0 / 15px no-repeat;
+                filter: brightness(0) invert(0.87);
+            }
+
+            &.completed::before {
+                background-image: url([[pix:mod_workshop|userplan/task-done]]);
+                filter: brightness(1.6);
+            }
+
+            &.fail::before {
+                background-image: url([[pix:mod_workshop|userplan/task-fail]]);
+                filter: brightness(1.5);
+            }
+
+            &.info::before {
+                background-image: url([[pix:mod_workshop|userplan/task-info]]);
+                filter: brightness(1.5);
+            }
+        }
     }
 }
