@@ -8035,8 +8035,9 @@ li.section.main {
     pointer-events: none !important;
 }
 
-// Fixes for dropdown menu in RTL for moodle 4.x.
-.dir-rtl .dropdown-menu {
+// Fixes for dropdown menu in RTL for moodle 4.x. Not the colour mode menu, which opens beside the sidebar,
+// fixed in the window, where these would move it to the bottom of the screen.
+.dir-rtl .dropdown-menu:not(#colourmode-action-menu) {
     transform: none !important; /* stylelint-disable-line declaration-no-important */
     top: 100% !important; /* stylelint-disable-line declaration-no-important */
     right: inherit !important; /* stylelint-disable-line declaration-no-important */

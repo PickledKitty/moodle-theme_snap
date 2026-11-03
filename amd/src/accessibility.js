@@ -378,7 +378,9 @@ define(['jquery', 'core/str', 'core/event', 'core_form/events', 'bootstrap/util/
                                         headerFocusables[headerFocusables.length - 1] : null;
                                 }
                             }
-                            let afterDrawers = document.querySelector('#snap-sidebar-menu > button.snap-sidebar-menu-trigger');
+                            // The colour mode switch comes after the drawer buttons when there is one.
+                            let afterDrawers = document.querySelector('#snap-sidebar-menu #colourmode-menu-toggle') ||
+                                document.querySelector('#snap-sidebar-menu > button.snap-sidebar-menu-trigger');
 
                             let adminDrawerFirst = null;
                             let adminDrawerLast = null;

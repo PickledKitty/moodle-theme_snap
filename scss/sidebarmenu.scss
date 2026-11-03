@@ -69,7 +69,6 @@ $mobile-sidebar-peek-width: 10px;
 
     .snap-sidebar-menu.show & {
         display: flex;
-        transform: translateX(0);
     }
 
     // Force white color for all links and icons inside the content area
@@ -521,4 +520,31 @@ body.snap_drawer_open {
 // Styles particular to the blocks drawer.
 #theme_snap-drawers-blocks.show {
   z-index: $sidebar-z-index;
+}
+
+// The colour mode switch. Its menu opens beside the sidebar, so it keeps the menu's own colours.
+.snap-sidebar-menu-content .snap-colour-mode {
+    #colourmode-menu-toggle:focus-visible {
+        outline: 3px solid #fff;
+        outline-offset: 0;
+    }
+
+    .dropdown-menu {
+        .dropdown-item,
+        .dropdown-item .fa {
+            color: var(--bs-dropdown-link-color) !important;
+        }
+
+        .dropdown-item .fa {
+            width: auto;
+            height: auto;
+            display: inline-block;
+        }
+
+        // White on Snap's brand colour background, as in other menus.
+        .dropdown-item:is(.active, :hover, :focus),
+        .dropdown-item:is(.active, :hover, :focus) .fa {
+            color: #fff !important;
+        }
+    }
 }

@@ -213,6 +213,15 @@ if (isloggedin() && !isguestuser() && !$snapmfapending) {
         ];
     }
 
+    // Light, dark or automatic colours, Moodle's own menu, when the site lets people choose.
+    $colourmodemenu = $OUTPUT->colour_mode_menu();
+    if (!empty($colourmodemenu)) {
+        $sidebarmenuitems[] = [
+            'customcontent' => $colourmodemenu,
+            'classes' => 'snap-colour-mode',
+        ];
+    }
+
     // Only render the sidebar menu if there are items to display.
     if (!empty($sidebarmenuitems)) {
         $opensidebar = true; // Opened by default.
