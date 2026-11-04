@@ -1759,6 +1759,8 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
     &.path-mod .activity-information .completion-info button {
         &:hover, &:focus {
             background-color: $brand-primary;
+            // White on the brand colour, in both colour modes; the buttons' own hover and focus text can be dark.
+            color: #fff;
         }
     }
 
