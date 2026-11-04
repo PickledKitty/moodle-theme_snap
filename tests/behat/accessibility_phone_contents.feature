@@ -39,6 +39,7 @@ Feature: Contents on phones, and searching it
       | activity | name            | intro                    | course | idnumber | section |
       | assign   | Test assignment | An assignment to hand in | C1     | assign1  | 1       |
       | page     | Reading list    | Books for this course    | C1     | page1    | 1       |
+      | label    | Week 1 readings | Week 1 readings          | C1     | label1   | 1       |
 
   @javascript @accessibility
   Scenario: On a phone, Contents opens from the sidebar on the course page
@@ -98,3 +99,25 @@ Feature: Contents on phones, and searching it
     And I click on "Reading list" "link" in the "#toc-search-results" "css_element"
     And I should see "Reading list" in the "#region-main" "css_element"
     And I should not see "Test assignment" in the "#region-main" "css_element"
+
+  @javascript
+  Scenario: The course index search finds a label on the course page
+    Given I change viewport size to "1366x900"
+    And I log in as "student1"
+    And I am on the course main page for "C1"
+    When I set the field "Search contents" to "Week 1"
+    Then I should see "Week 1 readings" in the "#toc-search-results" "css_element"
+    And I click on "Week 1 readings" "link" in the "#toc-search-results" "css_element"
+    And "#section-1.state-visible" "css_element" should be visible
+    And I should see "Week 1 readings" in the "#section-1 li.modtype_label" "css_element"
+
+  @javascript
+  Scenario: On a phone, a label found from an activity page opens the course page at it
+    Given I change viewport size to "360x740"
+    And I log in as "student1"
+    And I am on the "Test assignment" "assign activity" page
+    And I click on ".snap-courseindex-sidebar-button" "css_element"
+    When I set the field "Search contents" to "Week 1"
+    And I click on "Week 1 readings" "link" in the "#toc-search-results" "css_element"
+    Then "#section-1.state-visible" "css_element" should be visible
+    And I should see "Week 1 readings" in the "#section-1 li.modtype_label" "css_element"

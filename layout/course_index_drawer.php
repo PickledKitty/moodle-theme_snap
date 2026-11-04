@@ -121,9 +121,6 @@ function get_modules(array $hiddencmids, bool $onactivitypage = false) {
     $modules = [];
 
     foreach ($modinfo->get_cms() as $cm) {
-        if ($cm->modname == 'label') {
-            continue;
-        }
         if ($cm->sectionnum > $numsections) {
             continue; // Module outside of number of sections.
         }
@@ -146,7 +143,16 @@ function get_modules(array $hiddencmids, bool $onactivitypage = false) {
         }
         $sectioninfo = $modinfo->get_section_info($cm->sectionnum);
         $targetsectionid = $sectioninfo ? $sectioninfo->id : $cm->sectionnum;
-        $module->url = ($onactivitypage && $cm->url) ? $cm->url->out(false) : '#section-'.$targetsectionid.'&module-'.$cm->id;
+        // On the course page, open its section and scroll to it. On an activity page, open its own page, or for
+        // one without a page (a label) the course page there.
+        $coursepagehash = 'section-' . $targetsectionid . '&module-' . $cm->id;
+        if (!$onactivitypage) {
+            $module->url = '#' . $coursepagehash;
+        } else if ($cm->url) {
+            $module->url = $cm->url->out(false);
+        } else {
+            $module->url = (new moodle_url('/course/view.php', ['id' => $cm->course], $coursepagehash))->out(false);
+        }
 
         $module->formattedname = $cm->get_formatted_name();
         $modules[] = $module;
