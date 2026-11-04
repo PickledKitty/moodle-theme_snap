@@ -1643,17 +1643,11 @@ $mr-nav-zindex: 1052;
         }
     }
 
-    #user-action-menu #carousel-item-main a[href*="my/courses.php"] {
-        display: none;
-    }
-
+    // My Courses is always in the user menu, so on phones the header's link goes, rather than being left
+    // without its text (and so without a name).
     @include media-breakpoint-down(sm) {
-        .snap-my-courses-link span {
+        #snap-my-courses-trigger.snap-my-courses-link {
             display: none;
-        }
-
-        #user-action-menu #carousel-item-main a[href*="my/courses.php"] {
-            display: block;
         }
     }
 
