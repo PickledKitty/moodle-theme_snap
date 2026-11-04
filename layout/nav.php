@@ -173,6 +173,27 @@ if (isloggedin() && !isguestuser() && !$snapmfapending) {
         }
     }
     
+    // Contents (the course index) on phones, where the tab at the left edge would take room from the page.
+    // Pages with the course index: the course page, and activities in a course format that uses it.
+    $hascourseindex = $PAGE->course->id != SITEID && course_get_format($PAGE->course)->uses_course_index()
+        && ($PAGE->pagelayout === 'course' || $PAGE->cm);
+    if ($hascourseindex) {
+        $sidebarmenuitems[] = [
+            'title' => get_string('contents', 'theme_snap'),
+            'iconimg' => $OUTPUT->image_url('e/sidebar_left', 'core'),
+            'isbutton' => true,
+            'ariaexpanded' => 'false',
+            'ariacontrols' => 'theme_boost-drawers-courseindex',
+            'dataattributes' => [
+                ['name' => 'toggler', 'value' => 'drawers'],
+                ['name' => 'action', 'value' => 'toggle'],
+                ['name' => 'target', 'value' => 'theme_boost-drawers-courseindex'],
+                ['name' => 'activeselector', 'value' => '#theme_boost-drawers-courseindex.show'],
+            ],
+            'classes' => 'snap-courseindex-sidebar-button',
+        ];
+    }
+
     // Only add blocks drawer button if there are blocks and page type matches whitelist.
     if ($hasblocks && $pagematcheswhitelist) {
         $sidebarmenuitems[] = [

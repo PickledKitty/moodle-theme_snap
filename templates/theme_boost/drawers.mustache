@@ -71,8 +71,12 @@
             {{$tooltipplacement}}right{{/tooltipplacement}}
             {{$closebuttontext}}{{#str}}closecourseindex, core{{/str}}{{/closebuttontext}}
             {{$closebuttonicon}}
-                <span class="dir-rtl-hide">{{#pix}} e/sidebar_left, core {{/pix}}</span>
-                <span class="dir-ltr-hide">{{#pix}} e/sidebar_right, core {{/pix}}</span>
+                {{! A cross on phones, as on the sidebar's other panels; the sidebar icon beside its tab on wider screens. }}
+                <span class="d-md-none">{{#pix}} e/cancel, core {{/pix}}</span>
+                <span class="d-none d-md-inline">
+                    <span class="dir-rtl-hide">{{#pix}} e/sidebar_left, core {{/pix}}</span>
+                    <span class="dir-ltr-hide">{{#pix}} e/sidebar_right, core {{/pix}}</span>
+                </span>
             {{/closebuttonicon}}
         {{/ theme_boost/drawer}}
     {{/courseindex}}

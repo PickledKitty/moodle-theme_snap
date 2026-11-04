@@ -41,6 +41,7 @@ const SELECTORS = {
     DRAWER_BUTTON: '.snap-sidebar-menu-item[data-activeselector], ' +
         '.drawer-toggler.drawer-left-toggle [data-activeselector]',
     COURSE_INDEX_DRAWER_BUTTON: '.drawer-toggler.drawer-left-toggle',
+    COURSE_PAGE_INDEX: '.path-course-view #theme_boost-drawers-courseindex',
     MESSAGES_POPOVER: '[data-region="popover-region-messages"]',
     CLOSE_DRAWER_BUTTON: '[data-action="closedrawer"]',
     NAV_UNPINNED: '#mr-nav.headroom--unpinned',
@@ -72,6 +73,8 @@ const DRAWERS = {
     SELECTORS: [
         // The course index sits in the course page layout; on activity pages it's a panel like the rest.
         '.drawer:not(.path-course-view #theme_boost-drawers-courseindex)',
+        // On phones the course page's is a panel too (see isPhoneCourseIndex).
+        '.path-course-view #theme_boost-drawers-courseindex',
         '.block_settings.block',
         '#snap_feeds_side_menu',
         '.drawer:has(.message-app)',
@@ -166,9 +169,18 @@ const toggleSidebar = () => {
  * @returns {boolean} True when the drawer must keep its stylesheet geometry.
  */
 const skipsInlinePositioning = (element) => {
-    return SKIP_MESSAGE_DRAWER_POSITIONING_BODY_IDS.includes(document.body.id)
-        && element.matches(SELECTORS.MESSAGE_DRAWER_ROOT);
+    return (SKIP_MESSAGE_DRAWER_POSITIONING_BODY_IDS.includes(document.body.id)
+        && element.matches(SELECTORS.MESSAGE_DRAWER_ROOT))
+        || (element.matches(SELECTORS.COURSE_PAGE_INDEX) && !isPhoneCourseIndex());
 };
+
+/**
+ * Whether the course page's course index is a panel opened from the sidebar, as on phones (sidebarmenu.scss),
+ * rather than part of the page layout.
+ *
+ * @returns {boolean}
+ */
+const isPhoneCourseIndex = () => window.matchMedia('(max-width: 767.98px)').matches;
 
 /**
  * Update the position of UI elements relative to the header
@@ -211,6 +223,12 @@ const updateElementPositions = (selectors = null) => {
             
             elements.forEach(element => {
                 if (skipsInlinePositioning(element)) {
+                    if (element.matches(SELECTORS.COURSE_PAGE_INDEX)) {
+                        // Back in the page layout on a wider screen: drop the panel's position.
+                        element.style.removeProperty('top');
+                        element.style.removeProperty('height');
+                        element.style.removeProperty('max-height');
+                    }
                     return;
                 }
 
@@ -558,9 +576,12 @@ const setDrawerPreference = (activeSelector, value) => {
 const handleCloseDrawerClick = () => {
     repositionGotoTopLink();
     closeAiDrawer();
+    // Core now puts focus back on the button that opened the drawer: let it through.
+    allowFocusReturn();
     // Remove active classes from all drawer buttons
     document.querySelectorAll(SELECTORS.DRAWER_BUTTON).forEach(button => {
         button.classList.remove(CLASSES.ACTIVE);
+        setAriaExpanded(button, false);
         document.body.classList.remove(CLASSES.DRAWER_OPEN);
     });
     
@@ -958,6 +979,20 @@ const toggleBodyDrawerClass = () => {
 // Shared global state needed for blockUnwantedFocus.
 let userInitiated = false;
 
+// True for a moment after a drawer's close button is used, while core puts focus back on the opening button.
+let focusReturnAllowed = false;
+
+/**
+ * Let core's focus return to a drawer's opening button through blockUnwantedFocus, for long enough to cover
+ * its delayed focus after the drawer has closed (300ms).
+ */
+const allowFocusReturn = () => {
+    focusReturnAllowed = true;
+    setTimeout(() => {
+        focusReturnAllowed = false;
+    }, 500);
+};
+
 // Global listeners (run once)
 window.addEventListener("mousedown", () => { userInitiated = true; }, true);
 window.addEventListener("mouseup",   () => { userInitiated = false; }, true);
@@ -984,7 +1019,7 @@ const blockUnwantedFocus = (button) => {
         "focus", (e) => {
             const target = e.target;
 
-            if (!userInitiated) {
+            if (!userInitiated && !focusReturnAllowed) {
                 const prevOutline = target.style.outline;
                 const prevBoxShadow = target.style.boxShadow;
 

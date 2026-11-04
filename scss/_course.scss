@@ -260,6 +260,11 @@ li.section:focus {
     ul.topics,
     ul.sections {
         list-style: none;
+
+        // Phones: no list indent, so the cards use the width.
+        @include media-breakpoint-down(md) {
+            padding-left: 0;
+        }
     }
 }
 
@@ -2007,6 +2012,12 @@ body.snap-resource-card {
         .activity-item {
             margin: 1em 1%;
             padding-bottom: 2em;
+
+            // Phones: full width, as a side margin would push the card past the page's edge.
+            @include media-breakpoint-down(md) {
+                margin-left: 0;
+                margin-right: 0;
+            }
         }
 
         .activityiconcontainer,

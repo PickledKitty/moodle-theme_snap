@@ -490,6 +490,17 @@ body:has(.snap-sidebar-menu.show) #sticky-footer {
         margin-right: 0 !important;
         z-index: $sidebar-z-index + 5 !important;
     }
+
+    // The course index too, opened from the sidebar. dvh so its end stays above a phone browser's toolbar.
+    #theme_boost-drawers-courseindex.show {
+        top: 0 !important;
+        right: 0 !important;
+        height: 100dvh !important;
+        max-height: 100dvh !important;
+        width: 100vw !important;
+        max-width: unset !important;
+        z-index: $sidebar-z-index + 5 !important;
+    }
 }
 
 // This allow us to test this on Behat sites.
@@ -545,6 +556,61 @@ body.snap_drawer_open {
         .dropdown-item:is(.active, :hover, :focus),
         .dropdown-item:is(.active, :hover, :focus) .fa {
             color: #fff !important;
+        }
+    }
+}
+
+// Contents (the course index) in the sidebar. Below md it opens from this button instead of the tab at the
+// left edge (layout/nav.php), so it comes in from the right like the sidebar's other panels, over the page.
+.snap-courseindex-sidebar-button {
+    @include media-breakpoint-up(md) {
+        display: none;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    // Hidden, not just moved: Moodle also focuses the drawer's first toggle when it closes, and a hidden one
+    // can't take focus, so focus goes back to the sidebar button.
+    body > #page .drawer-toggles .drawer-toggler.drawer-left-toggle {
+        display: none;
+    }
+
+    .theme-snap #theme_boost-drawers-courseindex.drawer-left {
+        position: fixed;
+        left: auto;
+        right: calc(-100vw - 10px);
+        width: 22rem;
+        max-width: calc(100vw - #{$mobile-sidebar-width});
+        min-width: 0;
+        transition: right $transition-speed ease, visibility $transition-speed ease;
+
+        &.show {
+            right: $mobile-sidebar-width;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            transition: none;
+        }
+    }
+
+    // Snap hides the closed course index (_core.scss) so it takes no room in the page. Fixed and off the
+    // screen here it takes none anyway, and staying displayed (but hidden) lets it slide in.
+    body > #page:not(.show-drawer-left) #theme_boost-drawers-courseindex.drawer.drawer-left:not(.show) {
+        display: block;
+    }
+
+    // On the course page it no longer takes a column of the layout. The sidebar menu script places it below
+    // the header, to the bottom of the window, like the other panels, so it isn't a full window tall.
+    .path-course-view #page.show-drawer-left #page-wrapper {
+        width: auto;
+        min-width: 0;
+    }
+
+    .path-course-view #theme_boost-drawers-courseindex {
+        min-height: 0;
+
+        .drawercontent {
+            height: auto;
         }
     }
 }

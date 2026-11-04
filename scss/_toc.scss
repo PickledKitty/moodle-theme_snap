@@ -33,6 +33,12 @@ div[data-flexitour="step-background"] {
 #snap-course-wrapper {
   .row {
     margin: 0 4%;
+
+    // Phones: the Bootstrap column's padding is enough of a gutter.
+    @include media-breakpoint-down(md) {
+      margin-left: 0;
+      margin-right: 0;
+    }
   }
     position: relative;
 }

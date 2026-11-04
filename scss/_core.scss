@@ -498,8 +498,10 @@ table.boxwidthwide {
     }
 }
 @media (max-width: 767px) {
+    // The page's own padding is the gutter. No room is kept for the Contents tab, which is in Snap's sidebar
+    // on phones (sidebarmenu.scss), and the main area stays clear of the sidebar.
     #region-main {
-        margin: 0 4% !important;
+        margin: 0 !important;
     }
     #id_searchbyusernamecontainer,
     #id_searchbyemailcontainer {
