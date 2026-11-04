@@ -52,7 +52,7 @@ $tocformat = ($COURSE->format == 'topics' || $COURSE->format == 'weeks');
 // Add TOC search for Weeks & topics formats only.
 if ($tocformat) {
     // Add snap activities for course index search.
-    $coursetocmodules = get_modules($hiddencmids);
+    $coursetocmodules = get_modules($hiddencmids, !empty($snapactivitycourseindex));
     $tocmodules = (object)[
         'modules' => $coursetocmodules,
     ];
@@ -104,9 +104,11 @@ if (!empty($snapactivitycourseindex)) {
 
 /**
  * Get modules for course index search tool.
+ * @param array $hiddencmids Activities hidden from the course index.
+ * @param bool $onactivitypage On an activity page a result opens the activity; on the course page it scrolls to it.
  * @throws \core\exception\coding_exception
  */
-function get_modules(array $hiddencmids) {
+function get_modules(array $hiddencmids, bool $onactivitypage = false) {
     global $OUTPUT, $PAGE;
     // If course does not have any sections then exit - note, module search is not supported in course formats
     // that don't have sections.
@@ -144,7 +146,7 @@ function get_modules(array $hiddencmids) {
         }
         $sectioninfo = $modinfo->get_section_info($cm->sectionnum);
         $targetsectionid = $sectioninfo ? $sectioninfo->id : $cm->sectionnum;
-        $module->url = '#section-'.$targetsectionid.'&module-'.$cm->id;
+        $module->url = ($onactivitypage && $cm->url) ? $cm->url->out(false) : '#section-'.$targetsectionid.'&module-'.$cm->id;
 
         $module->formattedname = $cm->get_formatted_name();
         $modules[] = $module;

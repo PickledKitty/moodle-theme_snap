@@ -20,10 +20,10 @@
 # @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 
 @theme @theme_snap @theme_snap_ax
-Feature: Contents on phones
-  In order to have the page's width for the course on a phone
+Feature: Contents on phones, and searching it
+  In order to have the page's width for the course on a phone, and find an activity quickly
   As a user
-  I need to open the course index from Snap's sidebar, not from a tab at the edge of the page
+  I need to open the course index from Snap's sidebar on a phone, and search it from a box of its own
 
   Background:
     Given the following "users" exist:
@@ -38,6 +38,7 @@ Feature: Contents on phones
     And the following "activities" exist:
       | activity | name            | intro                    | course | idnumber | section |
       | assign   | Test assignment | An assignment to hand in | C1     | assign1  | 1       |
+      | page     | Reading list    | Books for this course    | C1     | page1    | 1       |
 
   @javascript @accessibility
   Scenario: On a phone, Contents opens from the sidebar on the course page
@@ -74,3 +75,26 @@ Feature: Contents on phones
     When I am on the "Test assignment" "assign activity" page
     Then ".drawer-toggles .drawer-left-toggle" "css_element" should be visible
     And ".snap-courseindex-sidebar-button" "css_element" should not be visible
+
+  @javascript @accessibility
+  Scenario: The course index search finds an activity on the course page
+    Given I change viewport size to "1366x900"
+    And I log in as "student1"
+    And I am on the course main page for "C1"
+    When I set the field "Search contents" to "Reading"
+    Then I should see "Reading list" in the "#toc-search-results" "css_element"
+    And I should not see "Test assignment" in the "#toc-search-results" "css_element"
+    And the page should meet accessibility standards
+
+  @javascript @accessibility
+  Scenario: On a phone, a search result on an activity page opens that activity
+    Given I change viewport size to "360x740"
+    And I log in as "student1"
+    And I am on the "Test assignment" "assign activity" page
+    And I click on ".snap-courseindex-sidebar-button" "css_element"
+    When I set the field "Search contents" to "Reading"
+    Then I should see "Reading list" in the "#toc-search-results" "css_element"
+    And the page should meet accessibility standards
+    And I click on "Reading list" "link" in the "#toc-search-results" "css_element"
+    And I should see "Reading list" in the "#region-main" "css_element"
+    And I should not see "Test assignment" in the "#region-main" "css_element"

@@ -563,9 +563,9 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
             border-color: $brand-primary;
         }
 
-        &:focus {
-            border-bottom: 1px solid $brand-primary;
-            outline: 3px auto $brand-primary;
+        &:focus-visible {
+            outline: 3px solid $brand-primary;
+            outline-offset: 1px;
         }
     }
 

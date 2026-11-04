@@ -321,6 +321,9 @@ define(['jquery', 'core/log', 'core/aria', 'theme_snap/headroom', 'theme_snap/ut
                     }
                 }
                 $('#toc-search-results').html(matches);
+                // The matches are copied from #toc-searchables, which is aria-hidden, so core leaves its links out of
+                // the tab order when it hides and shows the course index drawer. The results must be tabbable.
+                $('#toc-search-results a').attr('tabindex', '0').removeAttr('data-aria-hidden-tab-index');
             }
         };
 
