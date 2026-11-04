@@ -863,14 +863,9 @@ li.modtype_page {
             float: left;
             width: 100%;
         }
+        // No panel of its own, so the card is one colour.
         #pagemod-content-container {
-            background-color: #f8f9fa;
-            border-radius: 0.5em;
             padding: 1em;
-            // Dark mode: no panel, so the card is one colour.
-            @include dark-mode {
-                background-color: transparent;
-            }
         }
     }
 }

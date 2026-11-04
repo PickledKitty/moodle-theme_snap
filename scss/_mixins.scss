@@ -167,12 +167,9 @@
     }
 }
 
-// The off-white panel behind resource descriptions and content. In dark mode there's no panel: the card is one colour.
+// Resource descriptions and content: no panel of their own, so each card is one colour in both colour modes.
 @mixin snap-resource-panel {
-    background-color: $color-bk-resource;
-    @include dark-mode {
-        background-color: transparent;
-    }
+    background-color: transparent;
 }
 
 // Dark mode: dark tints of the status colours, behind light text, for boxes that are pale green, yellow, red or blue
