@@ -1054,7 +1054,7 @@ class course_renderer extends \core_course_renderer {
             foreach ($recentactivity as $modname => $moduleactivity) {
                 // Get mod icon, empty alt as title already there.
                 $img = \core\output\html_writer::tag('img', '', [
-                    'src' => $this->output->image_url('icon', $modname),
+                    'src' => $this->output->image_url('monologo', $modname),
                     'alt' => '',
                 ]);
 

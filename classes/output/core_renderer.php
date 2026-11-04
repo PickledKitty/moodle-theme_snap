@@ -1810,15 +1810,15 @@ HTML;
                 $resources[] = (object) [
                     'name' => $mod->name,
                     'title' => $mod->title,
-                    'icon' => ''.$OUTPUT->image_url('icon', $mod->name),
+                    'icon' => ''.$OUTPUT->image_url('monologo', $mod->name),
                     'link' => $mod->link .'&section=0', // Section is replaced by js.
                     'help' => $helptext
                 ];
             } else if ($mod->archetype !== MOD_ARCHETYPE_SYSTEM) {
                 // The name should be 'lti' instead of the module's URL which is the one we're getting.
-                $imageurl = $OUTPUT->image_url('icon', $mod->name);
+                $imageurl = $OUTPUT->image_url('monologo', $mod->name);
                 if (strpos($mod->name, 'lti:') !== false) {
-                    $imageurl = $OUTPUT->image_url('icon', 'lti');
+                    $imageurl = $OUTPUT->image_url('monologo', 'lti');
                     if (preg_match('/src="([^"]*)"/i', $mod->icon, $matches)) {
                         $imageurl = $matches[1]; // Use the custom icon.
                     }

@@ -957,7 +957,7 @@ class local {
                 $url = $url->out();
             }
 
-            $modimageurl = $output->image_url('icon', $cm->modname);
+            $modimageurl = $output->image_url('monologo', $cm->modname);
             $modname = get_string('modulename', 'mod_'.$cm->modname);
             if ($renderhtml) {
                 $modimage = \core\output\html_writer::img($modimageurl, $modname);
@@ -1053,7 +1053,7 @@ class local {
                 continue;
             }
 
-            $modimageurl = $output->image_url('icon', $cm->modname);
+            $modimageurl = $output->image_url('monologo', $cm->modname);
             $modname = get_string('modulename', 'mod_'.$cm->modname);
             if ($renderhtml) {
                 $modimage = \core\output\html_writer::img($modimageurl, $modname);
@@ -2532,7 +2532,7 @@ SQL;
                 $eventtitle = $event->name;
                 $eventsubtitle = $event->coursefullname;
 
-                $modimageurl = $output->image_url('icon', $cm->modname);
+                $modimageurl = $output->image_url('monologo', $cm->modname);
                 $modname = get_string('modulename', 'mod_'.$cm->modname);
                 if ($renderhtml) {
                     $modimage = \core\output\html_writer::img($modimageurl, $modname);
