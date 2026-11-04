@@ -42,6 +42,7 @@ const SELECTORS = {
         '.drawer-toggler.drawer-left-toggle [data-activeselector]',
     COURSE_INDEX_DRAWER_BUTTON: '.drawer-toggler.drawer-left-toggle',
     COURSE_PAGE_INDEX: '.path-course-view #theme_boost-drawers-courseindex',
+    COURSE_INDEX_LIST: 'nav.courseindex',
     MESSAGES_POPOVER: '[data-region="popover-region-messages"]',
     CLOSE_DRAWER_BUTTON: '[data-action="closedrawer"]',
     NAV_UNPINNED: '#mr-nav.headroom--unpinned',
@@ -183,6 +184,39 @@ const skipsInlinePositioning = (element) => {
 const isPhoneCourseIndex = () => window.matchMedia('(max-width: 767.98px)').matches;
 
 /**
+ * Keep the course page's course index (sticky, in the page layout on wider screens) inside the window, so the page
+ * doesn't have to scroll to reach the end of it: it sticks just below the header (or at the top when the header has
+ * slid away), and is as tall as the window below whichever is lower, that point or where the panel is now, but never
+ * so short that its list shows fewer than about 4 rows. layout/course_index_drawer.php does the same sum inline
+ * before the first paint, so the panel doesn't grow once this module loads: keep the two the same.
+ *
+ * @param {HTMLElement} element The course index drawer.
+ * @param {number} stickyTop Where the panel sticks, in px from the top of the window.
+ * @param {number} visibleHeight The window's height.
+ */
+const fitCoursePageIndex = (element, stickyTop, visibleHeight) => {
+    const top = `${stickyTop}px`;
+    let fit = visibleHeight - Math.max(stickyTop, element.getBoundingClientRect().top);
+    // Below a tall page header there may be little room left: keep about 4 rows (10rem) of the list, even if the panel
+    // then reaches below the window until the page is scrolled a little. Focusing a row scrolls the page to it.
+    const list = element.querySelector(SELECTORS.COURSE_INDEX_LIST);
+    if (list) {
+        const rem = parseFloat(window.getComputedStyle(document.documentElement).fontSize);
+        const minimum = element.offsetHeight - list.offsetHeight + Math.min(list.scrollHeight, 10 * rem);
+        fit = Math.max(fit, minimum);
+    }
+    const height = `${Math.round(fit)}px`;
+    // Only write what changed: this runs on every scroll.
+    if (element.style.top !== top) {
+        element.style.top = top;
+    }
+    if (element.style.height !== height) {
+        element.style.height = height;
+        element.style.maxHeight = height;
+    }
+};
+
+/**
  * Update the position of UI elements relative to the header
  * @param {Array|string|null} selectors - CSS selector(s) for elements to update, or null for sidebar only
  */
@@ -224,10 +258,7 @@ const updateElementPositions = (selectors = null) => {
             elements.forEach(element => {
                 if (skipsInlinePositioning(element)) {
                     if (element.matches(SELECTORS.COURSE_PAGE_INDEX)) {
-                        // Back in the page layout on a wider screen: drop the panel's position.
-                        element.style.removeProperty('top');
-                        element.style.removeProperty('height');
-                        element.style.removeProperty('max-height');
+                        fitCoursePageIndex(element, isNavUnpinned ? 0 : topPosition, visibleHeight);
                     }
                     return;
                 }
@@ -657,7 +688,12 @@ const setupEventListeners = () => {
     window.addEventListener('resize', () => {
         updateElementPositions(DRAWERS.SELECTORS);
     });
-    
+
+    // A drawer opened with Boost's toggles (such as the course index tab) was sized while it was hidden: size it again.
+    document.addEventListener('theme_boost/drawers:shown', () => {
+        updateElementPositions(DRAWERS.SELECTORS);
+    });
+
     window.addEventListener('scroll', () => {
         // Add a small delay to avoid performance issues with rapid scroll events
         setTimeout(() => {

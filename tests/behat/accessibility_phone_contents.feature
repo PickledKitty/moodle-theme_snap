@@ -78,6 +78,24 @@ Feature: Contents on phones, and searching it
     And ".snap-courseindex-sidebar-button" "css_element" should not be visible
 
   @javascript @accessibility
+  Scenario: On a larger screen, Contents fits the window on the course page, so only its list scrolls
+    Given the following "courses" exist:
+      | fullname | shortname | format | numsections | initsections |
+      | Course 2 | C2        | topics | 30          | 1            |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | student1 | C2     | student |
+    And I change viewport size to "1366x768"
+    And I log in as "student1"
+    When I am on the course main page for "C2"
+    Then the bottom of "#theme_boost-drawers-courseindex" should be inside the window
+    And the bottom of "#snap-course-tools" should be inside the window
+    And I scroll the page down by 600 pixels
+    And the bottom of "#theme_boost-drawers-courseindex" should be inside the window
+    And the bottom of "#snap-course-tools" should be inside the window
+    And the page should meet accessibility standards
+
+  @javascript @accessibility
   Scenario: The course index search finds an activity on the course page
     Given I change viewport size to "1366x900"
     And I log in as "student1"

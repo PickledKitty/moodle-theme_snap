@@ -99,6 +99,28 @@ if (!empty($snapactivitycourseindex)) {
     echo local::reset_usertours_container(
         $OUTPUT->render_from_template('theme_boost/drawers', $templatecontext)
     );
+    if ($courseindexopen) {
+        // Size the open course index before the first paint, so it doesn't grow once the page's scripts load. This is
+        // the same sum as fitCoursePageIndex() in amd/src/sidebar_menu.js, which takes over on scroll and resize:
+        // keep the two the same. Course page only, and not on phones, where the panel opens from the sidebar.
+        echo '<script>(function() {
+            var d = document.getElementById("theme_boost-drawers-courseindex");
+            var header = document.querySelector("header");
+            if (!d || !header || !document.body.classList.contains("path-course-view")
+                    || window.matchMedia("(max-width: 767.98px)").matches) {
+                return;
+            }
+            var top = Math.max(0, header.getBoundingClientRect().bottom);
+            var fit = window.innerHeight - Math.max(top, d.getBoundingClientRect().top);
+            var list = d.querySelector("nav.courseindex");
+            if (list) {
+                var rem = parseFloat(window.getComputedStyle(document.documentElement).fontSize);
+                fit = Math.max(fit, d.offsetHeight - list.offsetHeight + Math.min(list.scrollHeight, 10 * rem));
+            }
+            d.style.top = top + "px";
+            d.style.height = d.style.maxHeight = Math.round(fit) + "px";
+        })();</script>';
+    }
 }
 
 

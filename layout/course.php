@@ -34,9 +34,12 @@ $mastimage = ($COURSE->id != SITEID && local::has_cover_image()) ? 'mast-image' 
 // Check if in current path we must to hide TOC.
 $pathurl = local::current_url_path();
 $pathurl = $OUTPUT->get_path_hiddentoc($pathurl);
+// Print Contents' open state with the page (the same rule as course_index_drawer.php), so the content makes room for
+// it in the first paint. Otherwise Boost's drawer script adds the class after loading and the content jumps sideways.
+$pageclass = (isloggedin() && get_user_preferences('drawer-open-index', true) == true) ? ' class="show-drawer-left"' : '';
 ?>
 <!-- Moodle js hooks -->
-<div id="page">
+<div id="page"<?php echo $pageclass; ?>>
 <div id="page-content">
 
 <!--

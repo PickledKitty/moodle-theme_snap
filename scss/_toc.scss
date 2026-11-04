@@ -502,11 +502,31 @@ body > #page.show-drawer-left .drawer-toggler.snap-courseindex-toggle {
     min-width: 20em;
   }
 }
+// On the course page, sidebar_menu.js (fitCoursePageIndex) keeps the panel inside the window, so only its list
+// scrolls, not the page as well. The content fills the panel and the list shrinks to fit. No transition on top:
+// the height is measured from where the panel is, which must not be halfway through a slide.
+.path-course-view #theme_boost-drawers-courseindex {
+  min-height: 0;
+  transition: left 0.2s ease, visibility 0.2s ease;
+}
+// Boost shows a drawer as a block until its script has run (.not-initialized), which lets the open panel's list
+// take only its own height and then stretch once the script runs. Lay it out as it will be from the start. Below
+// 992px Boost's script closes it on load, so it stays hidden until then (as Boost has it).
+@include media-breakpoint-up(lg) {
+  .path-course-view #theme_boost-drawers-courseindex.show.not-initialized {
+    display: flex;
+  }
+}
 .path-course-view #theme_boost-drawers-courseindex .drawercontent {
-  height: 100vh;
+  height: auto;
+  min-height: 0;
   padding-top: 5em;
+  // The list (or Moodle's loading placeholder) takes all the room between the progress bar and the footer from the
+  // start, so the Course Dashboard link stays put when the real list replaces the placeholder.
   nav.courseindex {
     overflow: scroll;
+    flex: 1 1 auto;
+    min-height: 0;
   }
 
   &:has(#toc-desktop-menu-heading) {

@@ -1911,6 +1911,36 @@ JS;
     }
 
     /**
+     * Scroll the page down by a number of pixels.
+     *
+     * @When /^I scroll the page down by (?P<pixels_number>\d+) pixels$/
+     * @param int $pixels
+     */
+    public function i_scroll_the_page_down_by($pixels) {
+        $this->getSession()->executeScript('window.scrollBy({top: ' . (int)$pixels . ', behavior: "instant"});');
+    }
+
+    /**
+     * Checks that the bottom of an element is on screen, not below the bottom of the window. Waits up to 3 seconds,
+     * as scripts may still be placing the element after a scroll.
+     *
+     * @Then /^the bottom of "(?P<element_string>(?:[^"]|\\")*)" should be inside the window$/
+     * @param string $element CSS selector of the element to check
+     * @throws Exception
+     */
+    public function the_bottom_of_element_should_be_inside_the_window($element) {
+        $el = json_encode($element);
+        $check = "(function() { var el = document.querySelector($el);"
+            . " return !!el && Math.round(el.getBoundingClientRect().bottom) <= window.innerHeight; })()";
+        if (!$this->getSession()->wait(3000, $check)) {
+            $bottom = $this->getSession()->evaluateScript("(function() { var el = document.querySelector($el);"
+                . " return el ? Math.round(el.getBoundingClientRect().bottom) + ' (window ' + window.innerHeight + ')'"
+                . " : 'not found'; })()");
+            throw new Exception("The bottom of \"$element\" is not inside the window: $bottom.");
+        }
+    }
+
+    /**
      * Navigate to an activity view page without waiting for pending JS.
      *
      * Activities like LTI configured to open in a new window execute window.open() on page load,
