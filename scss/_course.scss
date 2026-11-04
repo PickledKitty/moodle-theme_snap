@@ -1394,6 +1394,24 @@ body.snap-resource-card li.snap-resource:not(.label) {
 .theme-snap .modtype_page .btn.pagemod-readmore .icon {
     color: inherit;
 }
+
+// Links in activity cards. Links inside a description or a page's content are underlined in both colour modes, so they
+// stand apart from the text around them by more than colour (WCAG 1.4.1). Links on their own (the activity's name, the
+// completion and submission line, date badges, Read more) aren't, in either mode: Boost underlines every link in the
+// main area in dark mode, so this needs two ids to win over its rule.
+.activity-item .no-overflow a:not(.btn),
+.activity-item .summary-text a:not(.btn),
+#pagemod-content-container a:not(.btn) {
+    text-decoration: underline;
+}
+
+#page #region-main .activity-item {
+    .activityname a,
+    .snap-completion-meta a,
+    .readmoreicon a {
+        text-decoration: none;
+    }
+}
 .section .activity-item .activity-actions .actions {
     align-items: center;
     right: 0;
