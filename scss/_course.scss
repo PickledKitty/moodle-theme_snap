@@ -1389,6 +1389,11 @@ body.snap-resource-card li.snap-resource:not(.label) {
     outline: 3px solid $brand-primary;
     outline-offset: 2px;
 }
+
+// Their arrow takes the button's text colour, so it stays visible when the button fills on hover and focus.
+.theme-snap .modtype_page .btn.pagemod-readmore .icon {
+    color: inherit;
+}
 .section .activity-item .activity-actions .actions {
     align-items: center;
     right: 0;
