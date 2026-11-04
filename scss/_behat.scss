@@ -30,12 +30,6 @@ html:has(body.behat-site) {
         scroll-behavior: auto !important;
     }
 
-    // Prevent the pop-up from covering other content, and causing Behat test failures in certain browsers.
-    #snap-footer-alert {
-        position: relative;
-        transition-property: none !important;
-    }
-
     // Raise the tag so it wins the hit-test.
     .cm_action_menu.actions a[id^="snap-restriction-"],
     .snap-conditional-tag {

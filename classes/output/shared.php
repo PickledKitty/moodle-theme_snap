@@ -1035,7 +1035,7 @@ EOF;
 
         $userboard  = '<div id="snap-student-dashboard" class="row clearfix">';
         $userboard .= '<div class="col-xs-6">';
-        $userboard .= '<h4 class="h6">' . s(fullname($USER)) . '</h4>';
+        $userboard .= '<h3 class="h6">' . s(fullname($USER)) . '</h3>';
         $userboard .= $userpic;
         $userboard .= '</div>';
 
@@ -1043,7 +1043,7 @@ EOF;
         if ($COURSE->enablecompletion) {
             $progress = local::course_completion_progress($COURSE);
             $userboard .= '<div class="col-xs-3 text-center snap-student-dashboard-progress">';
-            $userboard .= '<h4 class="h6">' . get_string('progress', 'theme_snap') . '</h6>';
+            $userboard .= '<h3 class="h6">' . get_string('progress', 'theme_snap') . '</h3>';
             $userboard .= '<div class="js-progressbar-circle snap-progress-circle" value="'
                 . round($progress->progress ?? 0) . '"></div>';
             $userboard .= '</div>';
@@ -1071,7 +1071,7 @@ EOF;
             $moodleurl = new moodle_url('/grade/report/user/index.php', ['id' => $COURSE->id, 'userid' => $USER->id]);
 
             $userboard .= '<div class="col-xs-3 text-center snap-student-dashboard-grade">';
-            $userboard .= '<h4 class="h6">' . get_string('gradenoun') . '</h6>';
+            $userboard .= '<h3 class="h6">' . get_string('gradenoun') . '</h3>';
             $userboard .= '<a href="' . $moodleurl . '">';
             $userboard .= '<div class="js-progressbar-circle snap-progress-circle snap-progressbar-link" value="';
             $userboard .= s($coursegrade) . '"gradeformat="' . $displayformat . '" ></div>';

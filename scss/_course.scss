@@ -1370,11 +1370,11 @@ body.snap-resource-card li.snap-resource:not(.label) {
 
 .theme-snap .activity-item .activity-altcontent.activity-description {
     border: none;
+    // Boost's grey for descriptions is too faint on the card (4.44:1), including a book's, which sits a level further down.
+    color: var(--#{$prefix}secondary-color);
     >.no-overflow,
     .summary-container {
         @include snap-resource-panel;
-        // Boost's grey for descriptions is too faint on the panel.
-        color: var(--#{$prefix}secondary-color);
         border-radius: 0.5em;
         padding: 1em;
         margin: 1em 0;
@@ -3178,11 +3178,6 @@ form.togglecompletion {
     min-width: unset;
 }
 
-// Modify H3 size so the chapter title inside a book activity has a correct size between the other words.
-.modtype_book .asset-wrapper .snap-asset-content .summary-text.row h4 {
-    font-size: 1em;
-}
-
 .moodle-actionmenu > ul > li {
     display: inline-block;
 }
@@ -3752,65 +3747,6 @@ body.path-course {
         &:hover {
             border-color: $state-success-text;
         }
-    }
-}
-
-#snap-footer-alert {
-    position: fixed;
-    z-index: 1;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #000;
-    color: #fff;
-    background-image: none !important;
-    outline: none !important;
-    // for animation..
-    max-height: 0;
-    overflow: hidden;
-    @include alakazam;
-    .spinner-three-quarters {
-        margin-left: 1em;
-        width: 1em;
-        height: 1em;
-    }
-    &.snap-footer-alert-visible {
-        padding: 0.5em 0;
-        max-height: 200px;
-        z-index: 2;
-    }
-}
-
-.snap-footer-alert-title {
-    text-transform: capitalize;
-    color: #fff !important;
-    display: inline-block;
-    padding: 1em;
-    margin-left: 4%;
-    width: 50%;
-}
-
-.snap-footer-alert-cancel {
-    float: right;
-    margin-right: 4%;
-    color: #fff !important;
-    opacity: 0.8;
-    visibility: hidden;
-
-    &:hover {
-        color: #fff;
-        opacity: 1;
-    }
-
-    &.state-visible {
-        visibility: visible;
-    }
-}
-
-// Small screen moving cancel link.
-@include media-breakpoint-down(md) {
-    .snap-footer-alert-cancel {
-        margin-right: 3em;
     }
 }
 

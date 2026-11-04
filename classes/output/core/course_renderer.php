@@ -708,8 +708,10 @@ class course_renderer extends \core_course_renderer {
                 $numclass = 'list-numbers';
         }
 
-        $toc = "<h4>".get_string('chapters', 'theme_snap')."</h4>";
-        $toc .= '<ol class="bookmod-chapters '.$numclass.'">';
+        // A label for the list, not a heading: activity names aren't headings, so a heading here would have no book name.
+        $labelid = 'snap-book-chapters-' . $cm->id;
+        $toc = '<p class="snap-book-chapters-label h4" id="' . $labelid . '">' . get_string('chapters', 'theme_snap') . '</p>';
+        $toc .= '<ol class="bookmod-chapters ' . $numclass . '" aria-labelledby="' . $labelid . '">';
         $closemeflag = false; // Control for indented lists.
         $chapterlist = '';
         foreach ($chapters as $ch) {
@@ -732,15 +734,6 @@ class course_renderer extends \core_course_renderer {
         }
         $toc .= $chapterlist.'</ol>';
         return $toc;
-    }
-
-    /**
-     * Return move notice.
-     * @return bool|string
-     * @throws \core\exception\moodle_exception
-     */
-    public function snap_footer_alert() {
-        return $this->output->render_from_template('theme_snap/footer_alert', null);
     }
 
     /**
@@ -839,7 +832,8 @@ class course_renderer extends \core_course_renderer {
             $teacherusers = $DB->get_records_list('user', 'id', $teacherids);
 
             // Course contacts.
-            $courseteachers .= '<h4 class="h5">'.get_string('coursecontacts', 'theme_snap').'</h4>';
+            $courseteachers .= '<h2 class="h5">'.get_string('coursecontacts', 'theme_snap').'</h2>';
+            $courseteachers .= '<ul>';
             foreach ($teachers as $teacher) {
                 if (!isset($teacherusers[$teacher['user']->id])) {
                     continue;
@@ -847,11 +841,12 @@ class course_renderer extends \core_course_renderer {
                 $teacheruser = $teacherusers[$teacher['user']->id];
                 $courseteachers .= $this->print_teacher_profile($teacheruser);
             }
+            $courseteachers .= '</ul>';
         }
         // If user can edit add link to manage users.
         if (has_capability('moodle/course:enrolreview', $context)) {
             if (empty($courseteachers)) {
-                $courseteachers = "<h4 class='h5'>".get_string('coursecontacts', 'theme_snap')."</h4>";
+                $courseteachers = "<h2 class='h5'>".get_string('coursecontacts', 'theme_snap')."</h2>";
             }
             $courseteachers .= '<br><a id="enrolled-users" class="btn btn-outline-secondary btn-sm"
                 href="'.$CFG->wwwroot.'/user/index.php?id='.$COURSE->id.'">'.get_string('enrolledusers', 'enrol').'</a>';
@@ -859,7 +854,7 @@ class course_renderer extends \core_course_renderer {
 
         // Course cummary.
         if (!empty($COURSE->summary)) {
-            $coursesummary = '<h4 class="h5">'.get_string('aboutcourse', 'theme_snap').'</h4>';
+            $coursesummary = '<h2 class="h5">'.get_string('aboutcourse', 'theme_snap').'</h2>';
             $formatoptions = new stdClass;
             $formatoptions->noclean = true;
             $formatoptions->overflowdiv = true;
@@ -873,7 +868,7 @@ class course_renderer extends \core_course_renderer {
         // If able to edit add link to edit summary.
         if (has_capability('moodle/course:update', $context)) {
             if (empty($coursesummary)) {
-                $coursesummary = '<h4 class="h5">'.get_string('aboutcourse', 'theme_snap').'</h4>';
+                $coursesummary = '<h2 class="h5">'.get_string('aboutcourse', 'theme_snap').'</h2>';
             }
             $coursesummary .= '<br><a id="edit-summary" class="btn btn-outline-secondary btn-sm"
             href="'.$CFG->wwwroot.'/course/edit.php?id='.$COURSE->id.'#id_descriptionhdr">'.get_string('edit').'</a>';
@@ -883,7 +878,7 @@ class course_renderer extends \core_course_renderer {
         $courserecentactivities = $this->get_mod_recent_activity($context);
         $courserecentactivity = '';
         if ($courserecentactivities) {
-            $courserecentactivity = '<h4 class="h5">'.get_string('recentactivity').'</h4>';
+            $courserecentactivity = '<h2 class="h5">'.get_string('recentactivity').'</h2>';
             if (!empty($courserecentactivities)) {
                 $courserecentactivity .= $courserecentactivities;
             }
@@ -891,7 +886,7 @@ class course_renderer extends \core_course_renderer {
         // If user can edit add link to moodle recent activity stuff.
         if (has_capability('moodle/course:update', $context)) {
             if (empty($courserecentactivities)) {
-                $courserecentactivity = '<h4 class="h5">'.get_string('recentactivity').'</h4>';
+                $courserecentactivity = '<h2 class="h5">'.get_string('recentactivity').'</h2>';
                 $courserecentactivity .= get_string('norecentactivity');
             }
             $courserecentactivity .= '<div class="col-xs-12 clearfix"><a href="'.$CFG->wwwroot.'/course/recent.php?id='
@@ -913,7 +908,7 @@ class course_renderer extends \core_course_renderer {
             return $output;
         } else {
             $output .= '<div class="row">';
-            $output .= '<div class="col-lg-3 col-md-4"><ul id="snap-course-footer-contacts">'.$courseteachers.'</ul></div>';
+            $output .= '<div class="col-lg-3 col-md-4"><div id="snap-course-footer-contacts">'.$courseteachers.'</div></div>';
             $output .= '<div class="col-lg-9 col-md-8"><div id="snap-course-footer-about">'.$coursesummary.'</div></div>';
             $output .= '<div class="col-sm-12"><div id="snap-course-footer-recent-activity">'.$courserecentactivity.'</div></div>';
             $output .= '</div>';

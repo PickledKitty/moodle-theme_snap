@@ -423,7 +423,7 @@ Single registration:
 |---|---|---|
 | `core\hook\output\before_footer_html_generation` | `\theme_snap\hook_callbacks::before_footer_html_generation` | 0 |
 
-Injects Snap-specific HTML before the closing `</body>` (web components, footer alerts, etc.).
+Injects Snap-specific HTML before the closing `</body>` (web components, etc.).
 
 ---
 
@@ -476,7 +476,7 @@ Feeds/social: `snap_feeds.mustache`, `snap_feeds_mobile_menu.mustache`
 
 Login: `login_alternative_methods.mustache`, `login_base_methods.mustache`, `carousel.mustache`
 
-Utilities: `media_object.mustache`, `custom_menu_item.mustache`, `footer_alert.mustache`, `form_alert.mustache`, `heading_help_collapse.mustache`, `animated_graphics_pause.mustache`, `return_to_normal_role.mustache`
+Utilities: `media_object.mustache`, `custom_menu_item.mustache`, `form_alert.mustache`, `heading_help_collapse.mustache`, `animated_graphics_pause.mustache`, `return_to_normal_role.mustache`
 
 ---
 
@@ -527,6 +527,6 @@ Utilities: `media_object.mustache`, `custom_menu_item.mustache`, `footer_alert.m
 `alternative_role_handler-lazy.js`, `dndupload-lazy.js`, `login_render-lazy.js`, `conversation_badge_count-lazy.js`
 
 **Other:**
-`wcloader.js` (web components), `footer_alert.js`, `messages.js`, `ajax_notification.js`
+`wcloader.js` (web components), `messages.js`, `ajax_notification.js`
 
 ---

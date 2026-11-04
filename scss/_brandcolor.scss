@@ -491,8 +491,7 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
     &#page-site-index #page-header,
     &#page-login-index #page,
     .news-article-image,
-    .news-article-preview,
-    #snap-footer-alert {
+    .news-article-preview {
         background-image: none;
         background-color: $brand-primary;
     }

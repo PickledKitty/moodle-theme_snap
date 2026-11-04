@@ -75,7 +75,6 @@ echo '<div class="col-lg-12">';
 <?php
 echo $OUTPUT->course_content_header();
 $output = $PAGE->get_renderer('core', 'course');
-echo $output->snap_footer_alert();
 echo $OUTPUT->course_modchooser();
 echo $OUTPUT->main_content();
 echo \theme_snap\output\shared::course_tools(true);
