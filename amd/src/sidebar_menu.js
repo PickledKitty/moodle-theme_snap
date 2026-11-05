@@ -48,6 +48,8 @@ const SELECTORS = {
     NAV_UNPINNED: '#mr-nav.headroom--unpinned',
     GOTO_TOP_LINK: '#goto-top-link',
     PAGE_HEADER: 'page-header',
+    PAGE_HEADER_CRUMBS: '#page-title ~ .breadcrumb-nav',
+    PAGE_TITLE: '#page-title',
     DRAWER_LEFT: '.drawer-left.drawer',
     SNAP_COURSE_FOOTER: 'snap-course-footer',
     SITE_FOOTER: 'moodle-footer',
@@ -297,7 +299,9 @@ const updateElementPositions = (selectors = null) => {
 
     if (courseindexbutton && drawer) {
         const updateButtonVisibility = () => {
-            const pageHeader = document.getElementById(SELECTORS.PAGE_HEADER);
+            // Below the whole page header: the band, then the title strip and the breadcrumbs under it.
+            const pageHeader = document.querySelector(SELECTORS.PAGE_HEADER_CRUMBS) ||
+                document.querySelector(SELECTORS.PAGE_TITLE) || document.getElementById(SELECTORS.PAGE_HEADER);
             const headerRect = pageHeader.getBoundingClientRect();
             const footerRect = footer.getBoundingClientRect();
 

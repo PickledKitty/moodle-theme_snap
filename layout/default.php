@@ -52,25 +52,31 @@ $PAGE->set_show_navigation_footer(false);
 <?php
 echo $OUTPUT->custom_menu_spacer();
 ?>
+<?php if ($PAGE->pagetype === 'site-index') { ?>
 <div id="page-header" class="clearfix <?php echo $mastimage; ?> <?php echo $carouselheader; ?>">
-    <?php if ($PAGE->pagetype !== 'site-index' && $PAGE->navbar->has_items()) { ?>
-        <nav class="breadcrumb-nav" aria-label="breadcrumbs"><?php echo $OUTPUT->navbar(); ?></nav>
-    <?php }
+    <?php
         if ($carousel) {
             // Front page carousel.
             echo $carousel;
         } else {
             // Front page banner image.
-    ?>
-        <?php
             echo $OUTPUT->snap_page_header();
-
-        } // End else.
-        if ($PAGE->pagetype == 'admin-search') {
-            echo implode('', $PAGE->get_header_actions());
         }
-        ?>
+    ?>
 </div>
+<?php } else {
+    // Other pages: a band with the cover image (or the brand gradient), the title strip below it, then the breadcrumbs.
+    echo $OUTPUT->snap_header_band($mastimage);
+    echo '<div id="page-title">';
+    echo $OUTPUT->snap_page_header();
+    if ($PAGE->pagetype == 'admin-search') {
+        echo implode('', $PAGE->get_header_actions());
+    }
+    echo '</div>';
+    if ($PAGE->navbar->has_items()) {
+        echo '<div class="breadcrumb-nav">' . $OUTPUT->navbar() . '</div>';
+    }
+} ?>
 <?php
 if ($PAGE->cm && course_get_format($COURSE)->uses_course_index()) {
     // The course index, as on the course page, to move around the course from any activity.

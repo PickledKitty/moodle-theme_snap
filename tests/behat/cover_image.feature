@@ -77,9 +77,9 @@ Feature: When the moodle theme is set to Snap, cover image can be set for site a
     And I click on ".btn.ok" "css_element"
     Then I should see cover image in page header
     # Breadcrumb has now white background and site font-color.
-    And I check element ".mast-image .breadcrumb a" with color "#82009E"
+    And I check element ".breadcrumb-nav .breadcrumb a" with color "#82009E"
     And I reload the page
-    And I check element ".mast-image .breadcrumb a" with color "#82009E"
+    And I check element ".breadcrumb-nav .breadcrumb a" with color "#82009E"
     Then I should see cover image in page header
     # Test deleting cover image
     And I click on "#snap-coverimagecontrol label" "css_element"
@@ -330,7 +330,7 @@ Feature: When the moodle theme is set to Snap, cover image can be set for site a
       | wiki  | title      | content            |
       | wiki1 | First page | First page content |
     When I am on the "Test wiki" "wiki activity" page logged in as student1
-    Then "#page-header input[aria-label='Search wikis']" "css_element" should not exist
+    Then "#page-title input[aria-label='Search wikis']" "css_element" should not exist
     And "#region-main input[aria-label='Search wikis']" "css_element" should exist
     # The form is the first thing in #region-main, directly after the skip link target.
     And "#region-main > span#maincontent + .snap-relocated-heading-button" "css_element" should exist
@@ -356,5 +356,5 @@ Feature: When the moodle theme is set to Snap, cover image can be set for site a
     When I set the field "searchstring" to "content"
     And I press "Search wikis"
     Then I should see "First page content"
-    And "#page-header input[aria-label='Search wikis']" "css_element" should not exist
+    And "#page-title input[aria-label='Search wikis']" "css_element" should not exist
     And "#region-main input[aria-label='Search wikis']" "css_element" should exist

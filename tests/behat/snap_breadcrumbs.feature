@@ -37,21 +37,21 @@ Feature: Check that the breadcrumbs are being shown correctly.
       | admin    | C1 | manager |
 
   @javascript
-  Scenario Outline: Breadcrumbs are displayed correctly when default home page is set as "Site".
+  Scenario Outline: Breadcrumbs start at My Courses, without Home or Dashboard, whatever the default home page
     Given the following config values are set as admin:
       | defaulthomepage | <defaulthomepage> |
     And I log in as "<user>"
     And I am on the course main page for "C1"
-    And I should see "<homepage>" in the ".breadcrumb" "css_element"
-    And I should see "My courses" in the ".breadcrumb" "css_element"
+    Then "My Courses" "link" should exist in the ".breadcrumb li.snap-crumb-mycourses:first-child" "css_element"
+    And "C1" "link" should exist in the ".breadcrumb li.snap-crumb-course" "css_element"
+    And I should not see "Home" in the ".breadcrumb" "css_element"
+    And I should not see "Dashboard" in the ".breadcrumb" "css_element"
     Examples:
-      | user     | defaulthomepage | homepage  |
-      | admin    | 0               | Home      |
-      | teacher1 | 0               | Home      |
-      | student1 | 0               | Home      |
-      | admin    | 1               | Dashboard |
-      | teacher1 | 1               | Dashboard |
-      | student1 | 1               | Dashboard |
-      | admin    | 2               | Dashboard |
-      | teacher1 | 2               | Dashboard |
-      | student1 | 2               | Dashboard |
+      | user     | defaulthomepage |
+      | admin    | 0               |
+      | teacher1 | 0               |
+      | student1 | 0               |
+      | admin    | 1               |
+      | student1 | 1               |
+      | admin    | 2               |
+      | student1 | 2               |

@@ -764,6 +764,31 @@ define(['jquery', 'core/log', 'core/aria', 'theme_snap/headroom', 'theme_snap/ut
                 $(this).parent().prev().css('visibility', 'hidden');
             });
 
+            // A long page title is cut to two lines (_core.scss): its button shows only when it's actually cut short (on
+            // a wide screen it may fit), and shows it in full, then cuts it short again.
+            var checkTitleClamp = function() {
+                var title = document.querySelector('#page-title h1.snap-title-long');
+                if (!title || title.classList.contains('snap-title-expanded')) {
+                    return;
+                }
+                document.getElementById('page-title').classList.toggle('snap-title-clamped',
+                    title.scrollHeight > title.clientHeight + 1);
+            };
+            checkTitleClamp();
+            var titleResizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(titleResizeTimer);
+                titleResizeTimer = setTimeout(checkTitleClamp, 150);
+            });
+            $(document).on('click', '.snap-title-toggle', function() {
+                var expanded = this.getAttribute('aria-expanded') !== 'true';
+                var label = expanded ? this.dataset.less : this.dataset.more;
+                document.getElementById(this.getAttribute('aria-controls')).classList.toggle('snap-title-expanded', expanded);
+                this.setAttribute('aria-expanded', String(expanded));
+                this.setAttribute('title', label);
+                this.querySelector('.visually-hidden').textContent = label;
+            });
+
             // Initialise the scroll event listener.
             (new Scroll()).init();
 

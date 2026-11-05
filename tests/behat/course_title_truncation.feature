@@ -22,7 +22,7 @@
 # @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 
 @javascript @theme @theme_snap @theme_snap_course_title_truncation
-Feature: Long course and category titles are truncated with ellipsis in the Snap header
+Feature: Long course titles and breadcrumbs are shown in full in the Snap header; long category titles are truncated
 
   Background:
     Given the following "users" exist:
@@ -43,52 +43,35 @@ Feature: Long course and category titles are truncated with ellipsis in the Snap
     And the following config values are set as admin:
       | theme | snap |
 
-  Scenario: Course title and breadcrumb are truncated across views without cover image (desktop)
-    Given I log in as "teacher1"
+  Scenario: A long course title is cut to two lines with a button to show it all, and the breadcrumb is shown in full (desktop)
+    Given I log in as "admin"
     And I am on "MSc601-AdvSystematic-StratTeamComp-QuantMitig-TypeSpecific-EmpValSpecific-DefPivoting" course homepage
     And I should not see cover image in page header
-    Then the element "#page-mast h1" should have clipped content
-    And the "title" attribute of "#page-mast h1" "css_element" should contain "MSc 601: Advanced Systematic Methodologies"
-    And I am on the "MSc601-AdvSystematic-StratTeamComp-QuantMitig-TypeSpecific-EmpValSpecific-DefPivoting > Section 1" "course > section" page
-    And I should not see cover image in page header
-    Then the element "#page-mast h1" should have clipped content
-    And the "title" attribute of "#page-mast h1" "css_element" should contain "MSc 601: Advanced Systematic Methodologies"
+    Then the element "#page-title #page-mast h1" should have clipped content
+    And "#page-title h1.snap-title-long" "css_element" should exist
+    And the element "#page-title" should fit its width
+    And I click on "Show the full title" "button"
+    And the element "#page-title #page-mast h1" should not have clipped content
     And I am on the "Long Title Forum" "forum activity" page
-    Then the element ".breadcrumb-nav a[href*='/course/view.php']" should have horizontally clipped content
-    And the "title" attribute of ".breadcrumb-nav a[href*='/course/view.php']" "css_element" should contain "MSc 601: Advanced Systematic Methodologies"
-
-  Scenario: Course title, aspect ratio and breadcrumb are correct across views with cover image (desktop)
-    Given I log in as "admin"
+    And the element "#page-title #page-mast h1" should have clipped content
+    And the element ".breadcrumb-nav" should fit its width
+    And the element ".breadcrumb-nav a[href*='/course/view.php']" should fit its width
     And I am on "MSc601-AdvSystematic-StratTeamComp-QuantMitig-TypeSpecific-EmpValSpecific-DefPivoting" course homepage
     And I upload cover image "bpd_bikes_1280px.jpg"
     And I should see cover image in page header
-    Then the element "#page-mast h1" should have clipped content
-    And the "title" attribute of "#page-mast h1" "css_element" should contain "MSc 601: Advanced Systematic Methodologies"
-    And I am on the "MSc601-AdvSystematic-StratTeamComp-QuantMitig-TypeSpecific-EmpValSpecific-DefPivoting > Section 1" "course > section" page
-    And I should see cover image in page header
-    Then the element "#page-mast h1" should have clipped content
-    And the "title" attribute of "#page-mast h1" "css_element" should contain "MSc 601: Advanced Systematic Methodologies"
-    And I am on the "Long Title Forum" "forum activity" page
-    Then the element ".breadcrumb-nav a[href*='/course/view.php']" should have horizontally clipped content
-    And the "title" attribute of ".breadcrumb-nav a[href*='/course/view.php']" "css_element" should contain "MSc 601: Advanced Systematic Methodologies"
+    And the element "#page-title #page-mast h1" should have clipped content
 
-  Scenario: Course title is not truncated and breadcrumb is scrollable on mobile without cover image
+  Scenario: On a phone a long course title is cut to two lines with a button to show it all, and nothing scrolls sideways
     Given I log in as "teacher1"
     And I change window size to "mobile"
     And I am on "MSc601-AdvSystematic-StratTeamComp-QuantMitig-TypeSpecific-EmpValSpecific-DefPivoting" course homepage
-    Then the element "#page-mast h1" should not have clipped content
-    And the element ".breadcrumb-nav" should be horizontally scrollable
+    Then the element "#page-title #page-mast h1" should have clipped content
+    And I click on "Show the full title" "button"
+    And the element "#page-title #page-mast h1" should not have clipped content
+    And the element ".breadcrumb-nav" should fit its width
     And I am on the "Long Title Forum" "forum activity" page
-    Then the element ".breadcrumb-nav" should be horizontally scrollable
-
-  Scenario: Course title is not truncated on mobile even when cover image is set
-    Given I log in as "admin"
-    And I am on "MSc601-AdvSystematic-StratTeamComp-QuantMitig-TypeSpecific-EmpValSpecific-DefPivoting" course homepage
-    And I upload cover image "bpd_bikes_1280px.jpg"
-    And I should see cover image in page header
-    And I change window size to "mobile"
-    And I am on "MSc601-AdvSystematic-StratTeamComp-QuantMitig-TypeSpecific-EmpValSpecific-DefPivoting" course homepage
-    Then the element "#page-mast h1" should not have clipped content
+    And the element ".breadcrumb-nav" should fit its width
+    And the element ".breadcrumb-nav a[href*='/course/view.php']" should fit its width
 
   Scenario: Category title is truncated with ellipsis and shows tooltip with and without cover image (desktop)
     Given I log in as "admin"

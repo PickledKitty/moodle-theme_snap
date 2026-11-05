@@ -931,7 +931,8 @@ class behat_theme_snap extends behat_base {
      */
     public function  pageheader_has_cover_image() {
         $bgimage = $this->pageheader_backgroundimage();
-        if (empty($bgimage) || $bgimage === 'none') {
+        // An image URL: without a cover image the header band has a gradient, which isn't one.
+        if (empty($bgimage) || strpos($bgimage, 'url(') === false) {
             $msg = '#page-header does not have background image ('.$bgimage.')';
             $exception = new ExpectationException($msg, $this->getSession());
             throw $exception;
@@ -943,7 +944,7 @@ class behat_theme_snap extends behat_base {
      */
     public function pageheader_does_not_have_cover_image() {
         $bgimage = $this->pageheader_backgroundimage();
-        if (!empty($bgimage) && $bgimage !== 'none') {
+        if (!empty($bgimage) && strpos($bgimage, 'url(') !== false) {
             $msg = '#page-header has a background image ('.$bgimage.')';
             $exception = new ExpectationException($msg, $this->getSession());
             throw $exception;
@@ -1808,6 +1809,28 @@ class behat_theme_snap extends behat_base {
         }
         if (!$result) {
             throw new Exception("Element \"$element\" is not horizontally scrollable (scrollWidth is not greater than clientWidth).");
+        }
+    }
+
+    /**
+     * Checks that nothing in a CSS element is cut off or scrolls sideways (scrollWidth is not greater than clientWidth).
+     *
+     * @Then /^the element "(?P<element_string>(?:[^"]|\\")*)" should fit its width$/
+     * @param string $element CSS selector of the element to check
+     * @throws Exception
+     */
+    public function element_should_fit_its_width($element) {
+        $script = 'return (function() {
+            var el = document.querySelector("' . addslashes($element) . '");
+            if (!el) return null;
+            return [el.scrollWidth, el.clientWidth];
+        })()';
+        $result = $this->getSession()->getDriver()->evaluateScript($script);
+        if ($result === null) {
+            throw new Exception("Element \"$element\" not found.");
+        }
+        if ($result[0] > $result[1]) {
+            throw new Exception("Element \"$element\" is wider than it shows ({$result[0]}px of {$result[1]}px).");
         }
     }
 

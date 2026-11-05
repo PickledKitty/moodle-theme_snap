@@ -1920,18 +1920,6 @@ body > #page {
   }
 }
 
-// Styles when the custom menu is enabled.
-body.contains-snap-custom_menu-spacer {
-    .breadcrumb-nav {
-        @include media-breakpoint-up(md) {
-            margin-top: -.75em;
-        }
-        @include media-breakpoint-down(sm) {
-            margin-top: -1.5em;
-        }
-    }
-}
-
 #moodle-footer #snap-custom-menu-footer ul.snap-navbar-content li.nav-item .dropdown-menu[role="menu"] {
   background-color: #fff0;
   position: static;
@@ -2045,7 +2033,7 @@ body#page-site-index #moodle-page #page-header.snap-carousel-header {
 }
 
 body.path-course, body#page-course-index-category {
-    #moodle-page #page-header.mast-image {
+    #moodle-page #page-header.mast-image:not(.snap-header-band) {
         aspect-ratio: 6;
         width: 100%;
     }
@@ -2057,29 +2045,202 @@ body.path-course #moodle-page #page-header {
   aspect-ratio: unset;
 }
 
-// Breadcrumb - not really a breadcrumb like on the web, but something moodley
-// -------------------------
-
-.breadcrumb-nav {
-    float: none;
-    background-color: white;
-    width: fit-content;
-    padding: 0 1em;
-    border-radius: 0.5rem;
-    font-weight: 700;
-    @include media-breakpoint-up(md) {
-        margin-top: 1.75em;
-    }
-    @media (max-width: 768px) {
-        .breadcrumb:not(:empty) {
-            border: none;
+// The page header on every page but the front page and category pages (layout/default.php, layout/course.php,
+// theme_snap/my_courses): a band under the menu bar with the cover image or the brand gradient (_brandcolor.scss) and
+// no text, then the title strip, then the breadcrumbs.
+#page-header.snap-header-band {
+    height: 120px;
+    padding: 0;
+    margin-bottom: 0;
+    aspect-ratio: auto;
+    box-shadow: none;
+    @include media-breakpoint-down(md) {
+        height: 80px;
+        // Without a cover image the band is only colour: half height on phones, to keep room for the page.
+        &:not(.mast-image) {
+            height: 40px;
         }
     }
 }
 
-[data-bs-theme="dark"] {
-    .breadcrumb-nav {
-        background-color: var(--bs-body-bg);
+#page-title {
+    padding: 0.75rem 4% 0.5rem;
+    border-bottom: 3px solid $brand-primary;
+
+    #page-mast {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem 1rem;
+    }
+
+    // Large, and wraps, not shrunk by script. Very long titles (over 80 characters, such as a merged course's full
+    // name) get snap-title-long from core_renderer: a smaller size, cut to two lines with a button to show the rest
+    // (below).
+    #page-mast h1 {
+        flex: 1 1 20rem;
+        min-width: 0;
+        margin: 0;
+        font-size: unquote("clamp(1.5rem, 1.1rem + 1.5vw, 2.25rem)");
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+
+        &.snap-title-long {
+            font-size: 1.15rem;
+            line-height: 1.35;
+        }
+    }
+
+    // A long title is cut to two lines at every width, with a button to show the rest (core_renderer::snap_title_toggle(),
+    // theme_snap/snap). Only when scripts run (jsenabled), so it's never cut short without the button to show it. The
+    // button's space is always kept beside the title, so nothing moves when the script finds the title is cut short
+    // (snap-title-clamped) and shows it.
+    #page-mast h1.snap-title-long {
+        flex-basis: 0;
+    }
+
+    .snap-title-toggle {
+        display: none;
+        flex: none;
+        align-self: flex-start;
+        align-items: center;
+        justify-content: center;
+        min-width: 2rem;
+        min-height: 2rem;
+        padding: 0.25rem;
+
+        &[aria-expanded="true"] .icon {
+            transform: rotate(180deg);
+        }
+    }
+
+    body.jsenabled & {
+        #page-mast h1.snap-title-long:not(.snap-title-expanded) {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .snap-title-toggle {
+            display: inline-flex;
+            visibility: hidden;
+        }
+
+        &.snap-title-clamped .snap-title-toggle,
+        .snap-title-toggle[aria-expanded="true"] {
+            visibility: visible;
+        }
+    }
+}
+
+// Breadcrumb - not really a breadcrumb like on the web, but something moodley
+// -------------------------
+
+// Under the title strip, lined up with the title (core_renderer::navbar(), theme_snap core/navbar): My Courses | the
+// course's short name with a home icon / the rest, and Exit activity at the right on an activity's pages. The items
+// run on as text, so a long short name wraps word by word on the same line as My Courses: nothing is cut short and
+// nothing scrolls sideways.
+// Two columns: the crumbs wrap within their own, and Exit activity stays beside them on the right, centred on the
+// row, so it never drops to a line of its own.
+.breadcrumb-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    float: none;
+    margin: 0;
+    padding: 0.6rem 4%;
+    font-weight: 700;
+
+    > nav {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .breadcrumb {
+        display: block;
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    // .breadcrumb in the selector: more specific than Boost's phone rules (.breadcrumb:not(:empty) .breadcrumb-item),
+    // which make each item a box that keeps its text on one line.
+    .breadcrumb li.breadcrumb-item {
+        display: inline;
+        padding-left: 0;
+        overflow-wrap: anywhere;
+
+        a,
+        span {
+            display: inline;
+            white-space: normal;
+        }
+
+        + .breadcrumb-item::before {
+            float: none;
+            display: inline;
+            padding: 0 0.4em;
+        }
+
+        .icon {
+            margin-right: 0.25em;
+            vertical-align: -0.1em;
+        }
+    }
+
+    // A bar between My Courses and the course, as the course is where its own crumbs start.
+    .snap-crumb-mycourses + .breadcrumb-item::before {
+        content: "|";
+        padding: 0 0.6em;
+    }
+
+    // Phones and tablets: no My Courses or course crumbs, as the user menu and the title link go there, so the row
+    // shows where you are in the course. Gone, not just hidden, so keyboard focus can't land on them. With nothing
+    // left (the course page) the row goes too, unless it has Exit activity.
+    @include media-breakpoint-down(lg) {
+        .breadcrumb li.snap-crumb-mycourses,
+        .breadcrumb li.snap-crumb-course {
+            display: none;
+        }
+
+        .breadcrumb li.snap-crumb-course + .breadcrumb-item::before {
+            content: none;
+        }
+
+        &:has(> .snap-crumbs-courseonly) {
+            display: none;
+        }
+    }
+
+    // A larger link with a red circled cross, as in the 4.5 version. The red keeps 3:1 on light and dark.
+    // On the right (float-end in the 4.5 version); a little smaller on phones, to fit beside the crumbs.
+    .snap-exit-activity {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        gap: 0.35em;
+        margin-left: auto;
+        font-size: 1.1rem;
+        font-weight: 400;
+        white-space: nowrap;
+
+        .icon {
+            margin: 0;
+            width: auto;
+            height: auto;
+            font-size: 1.5rem;
+            color: var(--bs-danger);
+        }
+
+        @include media-breakpoint-down(md) {
+            font-size: 1rem;
+
+            .icon {
+                font-size: 1.25rem;
+            }
+        }
     }
 }
 
@@ -2087,54 +2248,8 @@ body.path-course #moodle-page #page-header {
   .breadcrumb {
       background-color: transparent;
       padding: 0;
-      font-size: 0.65rem;
-      display: block;
-      margin-bottom: 0.5rem;
-
-      li.breadcrumb-item {
-          display: inline-block;
-      }
+      font-size: 0.8rem;
   }
-}
-
-// Truncate long breadcrumb items on all pages (course, activity, category, etc.).
-.breadcrumb-nav {
-    max-width: calc(100% - 2rem);
-    overflow: hidden;
-
-    .breadcrumb {
-        white-space: nowrap;
-        overflow: hidden;
-    }
-
-    li.breadcrumb-item {
-        a, span {
-            display: inline-block;
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            vertical-align: bottom;
-        }
-    }
-
-    // Below 992px the breadcrumb can overflow its container: switch to
-    // horizontal scroll so all items remain reachable. flex-wrap:nowrap
-    // prevents items from wrapping onto a new line, keeping them on one
-    // row so the overflow is horizontal. Individual items keep their
-    // max-width ellipsis — only the container scrolls.
-    @media (max-width: 992px) {
-        overflow-x: auto;
-
-        .breadcrumb {
-            overflow: visible;
-            flex-wrap: nowrap;
-        }
-    }
-}
-// Hide the "Site pages" breadcrumb item from My courses view.
-#page-my-index.page-mycourses .breadcrumb .breadcrumb-item:nth-child(2) {
-  display: none;
 }
 
 // SHAME - what is this?
@@ -6560,7 +6675,7 @@ header#mr-nav {
     }
 }
 
-#page-header.mast-image {
+#page-header.mast-image:not(.snap-header-band) {
     aspect-ratio: 6;
 }
 

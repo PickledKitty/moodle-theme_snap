@@ -1149,11 +1149,61 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $coursetitleattr = format_string($COURSE->fullname, true, ['escape' => false]);
             return \core\output\html_writer::tag($tag,
                 \core\output\html_writer::link($courseurl, $coursefullname),
-                ['title' => $coursetitleattr]
-            );
+                ['title' => $coursetitleattr, 'class' => $this->snap_title_class($coursetitleattr), 'id' => 'snap-page-title']
+            ) . $this->snap_title_toggle($coursetitleattr);
         }
 
-        return \core\output\html_writer::tag($tag, $heading);
+        return \core\output\html_writer::tag($tag, $heading,
+            ['class' => $this->snap_title_class(strip_tags($heading)), 'id' => 'snap-page-title'])
+            . $this->snap_title_toggle(strip_tags($heading));
+    }
+
+    /**
+     * For a long title, the button that shows it in full. A long title is cut to two lines at every width (_core.scss);
+     * theme_snap/snap shows the button only when the title is actually cut short, and toggles it.
+     *
+     * @param string $title The title as plain text.
+     * @return string
+     */
+    private function snap_title_toggle(string $title): string {
+        if (!$this->snap_title_class($title)) {
+            return '';
+        }
+        $more = get_string('showfulltitle', 'theme_snap');
+        return \core\output\html_writer::tag('button',
+            $this->pix_icon('t/expanded', '') . \core\output\html_writer::span($more, 'visually-hidden'),
+            [
+                'type' => 'button',
+                'class' => 'snap-title-toggle btn btn-link btn-sm',
+                'aria-expanded' => 'false',
+                'aria-controls' => 'snap-page-title',
+                'title' => $more,
+                'data-more' => $more,
+                'data-less' => get_string('showlesstitle', 'theme_snap'),
+            ]);
+    }
+
+    /**
+     * Class for a page title that's too long for the large heading size, such as a merged course's full name: it's shown
+     * smaller and cut to two lines, with a button to show it in full (snap_title_toggle()). Decided here so the page
+     * doesn't change size after loading.
+     *
+     * @param string $title The title as plain text.
+     * @return string|null The class, or null for none (html_writer then leaves the attribute out).
+     */
+    private function snap_title_class(string $title): ?string {
+        return \core_text::strlen($title) > 80 ? 'snap-title-long' : null;
+    }
+
+    /**
+     * The band at the top of the page, under the menu bar: the cover image, or the brand colour gradient when there's
+     * none. It holds no text; the title and breadcrumbs come below it (layout/default.php, layout/course.php).
+     *
+     * @param string $mastimage 'mast-image' when the page has a cover image.
+     * @return string
+     */
+    public function snap_header_band(string $mastimage = ''): string {
+        return \core\output\html_writer::div('', trim('snap-header-band clearfix ' . $mastimage), ['id' => 'page-header']);
     }
 
     /**
@@ -2486,7 +2536,79 @@ HTML;
      */
     public function navbar(): string
     {
-        return $this->render_from_template('core/navbar', $this->page->navbar);
+        global $COURSE;
+
+        // Home and Dashboard are left out (the logo links home). My courses (or Courses) becomes My Courses, first,
+        // linked to the My courses page. The course is shown by its short name in full, with a home icon, and
+        // categories above a course are left out.
+        $items = [];
+        $hascourse = false;
+        $hasmycourses = false;
+        foreach ($this->page->navbar->get_items() as $item) {
+            if (in_array($item->key, ['home', 'myhome'], true)) {
+                continue;
+            }
+            if (in_array($item->key, ['mycourses', 'courses'], true)) {
+                $hasmycourses = true;
+                continue;
+            }
+            if ($item->type == \navigation_node::TYPE_COURSE) {
+                $hascourse = true;
+            }
+            $items[] = $item;
+        }
+        if ($hascourse) {
+            $items = array_values(array_filter($items, fn($item) => $item->type != \navigation_node::TYPE_CATEGORY));
+        }
+
+        $crumbs = [];
+        if ($hasmycourses || $hascourse) {
+            $crumbs[] = [
+                'url' => (new moodle_url('/my/courses.php'))->out(false),
+                'text' => get_string('menu', 'theme_snap'),
+                'class' => 'snap-crumb-mycourses',
+            ];
+        }
+        foreach ($items as $item) {
+            $iscourse = $item->type == \navigation_node::TYPE_COURSE && $COURSE->id != SITEID;
+            $action = $item->action instanceof \core\url ? $item->action->out(false) : ($item->action ?: null);
+            $crumbs[] = [
+                'url' => $action,
+                'text' => $iscourse ? format_string($COURSE->shortname, true, ['context' => \context_course::instance($COURSE->id)])
+                    : $item->get_content(),
+                'title' => $iscourse ? format_string($COURSE->fullname, true, ['escape' => false]) : $item->get_title(),
+                'class' => $iscourse ? 'snap-crumb-course' : '',
+                'courseicon' => $iscourse,
+                'hidden' => !empty($item->hidden),
+            ];
+        }
+        if (!$crumbs) {
+            return '';
+        }
+        $crumbs[count($crumbs) - 1]['last'] = true;
+
+        // No breadcrumbs when all they'd show is the page itself, such as My courses or the profile page.
+        if (count($crumbs) === 1 && (empty($crumbs[0]['url'])
+                || (new moodle_url($crumbs[0]['url']))->compare($this->page->url, URL_MATCH_BASE))) {
+            return '';
+        }
+
+        // On an activity's own pages, a link back to the course page, at the activity.
+        $exit = null;
+        $cm = $this->page->cm;
+        if ($cm && strpos($this->page->pagetype, 'mod-') === 0) {
+            $section = $cm->get_modinfo()->get_section_info($cm->sectionnum);
+            $hash = 'section-' . ($section ? $section->id : $cm->sectionnum) . '&module-' . $cm->id;
+            $exit = (new moodle_url('/course/view.php', ['id' => $cm->course], $hash))->out(false);
+        }
+
+        // Below 992px My Courses and the course are hidden (the user menu and the title link go there), so with nothing
+        // else the row goes too (_core.scss).
+        $onlycourse = !$exit && !array_filter($crumbs,
+            fn($crumb) => !in_array($crumb['class'] ?? '', ['snap-crumb-mycourses', 'snap-crumb-course'], true));
+
+        return $this->render_from_template('core/navbar',
+            ['crumbs' => $crumbs, 'exiturl' => $exit, 'onlycourse' => $onlycourse]);
     }
 
     /**
@@ -2517,6 +2639,7 @@ HTML;
 
         $data = (object) [
             'custommenuspacer' => $this->custom_menu_spacer(),
+            'headerband' => $this->snap_header_band(),
             'snapnavbar' => $this->navbar(),
             'pageheading' => $this->page_heading(),
             'courseheader' => $this->course_header(),

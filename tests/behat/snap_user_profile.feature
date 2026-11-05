@@ -33,4 +33,5 @@ Feature: When the Moodle theme is set to Snap, the user profile picture should n
     And I open the user menu
     And I follow "Profile"
     And "#page-user-profile div.page-header-image > a" "css_element" should not exist
-    And "Dashboard" "link" should exist in the "#page-user-profile #page-header > nav.breadcrumb-nav" "css_element"
+    # The profile's only breadcrumb would be the page itself, so there are none.
+    And "#page-user-profile .breadcrumb-nav nav" "css_element" should not exist

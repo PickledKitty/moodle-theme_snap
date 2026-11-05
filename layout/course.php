@@ -49,9 +49,11 @@ $pageclass = (isloggedin() && get_user_preferences('drawer-open-index', true) ==
 <?php
 echo $OUTPUT->custom_menu_spacer();
 ?>
-<div id="page-header" class="clearfix <?php echo $mastimage; ?>">
-    <nav class="breadcrumb-nav" aria-label="breadcrumbs"><?php echo $OUTPUT->navbar(); ?></nav>
-
+<?php
+// A band with the cover image (or the brand gradient), the title strip below it, then the breadcrumbs.
+echo $OUTPUT->snap_header_band($mastimage);
+?>
+<div id="page-title">
     <?php
     if ($coursemainpage) {
         $output = $PAGE->get_renderer('core', 'course');
@@ -67,6 +69,7 @@ echo $OUTPUT->custom_menu_spacer();
     echo $OUTPUT->snap_page_header();
     ?>
 </div>
+<div class="breadcrumb-nav"><?php echo $OUTPUT->navbar(); ?></div>
 <?php
 echo '<div id="snap-course-wrapper">';
 require __DIR__ . '/course_index_drawer.php';

@@ -17,73 +17,46 @@
 {{!
     @template core/navbar
 
-    Snap theme override of core/navbar.
-    Adds title attribute to all breadcrumb items for tooltip accessibility.
-    get_title() returns '' for items without action (active/last item), so
-    we fall back to get_content for links and always use get_content for spans.
+    Snap theme override of core/navbar, built by theme_snap\output\core_renderer::navbar(): My Courses first, then
+    the course by its short name with a home icon, then the rest. Home, Dashboard and categories above a course are
+    left out. On an activity's pages, an Exit activity link follows, back to the course page at the activity.
 
     Context variables required for this template:
-    * get_items - array of items
-      * has_action - boolean
-      * action - string
-      * get_title - string (empty for active/last item)
-      * get_content - string
-      * is_hidden - boolean
+    * crumbs - array of items
+      * url - string, empty for an item without a link
+      * text - string (HTML)
+      * title - string, optional tooltip
+      * class - string, extra classes
+      * courseicon - boolean, the course's home icon
+      * hidden - boolean
+      * last - boolean, the current page
+    * exiturl - string, optional
+    * onlycourse - boolean, the crumbs are only My Courses and the course
 
     Example context (json):
     {
-        "get_items": [
-            {
-                "has_action": true,
-                "action": "#",
-                "get_title": "Test title",
-                "get_content": "First & fresh",
-                "is_hidden": false
-            },
-            {
-                "has_action": true,
-                "action": "#",
-                "get_title": "Second item & a title",
-                "get_content": "Second item",
-                "is_hidden": false
-            },
-            {
-                "has_action": false,
-                "get_content": "Third item",
-                "is_hidden": false
-            },
-            {
-                "has_action": false,
-                "get_content": "Fourth & last",
-                "is_hidden": true
-            }
-        ]
+        "crumbs": [
+            {"url": "#", "text": "My Courses", "class": "snap-crumb-mycourses"},
+            {"url": "#", "text": "XLSQ3202110: 61065 / 61066", "title": "Provide quality service", "class": "snap-crumb-course", "courseicon": true},
+            {"url": "#", "text": "Week 1"},
+            {"url": "#", "text": "Important message", "last": true}
+        ],
+        "exiturl": "#"
     }
 }}
-{{#get_items.0}}
-<nav aria-label="{{#str}}breadcrumb, access{{/str}}">
+{{#crumbs.0}}
+<nav aria-label="{{#str}}breadcrumb, access{{/str}}"{{#onlycourse}} class="snap-crumbs-courseonly"{{/onlycourse}}>
     <ol class="breadcrumb">{{!
-        }}{{#get_items}}
-            {{#has_action}}
-                <li class="breadcrumb-item{{#is_hidden}} dimmed_text{{/is_hidden}}">
-                    <a href="{{{action}}}"
-                        {{#is_last}}aria-current="page"{{/is_last}}
-                        {{#get_title}}title="{{get_title}}"{{/get_title}}
-                        {{^get_title}}title="{{get_content}}"{{/get_title}}
-                        {{#attributes}}{{name}}="{{value}}" {{/attributes}}
-                    >
-                        {{{get_content}}}
-                    </a>
-                </li>
-            {{/has_action}}
-            {{^has_action}}
-                <li class="breadcrumb-item{{#is_hidden}} dimmed_text{{/is_hidden}}">
-                    <span title="{{text}}" {{#attributes}}{{name}}="{{value}}" {{/attributes}}>
-                        {{{text}}}
-                    </span>
-                </li>
-            {{/has_action}}
-        {{/get_items}}{{!
+        }}{{#crumbs}}
+            <li class="breadcrumb-item {{class}}{{#hidden}} dimmed_text{{/hidden}}">{{!
+                }}{{#url}}<a href="{{url}}"{{#last}} aria-current="page"{{/last}}{{#title}} title="{{title}}"{{/title}}>{{!
+                    }}{{#courseicon}}{{#pix}} i/home, core {{/pix}}{{/courseicon}}{{{text}}}</a>{{/url}}{{!
+                }}{{^url}}<span{{#last}} aria-current="page"{{/last}}>{{{text}}}</span>{{/url}}{{!
+            }}</li>
+        {{/crumbs}}{{!
     }}</ol>
 </nav>
-{{/get_items.0}}
+{{/crumbs.0}}
+{{#exiturl}}
+<a class="snap-exit-activity" href="{{exiturl}}"><i class="icon fa fa-circle-xmark" aria-hidden="true"></i>{{#str}}exitactivity, theme_snap{{/str}}</a>
+{{/exiturl}}

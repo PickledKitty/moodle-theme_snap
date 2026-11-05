@@ -57,10 +57,10 @@ Feature: In the Snap theme, within a course, editing teachers can create a new s
     Then I should see "New section title" in the "#courseindex" "css_element"
     # Negative test - the single activity course should not allow for section creation via the toc.
     And I am on the course main page for "course_single"
-    Then I should not see "Create a new section" in the "#page-header" "css_element"
+    Then I should not see "Create a new section" in the "#page-title" "css_element"
     # Negative test - the social course should not allow for section creation via the toc.
     And I am on the course main page for "course_social"
-    Then I should not see "Create a new section" in the "#page-header" "css_element"
+    Then I should not see "Create a new section" in the "#page-title" "css_element"
     # Make sure student can see the sections created by the teacher in Topics and Weeks format courses.
     And I log out
     And I log in as "student1"
@@ -77,23 +77,23 @@ Feature: In the Snap theme, within a course, editing teachers can create a new s
     And I log out
     Then I log in as "teacher2"
     And I am on the course main page for "course_topics"
-    Then I should not see "Create a new section" in the "#page-header" "css_element"
+    Then I should not see "Create a new section" in the "#page-title" "css_element"
     And I am on the course main page for "course_weeks"
-    Then I should not see "Create a new section" in the "#page-header" "css_element"
+    Then I should not see "Create a new section" in the "#page-title" "css_element"
     And I am on the course main page for "course_single"
-    Then I should not see "Create a new section" in the "#page-header" "css_element"
+    Then I should not see "Create a new section" in the "#page-title" "css_element"
     And I am on the course main page for "course_social"
-    Then I should not see "Create a new section" in the "#page-header" "css_element"
+    Then I should not see "Create a new section" in the "#page-title" "css_element"
     And I log out
     And I log in as "student1"
     And I am on the course main page for "course_topics"
-    Then I should not see "Create a new section" in the "#page-header" "css_element"
+    Then I should not see "Create a new section" in the "#page-title" "css_element"
     And I am on the course main page for "course_weeks"
-    Then I should not see "Create a new section" in the "#page-header" "css_element"
+    Then I should not see "Create a new section" in the "#page-title" "css_element"
     And I am on the course main page for "course_single"
-    Then I should not see "Create a new section" in the "#page-header" "css_element"
+    Then I should not see "Create a new section" in the "#page-title" "css_element"
     And I am on the course main page for "course_social"
-    Then I should not see "Create a new section" in the "#page-header" "css_element"
+    Then I should not see "Create a new section" in the "#page-title" "css_element"
 
   @javascript
   Scenario: For editing teachers, ensure new section creation is available for week format and creates the section with a default title.
