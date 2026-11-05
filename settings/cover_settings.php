@@ -34,6 +34,21 @@ $setting = new admin_setting_configstoredfile($name, $title, $description, 'post
 $setting->set_updatedcallback('theme_snap_process_site_coverimage');
 $snapsettings->add($setting);
 
+// The page header band's gradient, for pages without a cover image. Empty: the brand colour to a lighter shade of it.
+$name = 'theme_snap/header_gradient_heading';
+$heading = new \core\lang_string('headergradient', 'theme_snap');
+$description = new \core\lang_string('headergradientdesc', 'theme_snap');
+$snapsettings->add(new admin_setting_heading($name, $heading, $description));
+
+foreach (['start', 'end'] as $end) {
+    $name = 'theme_snap/headergradient' . $end;
+    $title = new \core\lang_string('headergradient' . $end, 'theme_snap');
+    $description = new \core\lang_string('headergradient' . $end . 'desc', 'theme_snap');
+    $setting = new admin_setting_configcolourpicker($name, $title, $description, '', null, false);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $snapsettings->add($setting);
+}
+
 // Cover carousel.
 $name = 'theme_snap/cover_carousel_heading';
 $heading = new \core\lang_string('covercarousel', 'theme_snap');

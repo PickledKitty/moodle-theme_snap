@@ -43,8 +43,8 @@ $card-gutter:           $card-deck-margin * 2;
 //$enable-flex:               true;
 
 $brand-primary:         #82009e !default;
-// The page header band's gradient when a page has no cover image (_brandcolor.scss). Left empty, it runs from the
-// brand colour to a lighter mix of it. Set both to use other colours.
+// The page header band's gradient when a page has no cover image (_brandcolor.scss), from the Cover display settings
+// (lib.php). Left empty, it runs from the brand colour to a lighter mix of the start colour.
 $snap-header-gradient-start: null !default;
 $snap-header-gradient-end:   null !default;
 $brand-success:         #3d5c1f;

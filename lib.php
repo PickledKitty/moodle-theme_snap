@@ -546,6 +546,13 @@ function theme_snap_get_pre_scss($theme) {
     $settings['activity-icon-content-bg'] = !empty($theme->settings->resouactivitiescolor) ?
         $theme->settings->resouactivitiescolor : '#3279B2';
 
+    // The header band's gradient (Cover display settings). When empty, _brandcolor.scss uses the brand colour.
+    foreach (['start', 'end'] as $end) {
+        if (!empty($theme->settings->{'headergradient' . $end})) {
+            $settings['snap-header-gradient-' . $end] = $theme->settings->{'headergradient' . $end};
+        }
+    }
+
     foreach ($settings as $key => $value) {
         $scss .= '$' . $key . ': ' . $value . ";\n";
     }

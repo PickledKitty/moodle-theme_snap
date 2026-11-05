@@ -505,13 +505,14 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
         }
     }
 
-    // The header band without a cover image: a gradient from the brand colour, or from the two colours set in
-    // $snap-header-gradient-start and -end (pre.scss). A picture with no text on it.
+    // The header band without a cover image: a gradient between the two colours in the Cover display settings
+    // ($snap-header-gradient-start and -end, lib.php). Empty, the start is the brand colour and the end a lighter shade
+    // of the start. A picture with no text on it.
     #page-header.snap-header-band:not(.mast-image) {
-        background-color: $brand-primary;
-        background-image: linear-gradient(to right,
-            if($snap-header-gradient-start, $snap-header-gradient-start, $brand-primary),
-            if($snap-header-gradient-end, $snap-header-gradient-end, mix(#fff, $brand-primary, 45%)));
+        $gradient-start: if($snap-header-gradient-start, $snap-header-gradient-start, $brand-primary);
+        background-color: $gradient-start;
+        background-image: linear-gradient(to right, $gradient-start,
+            if($snap-header-gradient-end, $snap-header-gradient-end, mix(#fff, $gradient-start, 45%)));
     }
 
     // The page title under the band, in the brand colour.
