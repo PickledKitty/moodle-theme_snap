@@ -27,9 +27,8 @@
 }}
 
 <div id="snap-coverimagecontrol">
-    <label tabindex="0" role="button" class="btn btn-sm btn-file btn-outline-primary state-visible" for="snap-coverfiles"><span>{{#str}}changecoverimage, theme_snap{{/str}}</span>
-       <input tabindex="-1" id="snap-coverfiles" name="snap-coverfiles[]"/>
-    </label>
+    {{! A button that opens the file picker (theme_snap/cover_image). }}
+    <button type="button" id="snap-coverfiles" class="btn btn-sm btn-file btn-outline-primary state-visible"><span>{{#str}}changecoverimage, theme_snap{{/str}}</span></button>
     <div id="snap-changecoverimageconfirmation">
         <button class="btn btn-sm btn-success ok">{{#str}}save, admin{{/str}}</button>
         <button class="btn btn-sm btn-danger cancel">{{#str}}cancel, moodle{{/str}}</button>

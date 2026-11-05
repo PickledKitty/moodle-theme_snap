@@ -22,7 +22,7 @@
 # @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 
 @javascript @theme @theme_snap @theme_snap_course_title_truncation
-Feature: Long course titles and breadcrumbs are shown in full in the Snap header; long category titles are truncated
+Feature: Long course and category titles and breadcrumbs in the Snap header are never cut off without a way to see them
 
   Background:
     Given the following "users" exist:
@@ -73,12 +73,14 @@ Feature: Long course titles and breadcrumbs are shown in full in the Snap header
     And the element ".breadcrumb-nav" should fit its width
     And the element ".breadcrumb-nav a[href*='/course/view.php']" should fit its width
 
-  Scenario: Category title is truncated with ellipsis and shows tooltip with and without cover image (desktop)
+  Scenario: A long category title is shown in full on the header band, with and without a cover image (desktop)
     Given I log in as "admin"
     And I am on the course category page for category with idnumber "LONGCAT"
     And I should not see cover image in page header
-    Then the element "#page-mast h1" should have clipped content
+    Then the element "#page-header #page-mast h1" should not have clipped content
+    And the element "#page-header" should fit its width
     And the "title" attribute of "#page-mast h1" "css_element" should contain "Advanced Systematic Methodologies"
     And I upload cover image "bpd_bikes_1280px.jpg"
     And I should see cover image in page header
-    Then the "title" attribute of "#page-mast h1" "css_element" should contain "Advanced Systematic Methodologies"
+    And the element "#page-header #page-mast h1" should not have clipped content
+    And the "title" attribute of "#page-mast h1" "css_element" should contain "Advanced Systematic Methodologies"

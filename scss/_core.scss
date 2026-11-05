@@ -6008,15 +6008,7 @@ body#page-course-index-category #page-header:not(.mast-image) #page-mast h1 {
     display: inline-block;
 }
 
-#snap-coverfiles {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
-}
-
-label[for="snap-coverfiles"],
+#snap-coverfiles,
 #snap-changecoverimageconfirmation button {
     position: relative;
     display: none;
@@ -6026,13 +6018,13 @@ label[for="snap-coverfiles"],
     margin-bottom: 2em;
 }
 
-label.state-visible[for="snap-coverfiles"],
+#snap-coverfiles.state-visible,
 #snap-changecoverimageconfirmation.state-visible button {
     display: inline-block;
     cursor: pointer;
 }
 
-label.state-visible[for="snap-coverfiles"] {
+#snap-coverfiles.state-visible {
     span {
         padding: 1em;
     }
@@ -6051,10 +6043,11 @@ label.state-visible[for="snap-coverfiles"] {
     }
 }
 
+// Just the camera on small screens: the words stay for screen readers, as the button's name.
 @include media-breakpoint-down(md) {
-    label.state-visible[for="snap-coverfiles"] {
+    #snap-coverfiles.state-visible {
         span {
-            display: none;
+            @include visually-hidden;
         }
     }
 }

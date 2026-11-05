@@ -77,8 +77,8 @@ define(['jquery', 'core/log', 'core/ajax', 'core/notification', 'theme_snap/ajax
             $('#snap-coverfiles').val('');
             $('#snap-changecoverimageconfirmation .ok').removeClass('ajaxing');
             $('#snap-changecoverimageconfirmation').removeClass('state-visible');
-            $('label[for="snap-coverfiles"]').removeClass('ajaxing');
-            $('label[for="snap-coverfiles"]').addClass('state-visible');
+            $('#snap-coverfiles').removeClass('ajaxing');
+            $('#snap-coverfiles').addClass('state-visible');
             $('body').removeClass('cover-image-change');
         };
 
@@ -88,7 +88,7 @@ define(['jquery', 'core/log', 'core/ajax', 'core/notification', 'theme_snap/ajax
         var state2 = function() {
             $('#snap-alert-cover-image-upload-failed').remove();
             $('#snap-changecoverimageconfirmation').removeClass('disabled');
-            $('label[for="snap-coverfiles"]').removeClass('state-visible');
+            $('#snap-coverfiles').removeClass('state-visible');
             $('#snap-changecoverimageconfirmation').addClass('state-visible');
             $('body').removeClass('cover-image-change');
         };
@@ -375,7 +375,7 @@ define(['jquery', 'core/log', 'core/ajax', 'core/notification', 'theme_snap/ajax
             });
 
             $('body').addClass('cover-image-change');
-            $('label[for="snap-coverfiles"]').addClass('ajaxing');
+            $('#snap-coverfiles').addClass('ajaxing');
 
             $('#id_snap_cover_image_browser').click(function(e) {
                 e.preventDefault();

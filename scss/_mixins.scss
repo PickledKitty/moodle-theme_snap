@@ -168,6 +168,39 @@
 }
 
 // Resource descriptions and content: no panel of their own, so each card is one colour in both colour modes.
+// A shade behind white text on the header band, for when it needs 3:1 against any part of a cover image or gradient:
+// 50% black up to the end of the title (about 3.9:1 for white even over white), then fading out over 24rem, so a short
+// name darkens only the left of the band and a long one as much as it needs. Drawn by the title, under its text and over
+// the band's background (isolation), and cut to the band. Used on the band element.
+@mixin snap-band-shade {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+
+    #page-mast h1 {
+        position: relative;
+        color: #fff;
+
+        &::before {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            top: -10rem;
+            bottom: -10rem;
+            left: -100vw;
+            right: -24rem;
+            // Eased over 24rem, so there's no visible edge where it ends.
+            background-image: linear-gradient(to right,
+                rgba(0, 0, 0, 0.5) calc(100% - 24rem),
+                rgba(0, 0, 0, 0.38) calc(100% - 18rem),
+                rgba(0, 0, 0, 0.22) calc(100% - 12rem),
+                rgba(0, 0, 0, 0.08) calc(100% - 6rem),
+                rgba(0, 0, 0, 0));
+            pointer-events: none;
+        }
+    }
+}
+
 @mixin snap-resource-panel {
     background-color: transparent;
 }

@@ -508,11 +508,31 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
     // The header band without a cover image: a gradient between the two colours in the Cover display settings
     // ($snap-header-gradient-start and -end, lib.php). Empty, the start is the brand colour and the end a lighter shade
     // of the start. A picture with no text on it.
+    $band-start: if($snap-header-gradient-start, $snap-header-gradient-start, $brand-primary);
+    $band-end: if($snap-header-gradient-end, $snap-header-gradient-end, mix(#fff, $band-start, 45%));
     #page-header.snap-header-band:not(.mast-image) {
-        $gradient-start: if($snap-header-gradient-start, $snap-header-gradient-start, $brand-primary);
-        background-color: $gradient-start;
-        background-image: linear-gradient(to right, $gradient-start,
-            if($snap-header-gradient-end, $snap-header-gradient-end, mix(#fff, $gradient-start, 45%)));
+        background-color: $band-start;
+        background-image: linear-gradient(to right, $band-start, $band-end);
+    }
+
+    // The category page's name sits on the band (_courselistings.scss). As large text it needs 3:1 against every part
+    // of the band: white if it has that against both ends of the gradient, else near-black if that does. If neither
+    // does (a gradient from dark to light), and on a cover image, it's white over a shade across the band (_mixins.scss).
+    @if contrast-ratio($band-start, #fff) >= 3 and contrast-ratio($band-end, #fff) >= 3 {
+        #page-header.snap-category-header.snap-header-band:not(.mast-image) #page-mast h1 {
+            color: #fff;
+        }
+    } @else if contrast-ratio($band-start, $gray-900) >= 3 and contrast-ratio($band-end, $gray-900) >= 3 {
+        #page-header.snap-category-header.snap-header-band:not(.mast-image) #page-mast h1 {
+            color: $gray-900;
+        }
+    } @else {
+        #page-header.snap-category-header.snap-header-band:not(.mast-image) {
+            @include snap-band-shade;
+        }
+    }
+    #page-header.snap-category-header.snap-header-band.mast-image {
+        @include snap-band-shade;
     }
 
     // The page title under the band, in the brand colour.
@@ -1223,7 +1243,7 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
         align-items: center;
     }
 
-    #snap-coverimagecontrol > label.btn-outline-primary.btn-sm,
+    #snap-coverimagecontrol > .btn-file.btn-outline-primary.btn-sm,
     .snap-category-header #page-mast a,
     .bulkEnable {
         background-color: white !important;

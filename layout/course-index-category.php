@@ -43,10 +43,8 @@ $mastimage = local::has_cover_image() ? 'mast-image' : '';
     ////////////////////////// MAIN  ///////////////////////////////
     -->
         <div id="moodle-page" class="clearfix">
-        <div id="page-header" class="clearfix snap-category-header <?php echo $mastimage; ?>">
-        <?php if ($PAGE->navbar->has_items()) { ?>
-        <nav class="breadcrumb-nav" aria-label="breadcrumbs"><?php echo $OUTPUT->navbar(); ?></nav>
-        <?php } ?>
+        <?php // The header band, as on other pages, but with the category's name on it, and no breadcrumbs. ?>
+        <div id="page-header" class="clearfix snap-header-band snap-category-header <?php echo $mastimage; ?>">
             <?php
             $categories = $PAGE->categories;
             $cat = reset($categories);

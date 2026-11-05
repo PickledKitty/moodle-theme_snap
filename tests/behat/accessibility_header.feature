@@ -106,3 +106,20 @@ Feature: The page header is a band, then the title, then the breadcrumbs
     And ".breadcrumb li.snap-crumb-course" "css_element" should not be visible
     And I should see "Important message" in the ".breadcrumb-nav" "css_element"
     And "Exit activity" "link" should be visible
+
+  @javascript @accessibility
+  Scenario: A category page shows its name on the header band, with no breadcrumbs
+    Given the following "categories" exist:
+      | name             | idnumber |
+      | Health and Sport | HSPORT   |
+    And I change window size to "large"
+    And I log in as "admin"
+    When I am on the course category page for category with idnumber "HSPORT"
+    Then I should see "Health and Sport" in the "#page-header.snap-header-band #page-mast h1" "css_element"
+    And ".breadcrumb-nav" "css_element" should not be visible
+    And "Add a new course" "link" should be visible
+    And the page should meet accessibility standards
+    And I change window size to "mobile"
+    And I reload the page
+    And the element "#page-header" should fit its width
+    And the page should meet accessibility standards
