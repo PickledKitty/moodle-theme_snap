@@ -781,6 +781,15 @@ const setupEventListeners = () => {
         messageDrawerObserver.observe(document.body, {subtree: true, childList: true});
     }
     
+    // Close buttons used from the keyboard: core's message drawer handles Enter and Space itself and cancels the
+    // click, so let its focus return through here too. And theme_snap/panel_close asks for the same.
+    document.addEventListener('keydown', e => {
+        if ((e.key === 'Enter' || e.key === ' ') && e.target.closest(SELECTORS.CLOSE_DRAWER_BUTTON)) {
+            allowFocusReturn();
+        }
+    }, true);
+    document.addEventListener('theme_snap/sidebar_menu:allowfocusreturn', allowFocusReturn);
+
     // Add click event listeners to elements with data-action="closedrawer"
     document.querySelectorAll(SELECTORS.CLOSE_DRAWER_BUTTON).forEach(element => {
         element.addEventListener('click', handleCloseDrawerClick);

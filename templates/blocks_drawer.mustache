@@ -32,6 +32,8 @@
     {{< theme_boost/drawer }}
         {{$id}}theme_snap-drawers-blocks{{/id}}
         {{$drawerclasses}}drawer drawer-right{{#blockdraweropen}} show{{/blockdraweropen}}{{/drawerclasses}}
+        {{! The panel's name in its header bar, as on Snap's other right-hand panels (_blocks.scss: .snap-panel-header). }}
+        {{$drawerheading}}<h2 class="snap-panel-title">{{#str}}blocks{{/str}}</h2>{{/drawerheading}}
         {{$drawercontent}}
             <section class="d-print-none" aria-label="{{#str}}blocks{{/str}}">
                 {{{ addblockbutton }}}

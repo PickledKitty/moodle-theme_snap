@@ -515,6 +515,15 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
         background-image: linear-gradient(to right, $band-start, $band-end);
     }
 
+    // The header bar of the right-hand panels (_blocks.scss): the brand colour, as for the course index's bar on
+    // phones, also in dark mode. Its text and close button are white, or near-black on a light brand colour, whichever
+    // reaches 4.5:1 against it.
+    .snap-panel-header,
+    .drawer.drawer-right > .drawerheader {
+        background-color: $brand-primary;
+        color: if(contrast-ratio($brand-primary, #fff) >= 4.5, #fff, $gray-900);
+    }
+
     // The category page's name sits on the band (_courselistings.scss). As large text it needs 3:1 against every part
     // of the band: white if it has that against both ends of the gradient, else near-black if that does. If neither
     // does (a gradient from dark to light), and on a cover image, it's white over a shade across the band (_mixins.scss).
@@ -1883,10 +1892,6 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
 
     @media screen and (max-width: 992px) {
         .snap-feeds-mobile-menu {
-            .snap-feeds-header {
-                background-color: $brand-primary;
-                padding: 0.5rem 1rem;
-            }
             .nav .nav-item {
                 .nav-link {
                     background: $brand-primary;

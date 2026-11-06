@@ -23,16 +23,8 @@
  @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 }}
 
+{{! The panel's header, with its name and close button, comes from theme_snap/panel_close, at every width. }}
 <div class="snap-feeds-mobile-menu">
-    <div class="snap-feeds-header">
-        <h2 class="h4 mb-0 d-inline-block text-white">
-            {{#str}}snapfeedsblocktitle, theme_snap{{/str}}
-        </h2>
-
-        <button type="button" class="btn-close btn-close-white fw-normal mt-1" aria-label="Close"
-                onclick="document.getElementById('snap_feeds_side_menu_trigger').click()"></button>
-    </div>
-
     <div class="snap-feeds-mobile-sections p-5">
         {{#intelliboard.enable}}
             <div class="feed-section {{#intelliboard.active}}active{{/intelliboard.active}}" id="snap-feeds-section-intelliboard">
