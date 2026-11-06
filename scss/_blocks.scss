@@ -337,6 +337,11 @@ body.path-site .block.block_settings {
                 }
             }
 
+            // The same room as the feeds on wider screens: 1rem round the card and inside it.
+            .snap-feeds-mobile-sections {
+                padding: 1rem;
+            }
+
             .snap-feeds-mobile-sections > .feed-section {
                 display: none;
 
@@ -346,7 +351,7 @@ body.path-site .block.block_settings {
                 }
 
                 background: white;
-                padding: 2rem;
+                padding: 1rem;
                 border-radius: 0.5rem;
 
                 h2 {
