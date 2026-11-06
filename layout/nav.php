@@ -179,7 +179,7 @@ if (isloggedin() && !isguestuser() && !$snapmfapending) {
         && ($PAGE->pagelayout === 'course' || $PAGE->cm);
     if ($hascourseindex) {
         $sidebarmenuitems[] = [
-            'title' => get_string('contents', 'theme_snap'),
+            'title' => get_string('tableofcontents', 'theme_snap'),
             'iconimg' => $OUTPUT->image_url('e/sidebar_left', 'core'),
             'isbutton' => true,
             'ariaexpanded' => 'false',

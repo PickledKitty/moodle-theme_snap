@@ -8275,16 +8275,19 @@ body#page-mod-assign-grading.path-mod-assign .gradingtable {
 }
 
 div#snap-course-wrapper #toc-desktop-menu-heading {
-    margin-bottom: 1em;
+    margin-bottom: 0;
     border-bottom: 1px solid #dee2e6;
-    text-transform: capitalize;
     margin-top: 0.5rem;
+    // The same 1rem at each side, so the search box sits evenly in the panel.
     margin-left: 1rem;
+    margin-right: 1rem;
     #toc-search {
       font-size: 1rem;
     }
-    h2, input {
+    input {
       font-size: 1.1rem;
+    }
+    h2, input {
       // gray (#808080) was 3.95:1 on white; $body-color is 7.34:1.
       color: $body-color;
       @include dark-mode {
@@ -8350,6 +8353,13 @@ li.section.main {
   justify-content: space-between;
   gap: 0.5rem;
   width: 70%;
+
+  // "Table of contents" fits on one line beside Collapse all and the toggle at 1rem, on the course page and in the
+  // narrower panel on activity pages (the drawer header's height below is worked out from it).
+  h2 {
+    font-size: 1rem;
+    line-height: 1.2;
+  }
 }
 
 [id*="courseindex"].drawer-left .drawerheading,
@@ -8357,14 +8367,62 @@ li.section.main {
   position: static;
 }
 
+// Collapse all and the panel's toggle, over the right of the heading's row (#toc-desktop-menu-heading): as tall as
+// that row (0.5rem margin + 0.5rem padding + its 1rem heading's line, twice over from the middle), with its contents
+// centred, so they line up with the heading.
 [id*="courseindex"].drawer-left .drawerheader {
   position: absolute;
-  top: 0.65em;
+  top: 0;
   right: 0;
+  height: calc(2 * (1rem + 1rem * 1.2 / 2));
   display: flex;
   align-items: center;
   gap: 1rem;
   padding-right: .5rem;
+
+  .drawerheadertop {
+    align-items: center;
+    height: 100%;
+    padding: 0;
+  }
+
+  // The toggle's sidebar icon is an image, so colour doesn't reach it: white on the toggle's brand colour.
+  .drawertoggle img.icon {
+    filter: brightness(0) invert(1);
+  }
+}
+
+// No padding above or below Collapse all and the toggle, which would put them off the middle of the row. Above
+// phone size only: on phones the header is the purple bar (_toc.scss).
+@media (min-width: 481px) {
+  #theme_boost-drawers-courseindex.drawer-left .drawerheader {
+    padding-top: 0;
+    padding-bottom: 0;
+
+    .drawerheadertop {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    // Over Bootstrap's pb-2 utility, which is !important.
+    #courseindexdrawercontrols {
+      display: flex;
+      align-items: center;
+      padding-bottom: 0 !important;
+    }
+
+    // Room round the toggle's icon inside its circle.
+    .btn.drawertoggle {
+      width: 2rem;
+      height: 2rem;
+
+      img.icon {
+        width: 1rem;
+        height: 1rem;
+        margin: 0;
+      }
+    }
+  }
 }
 
 .modal {

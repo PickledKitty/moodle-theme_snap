@@ -827,8 +827,9 @@ body > #page.show-drawer-left .drawer-toggler.snap-courseindex-toggle {
       padding-right: 7rem;
     }
 
+    // Full width inside its 1rem margins (_core.scss), so the search box doesn't run past the panel's edge.
     #toc-desktop-menu-heading {
-      width: 100%;
+      width: auto;
       justify-content: flex-end;
 
       h2 {
