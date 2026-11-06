@@ -701,6 +701,60 @@ $setmode-off-color: #767676;
     #settingsnav {
         padding-top: 0!important;
     }
+
+    // The panel's own padding is the only space at the left: none more on the items or on the search below them,
+    // so the tree and the search box line up. Each level down still steps in. A hanging indent the width of an
+    // icon and its gap (below) puts a long item's next lines under its text, not under its icon.
+    .block_tree p.tree_item {
+        padding-left: 1.6rem;
+        text-indent: -1.6rem;
+    }
+
+    .footer,
+    .footer form {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    // An expandable item's chevron (Boost's p::before) and an item's icon each take 1.2rem, with the same gap after
+    // both, so the items' text lines up.
+    .block_tree [aria-expanded] > p.tree_item::before {
+        display: inline-block;
+        width: 1.2rem;
+        margin-right: 0.4rem;
+        text-align: center;
+        text-indent: 0;
+    }
+
+    .block_tree p.tree_item .icon {
+        width: 1.2rem;
+        margin-right: 0.4rem;
+        text-align: center;
+        text-indent: 0;
+    }
+
+    // The icons and chevrons: Snap's #999 is 2.5:1 on the panel in light mode; grey-600 is about 4.2:1. Dark mode
+    // keeps #999 (4.7:1).
+    .block_tree p.tree_item .icon,
+    .block_tree [aria-expanded] > p.tree_item::before {
+        color: $gray-600;
+        @include dark-mode {
+            color: #999;
+        }
+    }
+
+    .dir-rtl & {
+        .block_tree p.tree_item {
+            padding-left: 0;
+            padding-right: 1.6rem;
+        }
+
+        .block_tree [aria-expanded] > p.tree_item::before,
+        .block_tree p.tree_item .icon {
+            margin-right: 0;
+            margin-left: 0.4rem;
+        }
+    }
 }
 
 [data-bs-theme="dark"] {
