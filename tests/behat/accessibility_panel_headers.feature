@@ -59,3 +59,21 @@ Feature: Every right-hand panel has a header with its name and its close button
     And the focused element is "#snap_feeds_side_menu .snap-panel-close-button" "css_element"
     And I press enter
     And the focused element is "#snap_feeds_side_menu_trigger" "css_element"
+
+  @javascript @accessibility
+  Scenario Outline: Escape closes a panel and focus goes back to its sidebar button
+    Given I change window size to "large"
+    And I log in as "admin"
+    And I am on site homepage
+    When I click on "<trigger>" "css_element"
+    And I wait until "<close>" "css_element" is visible
+    And the focused element is "<close>" "css_element"
+    And I press the escape key
+    Then "<panel>" "css_element" should not be visible
+    And the focused element is "<trigger>" "css_element"
+    Examples:
+      | trigger                         | panel                           | close                                                    |
+      | #admin-menu-trigger             | .block_settings                 | .block_settings .snap-panel-close-button                 |
+      | #snap_feeds_side_menu_trigger   | #snap_feeds_side_menu           | #snap_feeds_side_menu .snap-panel-close-button           |
+      | [id^=message-drawer-toggle]     | [data-region=right-hand-drawer] | [data-region=right-hand-drawer] .snap-panel-close-button |
+      | .blocks-drawer-button           | #theme_snap-drawers-blocks      | #theme_snap-drawers-blocks .drawertoggle                 |

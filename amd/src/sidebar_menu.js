@@ -45,6 +45,7 @@ const SELECTORS = {
     COURSE_INDEX_LIST: 'nav.courseindex',
     MESSAGES_POPOVER: '[data-region="popover-region-messages"]',
     CLOSE_DRAWER_BUTTON: '[data-action="closedrawer"]',
+    MESSAGE_DRAWER_PANEL: '[data-region="right-hand-drawer"]',
     NAV_UNPINNED: '#mr-nav.headroom--unpinned',
     GOTO_TOP_LINK: '#goto-top-link',
     PAGE_HEADER: 'page-header',
@@ -100,6 +101,15 @@ const POPOVERS_DROPDOWNS = {
         '#local-accessibility-buttoncontainer', // Accessibility
     ]
 };
+
+// The side panels Escape closes when focus is in them, each with its own close button: the header's circled cross
+// (theme_snap/panel_close) or Boost's drawer close button. The message drawer closes itself on Escape.
+const ESCAPE_PANELS = [
+    ['.block_settings.state-visible', '.snap-panel-close-button'],
+    ['#snap_feeds_side_menu.state-visible', '.snap-panel-close-button'],
+    ['#theme_snap-drawers-blocks.show', '.drawerheader .drawertoggle'],
+    ['#theme_boost-drawers-courseindex.show', '.drawerheader .drawertoggle'],
+];
 
 const ACTIVE_SELECTORS = {
     BLOCKS_DRAWER: '[data-activeselector="#theme_snap-drawers-blocks.show"]',
@@ -789,6 +799,40 @@ const setupEventListeners = () => {
         }
     }, true);
     document.addEventListener('theme_snap/sidebar_menu:allowfocusreturn', allowFocusReturn);
+
+    // Escape closes the open side panel that has focus, with its own close button, so focus goes back to the
+    // button that opened it. Core's message drawer closes itself on Escape, but only gives focus back to its
+    // button (data-origin) on narrow screens: once it has closed, Snap does that if focus was left behind.
+    document.addEventListener('keydown', e => {
+        const drawer = e.key === 'Escape' && document.activeElement.closest(SELECTORS.MESSAGE_DRAWER_PANEL);
+        if (!drawer) {
+            return;
+        }
+        allowFocusReturn();
+        setTimeout(() => {
+            const origin = document.getElementById(drawer.getAttribute('data-origin') || '');
+            const active = document.activeElement;
+            if (origin && drawer.classList.contains('hidden') && (active === document.body || drawer.contains(active))) {
+                origin.focus();
+            }
+        }, 100);
+    }, true);
+    document.addEventListener('keydown', e => {
+        // Something in the panel (a menu, search results) has used this Escape already.
+        if (e.key !== 'Escape' || e.defaultPrevented) {
+            return;
+        }
+        for (const [panelSelector, closeSelector] of ESCAPE_PANELS) {
+            const panel = document.querySelector(panelSelector);
+            const close = panel && panel.querySelector(closeSelector);
+            if (close && panel.contains(document.activeElement)) {
+                e.preventDefault();
+                allowFocusReturn();
+                close.click();
+                return;
+            }
+        }
+    });
 
     // Add click event listeners to elements with data-action="closedrawer"
     document.querySelectorAll(SELECTORS.CLOSE_DRAWER_BUTTON).forEach(element => {
