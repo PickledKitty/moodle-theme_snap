@@ -1559,11 +1559,32 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
         color: $brand-primary;
     }
 
+    // The footer has its own background and text colours (settings footerbg and footertxt), in both colour modes:
+    // links, buttons and focus rings in it use the footer's text colour, as the brand colour may not show on it.
     #moodle-footer #page-footer a:focus {
-        outline: 3px solid $brand-primary !important;
+        outline: 3px solid $snap-footer-txt-color !important;
         box-shadow: none;
         background-color: transparent;
-        color: white;
+        color: $snap-footer-txt-color;
+    }
+
+    #moodle-footer .btn.btn-secondary {
+        color: $snap-footer-txt-color;
+        border-color: $snap-footer-txt-color;
+
+        &:hover:not(:disabled),
+        &:focus:not(:disabled),
+        &:active:not(:disabled) {
+            background-color: $snap-footer-txt-color;
+            border-color: $snap-footer-txt-color;
+            color: $snap-footer-bg-color;
+            outline: 0;
+        }
+
+        &:focus-visible:not(:disabled) {
+            outline: 3px solid $snap-footer-txt-color;
+            outline-offset: 2px;
+        }
     }
 
     &.editing .activity-item:hover:not(:has(.activity:hover)),

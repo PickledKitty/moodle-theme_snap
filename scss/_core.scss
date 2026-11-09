@@ -610,6 +610,43 @@ a {
     overflow-wrap: break-word;
 }
 
+// Links in text are underlined, in both colour modes (WCAG 1.4.1). Snap's brand colour is too close to the body
+// text to tell them apart by colour, and the brand colour is a setting, so it can't be relied on.
+// Moodle core underlines every link in these areas, but only in dark mode (theme_boost/scss/moodle/dark.scss),
+// which includes Snap's controls that aren't text (Edit section, course tools, activity names). So that rule is
+// undone here, with the same selectors, and links in text get theirs from the rule after it.
+[data-bs-theme="dark"] {
+    #page-header,
+    #region-main,
+    #page-footer,
+    .block_html .card-text {
+        a:not(.btn):not(.nav-link):not(.dropdown-item):not(.list-group-item):not(.page-link) {
+            text-decoration: none;
+        }
+    }
+}
+
+// The last :not() is only there to outweigh the dark rule above.
+#region-main,
+#moodle-footer,
+#page-footer,
+.block_html .card-text {
+    p,
+    small,
+    td,
+    dd,
+    blockquote,
+    figcaption,
+    .no-overflow,
+    .text_to_html,
+    #pagemod-content-container,
+    .footer-section > div {
+        a:not(.btn):not(.nav-link):not(.dropdown-item):not(.list-group-item):not(.page-link):not(.snap-link-plain) {
+            text-decoration: underline;
+        }
+    }
+}
+
 ::-moz-selection {
     background: #fe57a1;
     color: #fff;
