@@ -73,8 +73,10 @@ echo $OUTPUT->custom_menu_spacer();
         echo implode('', $PAGE->get_header_actions());
     }
     echo '</div>';
-    if ($PAGE->navbar->has_items()) {
-        echo '<div class="breadcrumb-nav">' . $OUTPUT->navbar() . '</div>';
+    // Snap's navbar() can leave everything out (when all it would show is the page itself): then no row at all.
+    $snapnavbar = $PAGE->navbar->has_items() ? $OUTPUT->navbar() : '';
+    if ($snapnavbar !== '') {
+        echo '<div class="breadcrumb-nav">' . $snapnavbar . '</div>';
     }
 } ?>
 <?php

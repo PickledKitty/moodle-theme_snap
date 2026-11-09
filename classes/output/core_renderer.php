@@ -2565,14 +2565,20 @@ HTML;
     {
         global $COURSE;
 
-        // Home and Dashboard are left out (the logo links home). My courses (or Courses) becomes My Courses, first,
-        // linked to the My courses page. The course is shown by its short name in full, with a home icon, and
-        // categories above a course are left out.
+        // Home and Dashboard are left out (the logo links home), as is the front page's own course ("Site pages").
+        // My courses (or Courses) becomes My Courses, first, linked to the My courses page. The course is shown by
+        // its short name in full, with a home icon, and categories above a course are left out.
+        $home = new moodle_url('/');
         $items = [];
         $hascourse = false;
         $hasmycourses = false;
         foreach ($this->page->navbar->get_items() as $item) {
-            if (in_array($item->key, ['home', 'myhome'], true)) {
+            // Home comes in under other keys too, such as 'site' from the settings navigation on the preferences pages.
+            $ishome = $item->action instanceof \core\url && $item->action->compare($home, URL_MATCH_EXACT);
+            if (in_array($item->key, ['home', 'myhome'], true) || $ishome) {
+                continue;
+            }
+            if ($item->type == \navigation_node::TYPE_COURSE && $item->key == SITEID) {
                 continue;
             }
             if (in_array($item->key, ['mycourses', 'courses'], true)) {

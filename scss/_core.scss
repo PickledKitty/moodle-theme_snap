@@ -2242,6 +2242,7 @@ body.path-course #moodle-page #page-header {
             display: none;
         }
 
+        .breadcrumb li.snap-crumb-mycourses + .breadcrumb-item::before,
         .breadcrumb li.snap-crumb-course + .breadcrumb-item::before {
             content: none;
         }

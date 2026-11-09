@@ -55,3 +55,14 @@ Feature: Check that the breadcrumbs are being shown correctly.
       | student1 | 1               |
       | admin    | 2               |
       | student1 | 2               |
+
+  @javascript
+  Scenario: Pages outside a course have no Home crumb, and no row when all it would show is the page itself
+    Given I log in as "student1"
+    When I visit "/my/courses.php"
+    Then ".breadcrumb-nav" "css_element" should not exist
+    And I visit "/user/preferences.php"
+    And ".breadcrumb-nav" "css_element" should not exist
+    And I visit "/badges/mybadges.php"
+    And I should see "Preferences" in the ".breadcrumb" "css_element"
+    And I should not see "Home" in the ".breadcrumb" "css_element"
