@@ -101,7 +101,6 @@ $string['customisenavbar'] = 'تغيير ألوان شريط التنقل';
 $string['customisenavbutton'] = 'تغيير ألوان زر "المقررات الدراسية الخاصة بي"';
 $string['customisecustommenu'] = 'تغيير لون نص القائمة المخصص';
 $string['custommenutext'] = 'لون نص القائمة المخصص';
-$string['custommenutitle'] = 'قائمة مخصصة';
 $string['deadlines'] = 'المواعيد النهائية';
 $string['deadlinestoggle'] = 'المواعيد النهائية';
 $string['deadlinestoggledesc'] = 'تعرض للمستخدمين أي مواعيد نهائية للأنشطة القادمة الموجودة في المقررات الدراسية المسجلة.';

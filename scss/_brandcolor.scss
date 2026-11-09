@@ -1543,6 +1543,25 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
                 li.nav-item.dropdown.show {
                     background-color: darken(rgba($brand-primary, 0.9), 10%);
                 }
+
+                // In the dropdowns: links in normal weight, slightly spaced, closer together than the bar's links;
+                // dividers and section headings in the links' colour, as the default dividers don't show on the
+                // brand colour.
+                .dropdown-menu a.dropdown-item {
+                    height: auto;
+                    padding: 0.3rem 1.5rem;
+                    font-weight: 400;
+                    letter-spacing: 0.5px;
+                }
+
+                .dropdown-divider {
+                    border-top-color: rgba($custom-menu-text-color, 0.75);
+                    opacity: 1;
+                }
+
+                .snap-custom-menu-heading {
+                    color: $custom-menu-text-color;
+                }
             }
         }
     }

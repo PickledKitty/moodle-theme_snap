@@ -1957,18 +1957,6 @@ body > #page {
   }
 }
 
-#moodle-footer #snap-custom-menu-footer ul.snap-navbar-content li.nav-item .dropdown-menu[role="menu"] {
-  background-color: #fff0;
-  position: static;
-  margin-left: 1rem;
-  border: none;
-  float: left;
-
-  & .dropdown-divider[role="presentation"] {
-    border: .5px solid #e9ecef;
-  }
-}
-
 // We target only google Chrome
 #page-site-index.editing.chrome #moodle-blocks,
 #page-my-index.editing.chrome #moodle-blocks,
@@ -6694,6 +6682,62 @@ header#mr-nav {
     #snap-custom-menu-header div.container-fluid {
         height: 50px;
     }
+
+    // Icons set in the menu text (core_renderer::snap_custom_menu_context): Font Awesome, or Snap's own
+    // (pix/menu), drawn as a mask in the text colour.
+    #snap-custom-menu-header .snap-menu-icon {
+        display: inline-block;
+        width: 1.25em;
+        margin-right: 0.45em;
+        font-size: 1.15em;
+        text-align: center;
+        vertical-align: -0.1em;
+    }
+
+    #snap-custom-menu-header .snap-menu-icon-mask {
+        height: 1.25em;
+        vertical-align: -0.25em;
+        background-color: currentColor;
+        -webkit-mask: no-repeat center / contain;
+        mask: no-repeat center / contain;
+
+        // High contrast mode replaces backgrounds; keep the icon in the link's colour.
+        @media (forced-colors: active) {
+            forced-color-adjust: none;
+        }
+    }
+
+    // Long dropdowns scroll inside the window: the header is fixed, so the page can't scroll to their end.
+    #snap-custom-menu-header .dropdown-menu {
+        max-height: calc(100vh - 150px);
+        overflow-y: auto;
+    }
+
+    // A section heading in a dropdown (an item with no link), with a rule either side: ── REFERENCING ──.
+    #snap-custom-menu-header .snap-custom-menu-heading {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.4rem 1rem;
+        color: inherit;
+        font-size: 1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        white-space: normal;
+
+        &::before,
+        &::after {
+            content: "";
+            flex: 1 0 1rem;
+            border-top: 2px solid currentColor;
+            opacity: 0.6;
+        }
+
+        .snap-menu-icon {
+            margin-right: 0;
+        }
+    }
 }
 
 // Snap custom menu fix for IE11.
@@ -6737,9 +6781,6 @@ header#mr-nav {
     header#mr-nav div#snap-custom-menu-header {
         display: block;
     }
-    footer#moodle-footer div#snap-custom-menu-footer {
-        display: none;
-    }
     // Spacer to be shown conditionally when custom menu has items to show.
     body:has(header div#snap-custom-menu-header) {
         #page-header {
@@ -6767,62 +6808,61 @@ header#mr-nav {
         margin-top: 60px!important;
         background-position: center center;
     }
+    // Phones and tablets: the custom menu stays in the header, as a row of icons when every item has one.
+    // Their names are still there for screen readers. Its dropdowns take the width of the screen.
     header#mr-nav div#snap-custom-menu-header {
-        display: none;
-    }
-    footer#moodle-footer div#snap-custom-menu-footer {
         display: block;
-        background-color: #2d2d2d;
-        border-radius: 0.5rem;
-        
+
         nav.navbar {
-            max-height: 100%;
-            ul.snap-navbar-content {
-                display: grid !important; // Need to override this to display the custom menu in the footer as a vertical list.
-                li.nav-item {
-                    list-style-type: none;
-                    a.nav-link,
-                    a.dropdown-item {
-                        &:hover,
-                        &:active {
-                            outline: 0;
-                        }
-                        &:focus,
-                        &:hover,
-                        &:active {
-                            background-color: transparent;
-                        }
-                    }
-                    a.dropdown-item {
-                        max-width: 11em;
-                        overflow: hidden;
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
-                    }
-                    a.nav-link {
-                        white-space: nowrap;
-                    }
-                }
-                li.nav-item.dropdown.show {
-                    div.dropdown-menu.show {
-                        margin-left: 1rem !important;
-                        margin-top: 0 !important; // These margins needs to be override as well to modify the position of the dropdown items.
-                        display: block;
-                        position: static;
-                        background-color: transparent;
-                        border: none;
-                    }
-                }
-                // Animation and rotation of caret dropdown for custom menu.
-                .dropdown-toggle[aria-expanded="true"]:after {
-                    transform: rotate(180deg);
-                }
-                .dropdown-toggle:after {
-                    transition: 0.5s;
-                }
-            }
+            padding: 0 0.5rem;
+        }
+
+        // A row, as from 992px up (Bootstrap's navbar-expand-lg only makes it one there), so the items sit side by
+        // side and only what doesn't fit goes into More.
+        ul.snap-navbar-content {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .snap-custom-menu-icons .snap-custom-menu-text {
+            @include visually-hidden();
+        }
+
+        .snap-custom-menu-icons .nav-link .snap-menu-icon {
+            margin-right: 0;
+            font-size: 1.35em;
+        }
+
+        // The dropdowns are placed from the bar, so they can take its width; each caret stays with its link.
+        li.nav-item.dropdown {
+            position: static;
+        }
+
+        div.container-fluid {
+            height: 40px;
+        }
+
+        .dropdown-menu {
+            left: 0;
+            right: 0;
+            max-height: calc(100vh - 100px);
         }
     }
+
+    // A shorter row than on wide screens, as it only holds icons: 40px, each icon centred, and its caret with it
+    // (positioned from the link). The selector outweighs the custom menu's link rules above and in _brandcolor.scss.
+    .theme-snap header#mr-nav #snap-custom-menu-header nav.navbar ul.snap-navbar-content li.nav-item a.nav-link {
+        position: relative;
+        display: flex;
+        align-items: center;
+        height: 40px;
+        padding: 0 1.5em 0 0.6em;
+    }
+
+    body:has(header div#snap-custom-menu-header) #page-header {
+        margin-top: 100px !important;
+    }
+
 }
 
 // Change font size for header Folder activity with inline content.

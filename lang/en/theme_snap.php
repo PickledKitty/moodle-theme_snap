@@ -110,8 +110,14 @@ $string['customtopbar'] = 'Navigation bar';
 $string['customisenavbar'] = 'Change navigation bar colors';
 $string['customisenavbutton'] = 'Change My Courses button colors';
 $string['customisecustommenu'] = 'Change custom menu text color';
+$string['custommenuheading'] = 'Custom menu';
+$string['custommenuheading_desc'] = '<p>The menu itself is set in <a href="{$a}">Custom menu items</a>. In Snap, a line can start with an icon name:</p>
+<ul>
+<li><code>fa-building-columns Library</code>: any free <a href="https://fontawesome.com/search?ic=free">Font Awesome icon</a>, with <code>far-</code> instead of <code>fa-</code> for its outline style.</li>
+<li><code>snap-student-links Student Links</code>: one of Snap\'s own icons: <code>snap-student-links</code>, <code>snap-staff-links</code>, <code>snap-study-help</code> or <code>snap-admin-links</code>.</li>
+</ul>
+<p>When every top-level item has an icon, phones and tablets show just the icons in the menu bar. A line in a dropdown with no link, such as <code>-REFERENCING</code>, is a heading for the lines after it.</p>';
 $string['custommenutext'] = 'Custom menu text color';
-$string['custommenutitle'] = 'Custom Menu';
 $string['deadlines'] = 'Deadlines';
 $string['deadlinestoggle'] = 'Deadlines';
 $string['deadlinestoggledesc'] = 'Show users any upcoming activity deadlines from enrolled courses.';

@@ -79,18 +79,6 @@ if (!empty($socialmedialinks)) {
 echo '</div>';
 ?>
 
-<?php
-/* Moodle custom menu. */
-/* We need to render the custom menu in the footer in mobile views. */
-/* Not on the login pages though, those links don't work there (see nav.php, which hides it in the header too). */
-
-if (!empty($custommenu) && $PAGE->pagelayout !== 'login') {
-    echo '<div id="snap-custom-menu-footer"><br>';
-    echo '<h3 class="mx-4">' . get_string('custommenutitle', 'theme_snap') . '</h3>';
-    echo $custommenu;
-    echo '</div>';
-}
-?>
 
 <div class="row">
     <div id="mrooms-footer" class="helplink col-sm-6">

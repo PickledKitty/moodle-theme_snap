@@ -1345,6 +1345,54 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
 
     /**
+     * A custom menu item's template context, with Snap's additions: an icon, and section headings in dropdowns.
+     *
+     * An icon is set by starting the item's text with its name: "fa-book Library" (a Font Awesome solid icon),
+     * "far-circle-question Help" (Font Awesome regular), or "snap-student-links Student Links" (one of Snap's own,
+     * pix/menu/*.svg). Items in a dropdown with no link and nothing under them, such as "-REFERENCING", are
+     * section headings: the items after each one are a group labelled by it.
+     *
+     * @param \stdClass $context From custom_menu_item::export_for_template().
+     * @return \stdClass
+     */
+    protected function snap_custom_menu_context(\stdClass $context): \stdClass {
+        if (preg_match('/^(fa|far|snap)-([a-z0-9]+(?:-[a-z0-9]+)*)\s+(.+)$/s', $context->text ?? '', $m)) {
+            [, $set, $name, $text] = $m;
+            if ($set === 'snap') {
+                if ($this->page->theme->resolve_image_location('menu/' . $name, 'theme', true)) {
+                    $context->icon = ['class' => false, 'maskurl' => $this->image_url('menu/' . $name, 'theme')->out(false)];
+                }
+            } else {
+                $context->icon = ['class' => ($set === 'far' ? 'fa-regular' : 'fa-solid') . ' fa-' . $name, 'maskurl' => false];
+            }
+            if (!empty($context->icon)) {
+                $context->text = $text;
+            }
+        }
+
+        $sections = [];
+        $current = null;
+        foreach ($context->children ?? [] as $child) {
+            $child = $this->snap_custom_menu_context($child);
+            if (empty($child->url) && empty($child->divider) && empty($child->haschildren)) {
+                $current = (object) ['heading' => (object) ['id' => 'snap-menu-heading-' . uniqid(),
+                    'text' => $child->text, 'icon' => $child->icon], 'items' => []];
+                $sections[] = $current;
+                continue;
+            }
+            if (!isset($current)) {
+                $current = (object) ['heading' => null, 'items' => []];
+                $sections[] = $current;
+            }
+            $current->items[] = $child;
+        }
+        $context->sections = $sections;
+        // Set even when empty: Mustache would otherwise use the icon of the dropdown an item is in.
+        $context->icon = $context->icon ?? false;
+        return $context;
+    }
+
+    /**
      * Renders custom menu as a navigation bar.
      *
      * @return string
@@ -1355,11 +1403,21 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
 
         // We need to create this part of HTML here or multiple nav tags will exist for each item.
-        $content = '<nav class="navbar navbar-expand-lg navbar-light">';
+        $content = '<nav class="navbar navbar-expand-lg navbar-light" aria-label="' .
+            s(get_string('custommenuheading', 'theme_snap')) . '">';
         $content .= '<div class="container-fluid">';
-        $content .= '<ul class="navbar-collapse clearfix snap-navbar-content">';
+        $items = [];
+        $allicons = true;
         foreach ($menu->get_children() as $item) {
-            $context = $item->export_for_template($this);
+            $context = $this->snap_custom_menu_context($item->export_for_template($this));
+            $allicons = $allicons && (!empty($context->icon) || !empty($context->divider));
+            $items[] = $context;
+        }
+        // When every item has an icon, phones show just the icons in a row (the names stay for screen readers).
+        // A menu bar, as Moodle's own menus are: core/moremenu moves items into More and adds arrow key navigation.
+        $content .= '<ul role="menubar" class="navbar-collapse clearfix snap-navbar-content' .
+            ($allicons ? ' snap-custom-menu-icons' : '') . '">';
+        foreach ($items as $context) {
             $content .= $this->render_from_template('theme_snap/custom_menu_item', $context);
         }
         // Add the more button and dropdown regions for responsive menu collapse.

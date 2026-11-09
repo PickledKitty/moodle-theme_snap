@@ -37,4 +37,11 @@
     <licenseversion>1.1</licenseversion>
     <version>v51 (Google Fonts)</version>
   </library>
+  <library>
+    <location>pix/menu</location>
+    <name>Custom menu icons, drawn from Font Awesome Free icons (https://fontawesome.com)</name>
+    <license>CC BY</license>
+    <licenseversion>4.0</licenseversion>
+    <version>6.7.2</version>
+  </library>
 </libraries>

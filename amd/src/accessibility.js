@@ -676,6 +676,13 @@ define(['jquery', 'core/str', 'core/event', 'core_form/events', 'bootstrap/util/
                     if (menu && snapCustomheader) {
                         try {
                             coreMoreMenu(menu);
+                            // core/moremenu marks the first item as the current page when none is; in the custom
+                            // menu that's never true, and screen readers would say so on every page.
+                            menu.querySelectorAll('[aria-current="true"]').forEach(link => {
+                                if (link.href !== window.location.href) {
+                                    link.removeAttribute('aria-current');
+                                }
+                            });
                         } catch (e) {
                             menu.classList.add('flex-nowrap');
                             log.error(e);

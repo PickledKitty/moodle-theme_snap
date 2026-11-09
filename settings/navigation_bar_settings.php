@@ -82,6 +82,13 @@ $setting = new \theme_snap\admin_setting_configcolorwithcontrast(
 $setting->set_updatedcallback('theme_reset_all_caches');
 $snapsettings->add($setting);
 
+// How Snap shows the custom menu: icons and section headings, set in the menu's own text.
+$name = 'theme_snap/custommenuheading';
+$title = new \core\lang_string('custommenuheading', 'theme_snap');
+$description = new \core\lang_string('custommenuheading_desc', 'theme_snap',
+    (new \moodle_url('/admin/search.php', ['query' => 'custommenuitems']))->out(false));
+$snapsettings->add(new admin_setting_heading($name, $title, $description));
+
 // Use custom color for text in the custom menu.
 $name = 'theme_snap/customisecustommenu';
 $title = new \core\lang_string('customisecustommenu', 'theme_snap');

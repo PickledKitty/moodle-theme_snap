@@ -66,13 +66,13 @@ Feature: When the Moodle theme is set to Snap, custom menu should exist for the 
     And I check element ".theme-snap header#mr-nav #snap-custom-menu-header nav.navbar ul.snap-navbar-content li.nav-item a" with color "#FFFFFF"
 
   @javascript
-  Scenario: Custom menu should exists in the footer for small screen sizes.
+  Scenario: On small screens the custom menu stays in the header, and isn't repeated in the footer.
   # Tablet size
     Given I change window size to "768x456"
     And I log in as "admin"
     And I am on site homepage
-    And I should not see "Moodle community" in the "//header[@id='mr-nav']//div[@id='snap-custom-menu-header']" "xpath_element"
-    And I should see "Moodle community" in the "//footer[@id='moodle-footer']//div[@id='snap-custom-menu-footer']" "xpath_element"
+    And I should see "Moodle community" in the "//header[@id='mr-nav']//div[@id='snap-custom-menu-header']" "xpath_element"
+    And "#snap-custom-menu-footer" "css_element" should not exist
 
   @javascript
   Scenario: Custom menu should exists in the header for window full width.
@@ -81,7 +81,6 @@ Feature: When the Moodle theme is set to Snap, custom menu should exist for the 
     And I log in as "admin"
     And I am on site homepage
     And I should see "Moodle community" in the "//header[@id='mr-nav']//div[@id='snap-custom-menu-header']" "xpath_element"
-    And I should not see "Moodle community" in the "//footer[@id='moodle-footer']//div[@id='snap-custom-menu-footer']" "xpath_element"
 
   @javascript
   Scenario: In the different login pages (forgot password, sign up and login index) the custom menu should not be displayed.
@@ -102,3 +101,36 @@ Feature: When the Moodle theme is set to Snap, custom menu should exist for the 
     And I log out
     And I am on sign up page
     And I should not see "Moodle community"
+
+  @javascript @accessibility
+  Scenario: Menu items can have icons, and a dropdown line with no link is a heading for the links after it
+    Given I log in as "admin"
+    And I go to "Site administration > Appearance > Advanced theme settings" in snap administration
+    And I set the text field  "Custom menu items" with multi-line text:
+      """
+      fa-building-columns Library
+      -REFERENCING
+      -fa-arrow-right Referencing guide|https://moodle.org
+      -Citing images|https://docs.moodle.org
+      snap-study-help Study help|https://moodle.org/support
+      """
+    And I click on "Save changes" "button"
+    And I change window size to "large"
+    And I am on site homepage
+    Then "#snap-custom-menu-header .nav-link .fa-building-columns[aria-hidden=true]" "css_element" should exist
+    And "#snap-custom-menu-header .nav-link .snap-menu-icon-mask[aria-hidden=true]" "css_element" should exist
+    And I click on "Library" "link" in the "#snap-custom-menu-header" "css_element"
+    And I should see "REFERENCING" in the ".dropdown-menu.show [role=group] .snap-custom-menu-heading" "css_element"
+    And "Referencing guide" "link" should exist in the ".dropdown-menu.show [role=group]" "css_element"
+    And "REFERENCING" "link" should not exist in the "#snap-custom-menu-header" "css_element"
+    And the "#snap-custom-menu-header" "css_element" should meet accessibility standards
+    # The heading isn't a stop for the keyboard: the arrow keys go from link to link.
+    And I press the escape key
+    And the focused element is "#snap-custom-menu-header .nav-link.dropdown-toggle" "css_element"
+    And I press the down key
+    And the focused element is "#snap-custom-menu-header .dropdown-menu.show a.dropdown-item" "css_element"
+    # On a phone, just the icons; each still has its name for screen readers.
+    And I change window size to "mobile"
+    And I am on site homepage
+    And "Library" "link" should exist in the "#snap-custom-menu-header" "css_element"
+    And "#snap-custom-menu-header .snap-custom-menu-icons" "css_element" should exist
