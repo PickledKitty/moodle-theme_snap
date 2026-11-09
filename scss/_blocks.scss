@@ -946,6 +946,18 @@ body.limitedwidth .drawer.drawer-right {
     }
 }
 
+// A book's or lesson's contents alone in the blocks drawer: the header bar has its name, so its own heading goes
+// (core_renderer::snap_blocks_drawer_contents). The block keeps it as its accessible name (aria-labelledby).
+#theme_snap-drawers-blocks.snap-blocks-contents-only .block_fake {
+    > .card-body > .block-header {
+        display: none !important;
+    }
+
+    > .card-body > .content {
+        margin-top: 0 !important;
+    }
+}
+
 .snap-panel-close-button,
 .drawer.drawer-right > .drawerheader .btn.drawertoggle {
     // In place, over the phone rule in _toc.scss that fixes drawer close buttons for the course index's header.

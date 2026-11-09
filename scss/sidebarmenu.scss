@@ -175,6 +175,13 @@ $mobile-sidebar-peek-width: 10px;
     img {
         filter: brightness(0) invert(1); // Make the icon white
     }
+
+    // A book's or lesson's contents (core_renderer::snap_blocks_drawer_contents): core's list icons have no size
+    // of their own, so they get the size of the course contents icon.
+    &.snap-blocks-contents-button img {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
 }
 
 .custom-menu-item {

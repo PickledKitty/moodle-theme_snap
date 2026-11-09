@@ -32,8 +32,13 @@ if (!$hasblocks) {
     $blockdraweropen = false;
 }
 
+// A book's or lesson's contents, alone in the drawer, name it (core_renderer::snap_blocks_drawer_contents).
+$blockscontents = $hasblocks ? $OUTPUT->snap_blocks_drawer_contents() : null;
+
 $templatecontext = [
     'hasblocks' => $hasblocks,
+    'drawertitle' => $blockscontents ? $blockscontents['title'] : get_string('blocks'),
+    'contentsonly' => !empty($blockscontents),
     'sidepreblocks' => $blockshtml,
     'addblockbutton' => $addblockbutton,
     'showdraweropenbutton' => false,

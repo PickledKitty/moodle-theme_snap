@@ -23,6 +23,8 @@
     {
         "sidepreblocks": "<h2>Blocks html goes here</h2>",
         "hasblocks":true,
+        "drawertitle": "Blocks",
+        "contentsonly": false,
         "courseindexopen": true,
         "blockdraweropen": true,
         "addblockbutton": ""
@@ -31,11 +33,12 @@
 {{#hasblocks}}
     {{< theme_boost/drawer }}
         {{$id}}theme_snap-drawers-blocks{{/id}}
-        {{$drawerclasses}}drawer drawer-right{{#blockdraweropen}} show{{/blockdraweropen}}{{/drawerclasses}}
-        {{! The panel's name in its header bar, as on Snap's other right-hand panels (_blocks.scss: .snap-panel-header). }}
-        {{$drawerheading}}<h2 class="snap-panel-title">{{#str}}blocks{{/str}}</h2>{{/drawerheading}}
+        {{$drawerclasses}}drawer drawer-right{{#blockdraweropen}} show{{/blockdraweropen}}{{#contentsonly}} snap-blocks-contents-only{{/contentsonly}}{{/drawerclasses}}
+        {{! The panel's name in its header bar, as on Snap's other right-hand panels (_blocks.scss: .snap-panel-header).
+            "Blocks", or a book's or lesson's contents when that's all it holds (contentsonly). }}
+        {{$drawerheading}}<h2 class="snap-panel-title">{{drawertitle}}</h2>{{/drawerheading}}
         {{$drawercontent}}
-            <section class="d-print-none" aria-label="{{#str}}blocks{{/str}}">
+            <section class="d-print-none" aria-label="{{drawertitle}}">
                 {{{ addblockbutton }}}
                 {{{ sidepreblocks }}}
             </section>
@@ -45,7 +48,7 @@
         {{$drawerstate}}show-drawer-right{{/drawerstate}}
         {{$tooltipplacement}}left{{/tooltipplacement}}
         {{$drawercloseonresize}}1{{/drawercloseonresize}}
-        {{$closebuttontext}}{{#str}}closeblockdrawer, core{{/str}}{{/closebuttontext}}
+        {{$closebuttontext}}{{#contentsonly}}{{#str}}closepanel, theme_snap, {{drawertitle}}{{/str}}{{/contentsonly}}{{^contentsonly}}{{#str}}closeblockdrawer, core{{/str}}{{/contentsonly}}{{/closebuttontext}}
     {{/ theme_boost/drawer}}
 
     {{#showdraweropenbutton}}

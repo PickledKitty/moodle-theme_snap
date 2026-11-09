@@ -196,9 +196,12 @@ if (isloggedin() && !isguestuser() && !$snapmfapending) {
 
     // Only add blocks drawer button if there are blocks and page type matches whitelist.
     if ($hasblocks && $pagematcheswhitelist) {
+        // Named after a book's or lesson's contents when that's all the drawer holds.
+        $blockscontents = $OUTPUT->snap_blocks_drawer_contents();
         $sidebarmenuitems[] = [
-            'title' => get_string('toggleblockdrawer', 'theme_snap'),
-            'iconimg' => $OUTPUT->image_url('blocksdrawers', 'theme'),
+            'title' => $blockscontents ? $blockscontents['title'] : get_string('toggleblockdrawer', 'theme_snap'),
+            'iconimg' => $blockscontents ? $OUTPUT->image_url($blockscontents['icon'], 'core')
+                : $OUTPUT->image_url('blocksdrawers', 'theme'),
             'isbutton' => true,
             'ariaexpanded' => 'false',
             'ariacontrols' => 'theme_snap-drawers-blocks',
@@ -209,7 +212,7 @@ if (isloggedin() && !isguestuser() && !$snapmfapending) {
                 ['name' => 'placement', 'value' => 'right'],
                 ['name' => 'activeselector', 'value' => '#theme_snap-drawers-blocks.show']
             ],
-            'classes' => 'blocks-drawer-button'
+            'classes' => 'blocks-drawer-button' . ($blockscontents ? ' snap-blocks-contents-button' : ''),
         ];
     }
 

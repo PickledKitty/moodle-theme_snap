@@ -505,6 +505,33 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
 
     /**
+     * The name and icon for the blocks drawer when all it holds is a book's or lesson's contents.
+     *
+     * Below 992px the book contents and lesson menu stay in the blocks drawer (theme_snap/inline_fake_blocks).
+     * When nothing else is in it, its sidebar button and header bar are named after what it holds, rather than
+     * "Blocks". The book's is "Book contents", as the course's own contents are already "Table of contents".
+     *
+     * @return array|null ['title' => string, 'icon' => pix name in core] or null to keep "Blocks"
+     */
+    public function snap_blocks_drawer_contents(): ?array {
+        $names = [
+            'mod-book-view' => [get_string('bookcontents', 'theme_snap'), 'e/numbered_list'],
+            'mod-lesson-view' => [get_string('lessonmenu', 'mod_lesson'), 'e/bullet_list'],
+        ];
+        if (!isset($names[$this->page->pagetype]) || $this->addblockbutton() !== '') {
+            return null;
+        }
+        // Snap moves the Administration block into its admin menu, so it doesn't count.
+        $blocks = array_filter($this->page->blocks->get_content_for_region('side-pre', $this),
+            fn($bc) => ($bc->attributes['data-block'] ?? '') !== 'settings');
+        if (count($blocks) !== 1 || (reset($blocks)->attributes['data-block'] ?? '') !== '_fake') {
+            return null;
+        }
+        [$title, $icon] = $names[$this->page->pagetype];
+        return ['title' => $title, 'icon' => $icon];
+    }
+
+    /**
      * Output moodle blocks and Snap wrapper with edit button.
      * @return string
      */
