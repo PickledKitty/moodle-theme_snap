@@ -38,13 +38,6 @@ if ($showfooterlogin) {
 $footnote = empty($PAGE->theme->settings->footnote) ? '' : $PAGE->theme->settings->footnote;
 $footnote = format_text($footnote, FORMAT_HTML, ['noclean' => true]);
 
-$custommenu = $OUTPUT->custom_menu();
-if (!empty($custommenu) && $this->page->user_is_editing() && $PAGE->pagetype == 'site-index') {
-    $url = new \core\url('/admin/settings.php', ['section' => 'themesettings'], 'id_s__custommenuitems');
-    $link = \core\output\html_writer::link($url, get_string('editcustommenu', 'theme_snap'), ['class' => 'btn btn-primary btn-sm']);
-    $custommenu .= '<p class="text-end">'.$link.'</p>';
-}
-
 
 /* Snap main footer. */
 echo '<div id="snap-site-footer">';

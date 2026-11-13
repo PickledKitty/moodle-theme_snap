@@ -124,7 +124,6 @@ $string['editcoursecontent'] = 'Muokkaa lohkoja';
 $string['editcoursesettings'] = 'Kurssin asetukset';
 $string['editcoursetopic'] = 'Muokkaa osiota';
 $string['editcustomfooter'] = 'Muokkaa alatunnistetta';
-$string['editcustommenu'] = 'Muokkaa mukautettua valikkoa';
 $string['error'] = 'Virhe';
 $string['errorgettingfeed'] = 'Syötteen kohteiden hakemisessa tapahtui virhe.';
 $string['error:categorycolorinvalidjson'] = 'Virheellinen JSON-muoto kurssikategorioille';

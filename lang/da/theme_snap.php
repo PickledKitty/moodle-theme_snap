@@ -124,7 +124,6 @@ $string['editcoursecontent'] = 'Rediger blokke';
 $string['editcoursesettings'] = 'Kursusindstillinger';
 $string['editcoursetopic'] = 'Rediger sektion';
 $string['editcustomfooter'] = 'Rediger sidefod';
-$string['editcustommenu'] = 'Rediger brugerdefineret menu';
 $string['error'] = 'Fejl';
 $string['errorgettingfeed'] = 'Der opstod en fejl under hentning af feedelementer.';
 $string['error:categorycolorinvalidjson'] = 'Forkert JSON-format for kursuskategorier';

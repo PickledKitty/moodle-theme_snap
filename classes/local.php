@@ -2885,4 +2885,63 @@ SQL;
             $html
         );
     }
+
+    /**
+     * The custom menu's lines that one person should see.
+     *
+     * A line can start (after its dashes) with who sees it, in square brackets: role short names, "siteadmin" for
+     * site administrators, and "!" before either to leave those people out. "[academic_staff]" is for anyone with
+     * that role anywhere on the site; "[elearn_admin, !siteadmin]" is for anyone with that role who isn't a site
+     * administrator. A line that's left out takes the lines under it (more dashes) with it. Lines without brackets
+     * are for everyone.
+     *
+     * @param string $text The menu, in the format of Custom menu items.
+     * @param string[] $roles Short names of the roles the person has anywhere.
+     * @param bool $siteadmin Whether the person is a site administrator.
+     * @return string The menu without the lines this person shouldn't see, and without the brackets.
+     */
+    public static function filter_custom_menu(string $text, array $roles, bool $siteadmin): string {
+        $has = fn(string $name): bool => $name === 'siteadmin' ? $siteadmin : in_array($name, $roles, true);
+        $lines = [];
+        $hiddendepth = null;
+        foreach (explode("\n", $text) as $line) {
+            $depth = strspn($line, '-');
+            if ($hiddendepth !== null) {
+                if ($depth > $hiddendepth) {
+                    continue;
+                }
+                $hiddendepth = null;
+            }
+            $rest = substr($line, $depth);
+            if (preg_match('/^\s*\[\s*(!?[a-z0-9_]+(?:\s*,\s*!?[a-z0-9_]+)*)\s*\]\s*/i', $rest, $m)) {
+                $names = preg_split('/\s*,\s*/', $m[1]);
+                $wanted = array_filter($names, fn($n) => $n[0] !== '!');
+                $excluded = array_map(fn($n) => substr($n, 1), array_filter($names, fn($n) => $n[0] === '!'));
+                $shown = (!$wanted || array_filter($wanted, $has)) && !array_filter($excluded, $has);
+                if (!$shown) {
+                    $hiddendepth = $depth;
+                    continue;
+                }
+                $line = substr($line, 0, $depth) . substr($rest, strlen($m[0]));
+            }
+            $lines[] = $line;
+        }
+        return trim(implode("\n", $lines)) === '' ? '' : implode("\n", $lines);
+    }
+
+    /**
+     * Short names of the roles the current user has anywhere on the site (none for guests and logged-out visitors).
+     *
+     * @return string[]
+     */
+    public static function current_user_role_shortnames(): array {
+        global $DB, $USER;
+        if (!isloggedin() || isguestuser()) {
+            return [];
+        }
+        return $DB->get_fieldset_sql('SELECT DISTINCT r.shortname
+                                        FROM {role_assignments} ra
+                                        JOIN {role} r ON r.id = ra.roleid
+                                       WHERE ra.userid = ?', [$USER->id]);
+    }
 }

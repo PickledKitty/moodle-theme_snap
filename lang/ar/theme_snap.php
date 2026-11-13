@@ -121,7 +121,6 @@ $string['editcoursecontent'] = 'تحرير الكتل';
 $string['editcoursesettings'] = 'إعدادات المقرر الدراسي';
 $string['editcoursetopic'] = 'تحرير قسم';
 $string['editcustomfooter'] = 'تحرير التذييل';
-$string['editcustommenu'] = 'تحرير القائمة المخصصة';
 $string['error'] = 'خطأ';
 $string['errorgettingfeed'] = 'حدث خطأ أثناء جلب عناصر الموجز.';
 $string['error:categorycolorinvalidjson'] = 'تنسيق JSON لفئات المقرر الدراسي غير صحيح';

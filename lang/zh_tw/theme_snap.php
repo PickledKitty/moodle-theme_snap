@@ -124,7 +124,6 @@ $string['editcoursecontent'] = '編輯區塊';
 $string['editcoursesettings'] = '課程設定';
 $string['editcoursetopic'] = '編輯章節';
 $string['editcustomfooter'] = '編輯頁尾';
-$string['editcustommenu'] = '編輯自訂功能表';
 $string['error'] = '錯誤';
 $string['errorgettingfeed'] = '取得摘要項目時發生錯誤。';
 $string['error:categorycolorinvalidjson'] = '課程類別的 JSON 格式不正確';

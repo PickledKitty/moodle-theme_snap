@@ -124,7 +124,6 @@ $string['editcoursecontent'] = 'Edytuj bloki';
 $string['editcoursesettings'] = 'Ustawienia kursu';
 $string['editcoursetopic'] = 'Edytuj sekcję';
 $string['editcustomfooter'] = 'Edytuj stopkę';
-$string['editcustommenu'] = 'Edytuj menu niestandardowe';
 $string['error'] = 'Błąd';
 $string['errorgettingfeed'] = 'Wystąpił błąd podczas pobierania elementów kanału.';
 $string['error:categorycolorinvalidjson'] = 'Niepoprawny format JSON dla kategorii kursu';

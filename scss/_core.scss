@@ -6717,10 +6717,10 @@ header#mr-nav {
     #snap-custom-menu-header .snap-custom-menu-heading {
         display: flex;
         align-items: center;
-        gap: 0.75rem;
+        gap: 0.5rem;
         padding: 0.4rem 1rem;
         color: inherit;
-        font-size: 1rem;
+        font-size: 0.9rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.08em;
@@ -6729,7 +6729,9 @@ header#mr-nav {
         &::before,
         &::after {
             content: "";
-            flex: 1 0 1rem;
+            // The rules take what room is left, down to none, so the heading stays on one line where it fits.
+            flex: 1 1 0;
+            min-width: 0;
             border-top: 2px solid currentColor;
             opacity: 0.6;
         }

@@ -124,7 +124,6 @@ $string['editcoursecontent'] = 'Blokken bewerken';
 $string['editcoursesettings'] = 'Cursusinstellingen';
 $string['editcoursetopic'] = 'Sectie bewerken';
 $string['editcustomfooter'] = 'Voettekst bewerken';
-$string['editcustommenu'] = 'Aangepast menu bewerken';
 $string['error'] = 'Fout';
 $string['errorgettingfeed'] = 'Er is een fout opgetreden bij het ophalen van feeditems.';
 $string['error:categorycolorinvalidjson'] = 'Onjuiste JSON-indeling voor cursuscategorieën';

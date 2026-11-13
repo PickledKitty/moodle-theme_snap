@@ -110,13 +110,15 @@ $string['customtopbar'] = 'Navigation bar';
 $string['customisenavbar'] = 'Change navigation bar colors';
 $string['customisenavbutton'] = 'Change My Courses button colors';
 $string['customisecustommenu'] = 'Change custom menu text color';
-$string['custommenuheading'] = 'Custom menu';
-$string['custommenuheading_desc'] = '<p>The menu itself is set in <a href="{$a}">Custom menu items</a>. In Snap, a line can start with an icon name:</p>
+$string['custommenu'] = 'Snap custom menu';
+$string['custommenu_desc'] = '<p>One item per line, in the same format as Custom menu items: <code>text|link|title|languages</code>, with a dash before each item of a dropdown. Snap adds:</p>
 <ul>
-<li><code>fa-building-columns Library</code>: any free <a href="https://fontawesome.com/search?ic=free">Font Awesome icon</a>, with <code>far-</code> instead of <code>fa-</code> for its outline style.</li>
-<li><code>snap-student-links Student Links</code>: one of Snap\'s own icons: <code>snap-student-links</code>, <code>snap-staff-links</code>, <code>snap-study-help</code> or <code>snap-admin-links</code>.</li>
-</ul>
-<p>When every top-level item has an icon, phones and tablets show just the icons in the menu bar. A line in a dropdown with no link, such as <code>-REFERENCING</code>, is a heading for the lines after it.</p>';
+<li><strong>Icons</strong>: start the text with an icon name. <code>fa-building-columns Library</code> uses any free <a href="https://fontawesome.com/search?ic=free">Font Awesome icon</a>, with <code>far-</code> for its outline style; <code>snap-student-links Student Links</code> uses one of Snap\'s own: <code>snap-student-links</code>, <code>snap-staff-links</code>, <code>snap-study-help</code> or <code>snap-admin-links</code>. When every top-level item has an icon, phones and tablets show just the icons.</li>
+<li><strong>Headings</strong>: a dropdown line with no link, such as <code>-REFERENCING</code>, is a heading for the lines after it.</li>
+<li><strong>Items for chosen roles</strong>: start a line with role short names in square brackets, such as <code>[academic_staff] snap-staff-links Staff Links</code>, for people with one of those roles anywhere on the site. <code>siteadmin</code> stands for site administrators, and <code>!</code> leaves people out: <code>[elearn_admin, !siteadmin]</code>. Hiding a top-level line hides its dropdown too. Lines without brackets are for everyone, including visitors who aren\'t logged in.</li>
+</ul>';
+$string['custommenuheading'] = 'Custom menu';
+$string['custommenuheading_desc'] = '<p>Snap shows its own menu, set below. Other themes, such as Boost when a course or user is set to it, show <a href="{$a}">Custom menu items</a> instead, so what only Snap understands (icons, headings, items for chosen roles) never shows there. If Snap\'s menu is empty, Snap shows Custom menu items too.</p>';
 $string['custommenutext'] = 'Custom menu text color';
 $string['deadlines'] = 'Deadlines';
 $string['deadlinestoggle'] = 'Deadlines';
@@ -138,7 +140,6 @@ $string['editcoursecontent'] = 'Edit blocks';
 $string['editcoursesettings'] = 'Course settings';
 $string['editcoursetopic'] = 'Edit section';
 $string['editcustomfooter'] = 'Edit footer';
-$string['editcustommenu'] = 'Edit custom menu';
 $string['error'] = 'Error';
 $string['errorgettingfeed'] = 'Error occurred while getting feed items.';
 $string['error:categorycolorinvalidjson'] = 'Incorrect JSON format for course categories';

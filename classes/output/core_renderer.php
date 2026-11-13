@@ -1392,6 +1392,35 @@ class core_renderer extends \theme_boost\output\core_renderer {
         return $context;
     }
 
+    /** @var string|null This page's custom menu, once built (see custom_menu()). */
+    private ?string $snapcustommenu = null;
+
+    /**
+     * The custom menu: Snap's own (setting theme_snap/custommenu), or Custom menu items when that's empty.
+     *
+     * Snap keeps its own so that what only it understands (icons, headings, lines for chosen roles) stays out of
+     * other themes: a course or user set to Boost shows Custom menu items. Lines this person shouldn't see are left
+     * out before the menu is built (local::filter_custom_menu()); with none left there's no menu.
+     *
+     * @param string $custommenuitems A menu to show instead, as core's custom_menu() takes.
+     * @return string
+     */
+    public function custom_menu($custommenuitems = '') {
+        global $CFG;
+        if ($custommenuitems !== '') {
+            return parent::custom_menu($custommenuitems);
+        }
+        if ($this->snapcustommenu === null) {
+            $text = (string) get_config('theme_snap', 'custommenu');
+            if (trim($text) === '') {
+                $text = (string) ($CFG->custommenuitems ?? '');
+            }
+            $text = local::filter_custom_menu($text, local::current_user_role_shortnames(), is_siteadmin());
+            $this->snapcustommenu = $text === '' ? '' : parent::custom_menu($text);
+        }
+        return $this->snapcustommenu;
+    }
+
     /**
      * Renders custom menu as a navigation bar.
      *
@@ -1656,8 +1685,8 @@ HTML;
             $classes[] = $pbbclass;
         }
 
-        // Check if the custom menu is not empty.
-        if (!empty($CFG->custommenuitems)) {
+        // Whether this person gets a custom menu.
+        if ($this->custom_menu() !== '') {
             $classes[] = 'contains-snap-custom_menu-spacer';
         }
 
@@ -2344,10 +2373,9 @@ HTML;
      * @return string
      */
     public function custom_menu_spacer() {
-        global $CFG;
         $spacer = '';
 
-        if (!empty($CFG->custommenuitems)) {
+        if ($this->custom_menu() !== '') {
             $spacer  = '<div class="snap-custom-menu-spacer"></div>';
 
             // Style to fix the block settings menu when custom menu is active.

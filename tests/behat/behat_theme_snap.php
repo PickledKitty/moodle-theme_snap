@@ -1884,6 +1884,16 @@ class behat_theme_snap extends behat_base {
     }
 
     /**
+     * Sets Snap's own custom menu (setting theme_snap/custommenu), which has one item per line.
+     *
+     * @Given /^the Snap custom menu is:$/
+     * @param \Behat\Gherkin\Node\PyStringNode $menu
+     */
+    public function the_snap_custom_menu_is(\Behat\Gherkin\Node\PyStringNode $menu) {
+        set_config('custommenu', $menu->getRaw(), 'theme_snap');
+    }
+
+    /**
      * Opens My Account default page.
      *
      * @Given /^I am on my account default page$/

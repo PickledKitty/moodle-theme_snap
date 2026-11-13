@@ -89,6 +89,12 @@ $description = new \core\lang_string('custommenuheading_desc', 'theme_snap',
     (new \moodle_url('/admin/search.php', ['query' => 'custommenuitems']))->out(false));
 $snapsettings->add(new admin_setting_heading($name, $title, $description));
 
+// Snap's own menu, so what only Snap understands (icons, headings, lines for chosen roles) stays out of other themes.
+$name = 'theme_snap/custommenu';
+$title = new \core\lang_string('custommenu', 'theme_snap');
+$description = new \core\lang_string('custommenu_desc', 'theme_snap');
+$snapsettings->add(new admin_setting_configtextarea($name, $title, $description, '', PARAM_RAW, 60, 12));
+
 // Use custom color for text in the custom menu.
 $name = 'theme_snap/customisecustommenu';
 $title = new \core\lang_string('customisecustommenu', 'theme_snap');

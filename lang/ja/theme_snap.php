@@ -124,7 +124,6 @@ $string['editcoursecontent'] = 'ブロックを編集する';
 $string['editcoursesettings'] = 'コース設定';
 $string['editcoursetopic'] = 'セクションを編集する';
 $string['editcustomfooter'] = 'フッタを編集する';
-$string['editcustommenu'] = 'カスタムメニューを編集する';
 $string['error'] = 'エラー';
 $string['errorgettingfeed'] = 'フィード項目の取得中にエラーが発生しました。';
 $string['error:categorycolorinvalidjson'] = 'コースカテゴリのJSONフォーマットが正しくありません';

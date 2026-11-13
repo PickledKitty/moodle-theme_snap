@@ -134,3 +134,54 @@ Feature: When the Moodle theme is set to Snap, custom menu should exist for the 
     And I am on site homepage
     And "Library" "link" should exist in the "#snap-custom-menu-header" "css_element"
     And "#snap-custom-menu-header .snap-custom-menu-icons" "css_element" should exist
+
+  @javascript @accessibility
+  Scenario: Snap's own menu can have items for chosen roles, and a course set to Boost shows only Custom menu items
+    Given the following "roles" exist:
+      | shortname      | name           | archetype      |
+      | academic_staff | Academic staff | editingteacher |
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | staff1   | Staff     | 1        | staff1@example.com   |
+      | student1 | Student   | 1        | student1@example.com |
+    And the following "system role assigns" exist:
+      | user   | course               | role           |
+      | staff1 | Acceptance test site | academic_staff |
+    And the following config values are set as admin:
+      | allowcoursethemes | 1 |
+    And the following "courses" exist:
+      | fullname     | shortname | theme |
+      | Boost course | BC        | boost |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | student1 | BC     | student |
+    And the Snap custom menu is:
+      """
+      snap-student-links Student corner|https://moodle.org
+      [academic_staff] snap-staff-links Staff corner
+      -Staff guide|https://docs.moodle.org
+      [siteadmin] snap-admin-links Admin corner
+      -Admin page|https://moodle.org/admin
+      """
+    # A site admin sees the admin item, not the staff one, and Snap's menu instead of Custom menu items.
+    And I log in as "admin"
+    And I am on site homepage
+    And I should see "Admin corner" in the "#snap-custom-menu-header" "css_element"
+    And I should not see "Staff corner" in the "#snap-custom-menu-header" "css_element"
+    And I should not see "Moodle community" in the "#snap-custom-menu-header" "css_element"
+    And I log out
+    # Someone with the staff role sees the staff item, without the brackets.
+    When I log in as "staff1"
+    Then I should see "Staff corner" in the "#snap-custom-menu-header" "css_element"
+    And I should not see "academic_staff" in the "#snap-custom-menu-header" "css_element"
+    And I should not see "Admin corner" in the "#snap-custom-menu-header" "css_element"
+    And the "#snap-custom-menu-header" "css_element" should meet accessibility standards
+    And I log out
+    # A student sees only the items for everyone; in a course set to Boost, Custom menu items.
+    And I log in as "student1"
+    And I should see "Student corner" in the "#snap-custom-menu-header" "css_element"
+    And I should not see "Staff corner" in the "#snap-custom-menu-header" "css_element"
+    And I am on "Boost course" course homepage
+    And I should see "Moodle community"
+    And I should not see "Student corner"
+    And I should not see "snap-student-links"

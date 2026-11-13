@@ -124,7 +124,6 @@ $string['editcoursecontent'] = 'Modifica blocchi';
 $string['editcoursesettings'] = 'Impostazioni corso';
 $string['editcoursetopic'] = 'Modifica sezione';
 $string['editcustomfooter'] = 'Modifica piè di pagina';
-$string['editcustommenu'] = 'Modifica menu personalizzato';
 $string['error'] = 'Errore';
 $string['errorgettingfeed'] = 'Si è verificato un errore durante il recupero degli elementi del feed.';
 $string['error:categorycolorinvalidjson'] = 'Formato JSON non corretto per le categorie dei corsi';

@@ -123,7 +123,6 @@ $string['editcoursecontent'] = 'Blokları düzenle';
 $string['editcoursesettings'] = 'Ders ayarları';
 $string['editcoursetopic'] = 'Bölümü düzenle';
 $string['editcustomfooter'] = 'Altbilgiyi düzenle';
-$string['editcustommenu'] = 'Özel menüyü düzenle';
 $string['error'] = 'Hata';
 $string['errorgettingfeed'] = 'Akış öğeleri alınırken hata oluştu.';
 $string['error:categorycolorinvalidjson'] = 'Ders kategorileri için yanlış JSON biçimi';

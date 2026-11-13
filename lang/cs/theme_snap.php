@@ -124,7 +124,6 @@ $string['editcoursecontent'] = 'Upravit bloky';
 $string['editcoursesettings'] = 'Nastavení hodnocení v kurzu';
 $string['editcoursetopic'] = 'Upravit část';
 $string['editcustomfooter'] = 'Upravit zápatí';
-$string['editcustommenu'] = 'Upravit vlastní nabídku';
 $string['error'] = 'Chyba';
 $string['errorgettingfeed'] = 'Při načítání položek kanálu došlo k chybě.';
 $string['error:categorycolorinvalidjson'] = 'Nesprávný formát JSON pro kategorie kurzů';

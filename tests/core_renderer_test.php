@@ -29,6 +29,8 @@ namespace theme_snap;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 #[\PHPUnit\Framework\Attributes\CoversMethod(\theme_snap\output\core_renderer::class, 'snap_blocks_drawer_contents')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\theme_snap\output\core_renderer::class, 'custom_menu')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\theme_snap\local::class, 'filter_custom_menu')]
 class core_renderer_test extends \advanced_testcase {
 
     /**
@@ -163,5 +165,72 @@ class core_renderer_test extends \advanced_testcase {
         $this->assertNull($this->contents_page('mod-quiz-attempt')->snap_blocks_drawer_contents());
         // In editing mode it has "Add a block".
         $this->assertNull($this->contents_page('mod-book-view', [], true)->snap_blocks_drawer_contents());
+    }
+
+    /**
+     * Who sees which lines of the custom menu: roles, siteadmin, "!", and dropdowns going with their item.
+     */
+    public function test_filter_custom_menu(): void {
+        $menu = "Public|https://example.com/p\n" .
+            "[academic_staff] Staff\n" .
+            "-Staff guide|https://example.com/s\n" .
+            "-[elearn_admin] Support only|https://example.com/x\n" .
+            "-##\n" .
+            "[elearn_admin, !siteadmin] Support admin\n" .
+            "-Support page|https://example.com/a\n" .
+            "[siteadmin] Full admin\n" .
+            "-Admin page|https://example.com/f\n" .
+            "Last|https://example.com/l";
+        $lines = fn(array $roles, bool $admin) => explode("\n", local::filter_custom_menu($menu, $roles, $admin));
+
+        // Everyone else: the unmarked lines only, with each hidden item's dropdown gone too.
+        $this->assertSame(['Public|https://example.com/p', 'Last|https://example.com/l'], $lines([], false));
+
+        // Staff: their menu, without the line for another role inside it; brackets taken off.
+        $this->assertSame(['Public|https://example.com/p', 'Staff', '-Staff guide|https://example.com/s', '-##',
+            'Last|https://example.com/l'], $lines(['academic_staff', 'student'], false));
+
+        // The support role, not a site admin: the support menu.
+        $this->assertContains('Support admin', $lines(['elearn_admin'], false));
+        $this->assertNotContains('Full admin', $lines(['elearn_admin'], false));
+
+        // A site admin with the support role too: only the full admin menu.
+        $admin = $lines(['elearn_admin'], true);
+        $this->assertContains('Full admin', $admin);
+        $this->assertNotContains('Support admin', $admin);
+        $this->assertNotContains('-Support page|https://example.com/a', $admin);
+
+        // Nothing left: no menu at all.
+        $this->assertSame('', local::filter_custom_menu('[siteadmin] Admin|https://example.com', [], false));
+    }
+
+    /**
+     * Snap's own menu setting is used when it's set, Custom menu items when it isn't, and no menu when the lines
+     * left for someone are none.
+     */
+    public function test_custom_menu_source(): void {
+        global $PAGE;
+        $this->resetAfterTest();
+        $this->setUser($this->getDataGenerator()->create_user());
+        $render = function() use (&$PAGE): string {
+            $PAGE = new \moodle_page();
+            $PAGE->set_url('/');
+            $PAGE->set_context(\context_system::instance());
+            return (new \theme_snap\output\core_renderer($PAGE, null))->custom_menu();
+        };
+
+        set_config('custommenuitems', 'Core item|https://example.com/core');
+        set_config('custommenu', '', 'theme_snap');
+        $this->assertStringContainsString('Core item', $render());
+
+        set_config('custommenu', "Snap item|https://example.com/snap\n[siteadmin] Admin item|https://example.com/a",
+            'theme_snap');
+        $html = $render();
+        $this->assertStringContainsString('Snap item', $html);
+        $this->assertStringNotContainsString('Core item', $html);
+        $this->assertStringNotContainsString('Admin item', $html);
+
+        set_config('custommenu', '[siteadmin] Admin item|https://example.com/a', 'theme_snap');
+        $this->assertSame('', $render());
     }
 }

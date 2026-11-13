@@ -124,7 +124,6 @@ $string['editcoursecontent'] = 'Edita els blocs';
 $string['editcoursesettings'] = 'Paràmetres del curs';
 $string['editcoursetopic'] = 'Edita la secció';
 $string['editcustomfooter'] = 'Edita el peu de pàgina';
-$string['editcustommenu'] = 'Edita el menú personalitzat';
 $string['error'] = 'Error';
 $string['errorgettingfeed'] = 'S\'ha produït un error en obtenir els elements del canal de continguts.';
 $string['error:categorycolorinvalidjson'] = 'Format JSON incorrecte per a les categories de curs';

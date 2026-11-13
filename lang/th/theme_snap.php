@@ -124,7 +124,6 @@ $string['editcoursecontent'] = 'แก้ไขบล็อก';
 $string['editcoursesettings'] = 'การตั้งค่ารายวิชา';
 $string['editcoursetopic'] = 'แก้ไขส่วน';
 $string['editcustomfooter'] = 'แก้ไขท้ายกระดาษ';
-$string['editcustommenu'] = 'แก้ไขเมนูที่กำหนดเอง';
 $string['error'] = 'ข้อผิดพลาด';
 $string['errorgettingfeed'] = 'เกิดข้อผิดพลาดขณะรับรายการฟีต';
 $string['error:categorycolorinvalidjson'] = 'รูปแบบ JSON ไม่ถูกต้องสำหรับประเภทรายวิชา';
