@@ -177,7 +177,8 @@
     overflow: hidden;
     isolation: isolate;
 
-    #page-mast h1 {
+    #page-mast h1,
+    #page-mast p.snap-page-title {
         position: relative;
         color: #fff;
 

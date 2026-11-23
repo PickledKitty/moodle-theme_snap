@@ -3597,10 +3597,12 @@ span.editinstructions {
         animation-timing-function: linear;
         animation-duration: 0.68s;
     }
-    #page-header #page-mast h1 {
+    #page-header #page-mast h1,
+    #page-header #page-mast p.snap-page-title {
         font-size: 2.5rem;
     }
-    #page-header #page-mast h1 {
+    #page-header #page-mast h1,
+    #page-header #page-mast p.snap-page-title {
         font-weight: 400;
         font-size: 2.5rem;
     }
@@ -3622,7 +3624,8 @@ span.editinstructions {
 }
 
 body.path-course {
-    #page-header #page-mast h1 {
+    #page-header #page-mast h1,
+    #page-header #page-mast p.snap-page-title {
         font-weight: 400;
         font-size: 2.5rem;
         display: -webkit-box;
@@ -3638,7 +3641,8 @@ body.path-course {
             @include mobile-title-unclamp;
         }
     }
-    #page-header.mast-image #page-mast h1 {
+    #page-header.mast-image #page-mast h1,
+    #page-header.mast-image #page-mast p.snap-page-title {
         @include media-breakpoint-down(lg) {
             font-size: 2rem;
         }
@@ -3656,7 +3660,8 @@ body.path-course {
     }
 
     @media (min-width: 1400px) {
-        #page-header.mast-image #page-mast h1 {
+        #page-header.mast-image #page-mast h1,
+        #page-header.mast-image #page-mast p.snap-page-title {
             font-size: clamp(1rem, 2.5vw, 2.5rem);
         }
     }

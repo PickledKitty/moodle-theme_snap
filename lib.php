@@ -879,3 +879,19 @@ function theme_snap_coursemodule_edit_post_actions(stdClass $moduleinfo, stdClas
 
     return $moduleinfo;
 }
+
+/**
+ * Sets up each page for Snap, before anything is drawn (called by theme_config::init_page()).
+ *
+ * On an activity's pages Snap shows the activity's name as the page's H1, above the activity (core_renderer::
+ * context_header()), not as a title in Moodle's activity header. The activity header is told so here, early enough
+ * that activities which ask it for their heading level (activity_header::get_heading_level()) start their own
+ * headings at H2, under that H1. A single-activity course keeps the title in the activity header.
+ *
+ * @param moodle_page $page
+ */
+function theme_snap_page_init(moodle_page $page) {
+    if ($page->cm && $page->course->format !== 'singleactivity') {
+        $page->activityheader->set_title('');
+    }
+}

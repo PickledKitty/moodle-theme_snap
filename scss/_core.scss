@@ -967,7 +967,8 @@ li {
     height: 1px;
 }
 
-#page-header h1 {
+#page-header h1,
+#page-header p.snap-page-title {
     margin-top: 0;
     line-height: 1.2;
 }
@@ -2101,8 +2102,10 @@ body.path-course #moodle-page #page-header {
 
     // Large, and wraps, not shrunk by script. Very long titles (over 80 characters, such as a merged course's full
     // name) get snap-title-long from core_renderer: a smaller size, cut to two lines with a button to show the rest
-    // (below).
-    #page-mast h1 {
+    // (below). On an activity's pages the title is a p.snap-page-title, not an h1 (the activity's name is the page's
+    // H1), so every rule for the title strip's h1 has a p.snap-page-title twin, here and in the other partials.
+    #page-mast h1,
+    #page-mast p.snap-page-title {
         flex: 1 1 20rem;
         min-width: 0;
         margin: 0;
@@ -2120,7 +2123,8 @@ body.path-course #moodle-page #page-header {
     // theme_snap/snap). Only when scripts run (jsenabled), so it's never cut short without the button to show it. The
     // button's space is always kept beside the title, so nothing moves when the script finds the title is cut short
     // (snap-title-clamped) and shows it.
-    #page-mast h1.snap-title-long {
+    #page-mast h1.snap-title-long,
+    #page-mast p.snap-page-title.snap-title-long {
         flex-basis: 0;
     }
 
@@ -2140,7 +2144,8 @@ body.path-course #moodle-page #page-header {
     }
 
     body.jsenabled & {
-        #page-mast h1.snap-title-long:not(.snap-title-expanded) {
+        #page-mast h1.snap-title-long:not(.snap-title-expanded),
+        #page-mast p.snap-page-title.snap-title-long:not(.snap-title-expanded) {
             display: -webkit-box;
             -webkit-line-clamp: 2;
             line-clamp: 2;
@@ -2315,7 +2320,8 @@ body.path-course #moodle-page #page-header {
 // body.path-course and body#page-course-index-category have their own rules
 // with line-clamp, but activity pages (path-mod) and other page types don't —
 // this general rule covers all remaining cases without a cover image.
-#page-header:not(.mast-image) #page-mast h1 {
+#page-header:not(.mast-image) #page-mast h1,
+#page-header:not(.mast-image) #page-mast p.snap-page-title {
     color: $brand-primary;
     display: -webkit-box;
     -webkit-line-clamp: 4;
@@ -6756,7 +6762,8 @@ header#mr-nav {
     aspect-ratio: 6;
 }
 
-#page-header.mast-image #page-mast h1 {
+#page-header.mast-image #page-mast h1,
+#page-header.mast-image #page-mast p.snap-page-title {
     display: -webkit-box;
     -webkit-line-clamp: 4;
     line-clamp: 4;
@@ -6790,7 +6797,8 @@ header#mr-nav {
         }
     }
 
-    #page-header.mast-image h1 {
+    #page-header.mast-image h1,
+    #page-header.mast-image p.snap-page-title {
         font-size: 1.5vw;
     }
 }

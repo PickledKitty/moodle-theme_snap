@@ -61,3 +61,16 @@ Feature: Course page heading levels don't skip
     And "#snap-course-footer-contacts ul li" "css_element" should exist
     And "#snap-footer-alert" "css_element" should not exist
     And the page should meet accessibility standards
+
+  @javascript @accessibility
+  Scenario: An activity page's H1 is the activity's name; the course's name above it isn't a heading there
+    Given I change window size to "large"
+    And I log in as "student1"
+    When I am on the "Test Book" "book activity" page
+    Then I should see "Test Book" in the ".page-context-header h1" "css_element"
+    And I should see "Course 1" in the "p#snap-page-title" "css_element"
+    And "#page-mast h1" "css_element" should not exist
+    And the page should meet accessibility standards
+    # On the course page the course's name is the H1.
+    And I am on "Course 1" course homepage
+    And I should see "Course 1" in the "h1#snap-page-title" "css_element"

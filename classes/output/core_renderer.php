@@ -1176,13 +1176,27 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $coursetitleattr = format_string($COURSE->fullname, true, ['escape' => false]);
             return \core\output\html_writer::tag($tag,
                 \core\output\html_writer::link($courseurl, $coursefullname),
-                ['title' => $coursetitleattr, 'class' => $this->snap_title_class($coursetitleattr), 'id' => 'snap-page-title']
+                ['title' => $coursetitleattr, 'class' => $this->snap_title_classes($tag, $coursetitleattr),
+                    'id' => 'snap-page-title']
             ) . $this->snap_title_toggle($coursetitleattr);
         }
 
         return \core\output\html_writer::tag($tag, $heading,
-            ['class' => $this->snap_title_class(strip_tags($heading)), 'id' => 'snap-page-title'])
+            ['class' => $this->snap_title_classes($tag, strip_tags($heading)), 'id' => 'snap-page-title'])
             . $this->snap_title_toggle(strip_tags($heading));
+    }
+
+    /**
+     * Classes for the title strip's title: snap-page-title on every page, so the styles find it whichever element it is
+     * (an h1, or on activity pages a p with Bootstrap's h1 look: see snap_page_header()), and snap-title-long for a long
+     * title.
+     *
+     * @param string $tag The title's element.
+     * @param string $title The title as plain text.
+     * @return string
+     */
+    private function snap_title_classes(string $tag, string $title): string {
+        return trim(($tag === 'h1' ? '' : 'h1 ') . 'snap-page-title ' . $this->snap_title_class($title));
     }
 
     /**
@@ -1246,7 +1260,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $pagetype = $this->page->pagetype;
         $context = $this->page->context;
         $data->cover_image_in_mast = true;
-        $data->title = $this->get_page_title('h1');
+        // On an activity's pages the H1 is the activity's name (context_header(), below the title strip), so the course's
+        // name here isn't a heading. A single-activity course keeps it: there the activity heading repeats it and is hidden.
+        $activitypage = $this->snap_page_is_activity_view() && $COURSE->format !== 'singleactivity';
+        $data->title = $this->get_page_title($activitypage ? 'p' : 'h1');
 
         if ($context->contextlevel == CONTEXT_COURSECAT) {
             $categories = $this->page->categories;

@@ -546,7 +546,9 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
 
     // The page title under the band, in the brand colour.
     #page-title #page-mast h1,
-    #page-title #page-mast h1 a {
+    #page-title #page-mast p.snap-page-title,
+    #page-title #page-mast h1 a,
+    #page-title #page-mast p.snap-page-title a {
         color: $brand-primary;
     }
 
@@ -1953,8 +1955,11 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
         // @media 992px block) so the h1 element's own color — which determines
         // the -webkit-line-clamp ellipsis color — also uses the category color.
         #page-header.mast-image #page-mast h1,
+        #page-header.mast-image #page-mast p.snap-page-title,
         #page-header.mast-image h1 a,
-        #page-header.mast-image h1 a:hover {
+        #page-header.mast-image p.snap-page-title a,
+        #page-header.mast-image h1 a:hover,
+        #page-header.mast-image p.snap-page-title a:hover {
             color: $brand-primary;
             text-shadow: none;
         }
@@ -1964,7 +1969,8 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
     // ellipsis inherits the category brand color instead of the global one.
     // _core.scss also sets this with the global $brand-primary, but that rule
     // is not compiled per-category; this one is, so it wins for category pages.
-    #page-header:not(.mast-image) #page-mast h1 {
+    #page-header:not(.mast-image) #page-mast h1,
+    #page-header:not(.mast-image) #page-mast p.snap-page-title {
         color: $brand-primary;
     }
 

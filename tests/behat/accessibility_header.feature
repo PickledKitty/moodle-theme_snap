@@ -42,7 +42,7 @@ Feature: The page header is a band, then the title, then the breadcrumbs
       | assign   | Important message | Read this. | C2     | assign1  | 1       |
 
   @javascript @accessibility
-  Scenario: The band comes first, then the title strip with the page's only H1, then the breadcrumbs
+  Scenario: The band comes first, then the title strip, then the breadcrumbs; the strip is the course page's H1
     Given I change window size to "large"
     And I log in as "student1"
     When I am on "C2" course homepage
@@ -52,9 +52,12 @@ Feature: The page header is a band, then the title, then the breadcrumbs
     And "#page-header *" "css_element" should not exist
     And I should not see cover image in page header
     And the page should meet accessibility standards
+    # On an activity's page the strip still shows the course, but the activity's name is the H1.
     And I am on the "Important message" "assign activity" page
     And "#page-header.snap-header-band + #page-title" "css_element" should exist
-    And I should see "Course 2" in the "#page-title h1" "css_element"
+    And I should see "Course 2" in the "#page-title p#snap-page-title" "css_element"
+    And I should see "Important message" in the ".page-context-header h1" "css_element"
+    And "#page-title h1" "css_element" should not exist
     And the page should meet accessibility standards
 
   @javascript @accessibility
