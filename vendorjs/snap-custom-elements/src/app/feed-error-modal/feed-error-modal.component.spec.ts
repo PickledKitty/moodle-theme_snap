@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FeedErrorModalComponent } from './feed-error-modal.component';
-import {MoodleStringPipe, StringService} from "openlms-angular-lib";
+import {MoodleStringPipe} from "../moodle-string.pipe";
+import {StringService} from "../string.service";
 import {MockStringService} from "../string.service.spec";
 import {ErrorReporterService} from "../error-reporter.service";
 import {MockErrorReporterService} from "../error-reporter.service.spec";

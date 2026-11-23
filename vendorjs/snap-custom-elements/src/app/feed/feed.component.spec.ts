@@ -4,7 +4,8 @@ import { FeedComponent } from './feed.component';
 import {provideHttpClientTesting} from "@angular/common/http/testing";
 import {provideHttpClient} from "@angular/common/http";
 import {provideAnimations} from "@angular/platform-browser/animations";
-import {MoodleStringPipe, StringService} from "openlms-angular-lib";
+import {MoodleStringPipe} from "../moodle-string.pipe";
+import {StringService} from "../string.service";
 import {MockStringService} from "../string.service.spec";
 
 describe('FeedComponent', () => {
