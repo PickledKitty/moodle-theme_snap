@@ -133,10 +133,17 @@ $tag-font-weight: bold !default;
 @mixin tag-variant($color) {
     background-color: $color;
 
+    // A linked tag darkens on hover only. Keyboard focus is the ring (Snap's link ring), 2px clear of the tag so it
+    // shows against the page rather than the tag's colour; darkening on focus too hid it, and stayed after a click.
     &[href] {
-        &:hover,
-        &:focus {
+        &:hover {
             background-color: darken($color, 10%);
+        }
+
+        &:focus-visible {
+            outline-offset: 2px;
+            // Its own colour: Snap's link ring clears link backgrounds on focus.
+            background-color: $color;
         }
     }
 }

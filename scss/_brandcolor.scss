@@ -203,7 +203,7 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
     }
 
     .js-snap-asset-move:focus + label .svg-icon {
-        outline: 3px auto $brand-primary;
+        outline: 3px solid $brand-primary;
     }
 
     .iconhelp {
@@ -375,6 +375,9 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
         color: $brand-primary;
     }
 
+    // Filled buttons: darker on hover and while pressed. Keyboard focus is a solid ring 2px clear (an "auto" outline
+    // is drawn in the browser's own colour, blue in Firefox), and the button keeps its colour: Bootstrap gives keyboard
+    // focus the hover colours, and colour on focus stayed after a click.
     .button-group > button.default,
     .btn.btn-primary,
     .btn.btn-outline-dark {
@@ -383,12 +386,21 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
         border-color: $brand-primary;
 
         &:hover,
-        &:focus,
         &:active,
         &.active {
             background-color: darken($brand-primary, 10%);
             border-color: darken($brand-primary, 10%);
-            outline: 3px auto $brand-primary;
+        }
+
+        &:focus-visible {
+            outline: 3px solid $brand-primary;
+            outline-offset: 2px;
+        }
+
+        &:focus-visible:not(:hover):not(:active) {
+            color: #fff;
+            background-color: $brand-primary;
+            border-color: $brand-primary;
         }
     }
 
@@ -429,19 +441,29 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
 
         // Imitate btn.btn-secondary CSS for buttons without proper
         // Bootstrap classes applied to them, and override colors for
-        // btn-secondary, btn-default.
+        // btn-secondary, btn-default. Filled on hover and while pressed; keyboard focus is the solid ring 2px clear,
+        // with the button's own look (as the filled buttons above).
         color: $brand-primary;
         border-color: $brand-primary;
         background: transparent;
 
         &:hover:not(:disabled),
-        &:focus:not(:disabled),
         &:active:not(:disabled),
         &.active:not(:disabled) {
             background-color: $brand-primary;
             border-color: $brand-primary;
             color: #fff;
-            outline: 3px auto $brand-primary;
+        }
+
+        &:focus-visible {
+            outline: 3px solid $brand-primary;
+            outline-offset: 2px;
+        }
+
+        &:focus-visible:not(:hover):not(:active):not(.active) {
+            color: $brand-primary;
+            border-color: $brand-primary;
+            background: transparent;
         }
     }
 
@@ -599,13 +621,13 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
         }
     }
 
+    // Its keyboard focus ring is with the other two-tone rings, below.
     [id*="courseindex"].drawer-left .btn.drawertoggle {
       background-color: $brand-primary;
 
-      &:focus,
-      &:focus-visible {
+      &:focus:not(:focus-visible) {
         outline: none;
-        box-shadow: 0 0 0 0.25rem rgba($brand-primary, 0.25);
+        box-shadow: none;
       }
     }
 
@@ -942,7 +964,7 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
         }
 
         #searchform-navbar .form-control:focus {
-            outline: 3px auto $nav-text-color;
+            outline: 3px solid $nav-text-color;
         }
 
         .popover-region-notifications > div > .icon {
@@ -1075,14 +1097,14 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
     .categoryname,
     .summary > p {
         &:focus {
-            outline: 3px auto $brand-primary;
+            outline: 3px solid $brand-primary;
         }
     }
 
     .form-control,
     .form-select {
         &:focus {
-            outline: 3px auto $brand-primary;
+            outline: 3px solid $brand-primary;
             border-color: $brand-primary;
             box-shadow: 0 0 0 0.25rem rgba($brand-primary, 0.25);
         }
@@ -1100,6 +1122,7 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
     .form-autocomplete-selection,
     .moodle-core-dragdrop-draghandle,
     .btn,
+    [role="tree"],
     [role="treeitem"]:not([aria-expanded="true"]):not(.courseindex-item:has(.courseindex-section)),
     .btn-icon,
     .snap-sidebar-menu-trigger,
@@ -1123,6 +1146,61 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
         &:focus-visible {
             outline: 3px solid $brand-primary;
         }
+    }
+
+    // After the rules above, which they refine.
+    // Keyboard focus on checkboxes, radios and icon buttons: a solid ring, 2px clear of the control, instead of
+    // Bootstrap's 25% shadow (under 3:1). Clicking doesn't show it (focus-visible). Not on the inputs that are hidden
+    // behind their own drawing: Moodle's switches (.mds-switch has its own ring) and Snap's asset move boxes.
+    .form-check-input,
+    input[type="checkbox"]:not(.mds-switch-input):not(.js-snap-asset-move):not(.visually-hidden),
+    input[type="radio"]:not(.visually-hidden),
+    .btn-icon {
+        &:focus-visible {
+            outline: 3px solid $brand-primary;
+            outline-offset: 2px;
+            box-shadow: none;
+        }
+    }
+
+    // Controls that sit across two backgrounds (the sidebar's toggle and Go to top, half on the page or footer and
+    // half on the brand-coloured sidebar; the grader's controls on its grey bar; the course index's close button,
+    // on a grey header or, on phones, a brand-coloured one): a two-tone ring, a white band inside the brand ring, so
+    // one of the two shows against whatever is behind.
+    .snap-sidebar-menu-trigger,
+    #goto-top-link a,
+    [data-region="grading-navigation-panel"] a,
+    [data-region="grading-navigation-panel"] button,
+    [data-region="grading-navigation-panel"] input,
+    [id*="courseindex"].drawer-left .btn.drawertoggle {
+        &:focus-visible {
+            outline: 3px solid $brand-primary;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 2px #fff;
+        }
+    }
+
+    // An open item of any other tree (the folder activity's files, the Administration panel, the navigation block)
+    // likewise: the ring goes round its own row, the p, not its whole open branch.
+    [role="treeitem"][aria-expanded="true"]:focus-visible > p {
+        outline: 3px solid $brand-primary;
+        outline-offset: 2px;
+        border-radius: 0.25rem;
+    }
+
+    // An open section of the course index takes focus as a whole, so the ring goes round its title row rather than
+    // its whole list (the rules above leave open sections out). 2px out, on the index's grey, so it shows round the
+    // brand-coloured current section's row too.
+    .courseindex-section[aria-expanded="true"]:focus-visible > .courseindex-section-title {
+        outline: 3px solid $brand-primary;
+        outline-offset: 2px;
+        border-radius: 0.5rem;
+    }
+
+    // Forum posts take keyboard focus (to move between them) and had no ring.
+    .forum-post-container:focus-visible {
+        outline: 3px solid $brand-primary;
+        outline-offset: 2px;
     }
 
     .courseindex-item[role="treeitem"]:not([aria-expanded="true"]):has(.courseindex-section) {
@@ -1216,6 +1294,13 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
 
     .tox .tox-edit-area::before {
         border-color: $brand-primary;
+
+        // TinyMCE's editing area stays white in dark mode, so its focus border keeps the brand colour itself: dark
+        // mode's lighter brand colour is too pale on white. Written as rgb(), as lib.php's dark mode pass lightens the
+        // brand colour only where it's a hex code.
+        @include dark-mode {
+            border-color: unquote("rgb(#{red($brand-primary)} #{green($brand-primary)} #{blue($brand-primary)})");
+        }
     }
 
     //course reset button
@@ -1244,7 +1329,7 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
     }
 
     div[tabindex]:focus.modal-dialog .modal-content {
-        outline: 3px auto $brand-primary;
+        outline: 3px solid $brand-primary;
     }
 
     .modal-dialog.modal-dialog-centered.modal-dialog-scrollable {
@@ -1582,6 +1667,7 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
 
     // The footer has its own background and text colours (settings footerbg and footertxt), in both colour modes:
     // links, buttons and focus rings in it use the footer's text colour, as the brand colour may not show on it.
+    #moodle-footer a:focus-visible,
     #moodle-footer #page-footer a:focus {
         outline: 3px solid $snap-footer-txt-color !important;
         box-shadow: none;
@@ -1833,12 +1919,27 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
         }
     }
 
+    // Completion buttons (Mark as done): filled on hover. Keyboard focus is the ring, 2px clear, and the button keeps
+    // its look: filled on focus it hid the ring, and stayed filled after a click, as if done. Bootstrap gives keyboard
+    // focus the hover colours (Moodle's grey fill), so those go back to the button's own while it isn't hovered.
     .activity-item .activity-completion button,
     &.path-mod .activity-information .completion-info button {
-        &:hover, &:focus {
+        &:hover {
             background-color: $brand-primary;
-            // White on the brand colour, in both colour modes; the buttons' own hover and focus text can be dark.
+            // White on the brand colour, in both colour modes; the buttons' own hover text can be dark.
             color: #fff;
+        }
+
+        &:focus-visible {
+            outline: 3px solid $brand-primary;
+            outline-offset: 2px;
+            box-shadow: none;
+        }
+
+        &:focus-visible:not(:hover) {
+            color: var(--bs-btn-color);
+            background-color: var(--bs-btn-bg);
+            border-color: var(--bs-btn-border-color);
         }
     }
 

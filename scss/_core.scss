@@ -7691,11 +7691,14 @@ span[data-flexitour="container"]:has(> div[data-role="flexitour-step"]) {
     }
 }
 
-// Fix for screen reader focusable element that skip to main content position.
+// The "Skip to main content" link, shown top left when it has keyboard focus. Above Snap's fixed header (#mr-nav,
+// 1052), which covered it on every page that has the header: it took focus but couldn't be seen. Dialogs (1055) keep
+// focus inside themselves, so it's never focused while one is open.
 .visually-hidden-focusable[href="#maincontent"]:focus {
-    z-index: 1031;
+    z-index: 1060;
     position: fixed;
-    background: #fff;
+    // The page's own background, so its link colour reads on it in both colour modes.
+    background: var(--bs-body-bg);
     padding: 7px;
     left: 0;
     top: 0;

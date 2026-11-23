@@ -88,6 +88,13 @@ $mobile-sidebar-peek-width: 10px;
             }
         }
 
+        // On the brand-coloured sidebar, a white ring, as on the other sidebar buttons.
+        #snap_feeds_side_menu_trigger:focus-visible {
+            outline: 3px solid #fff;
+            outline-offset: 0;
+            border-radius: 0.5rem;
+        }
+
         [id^="message-drawer-toggle-"] {
             &:focus {
                 outline: 3px solid white;

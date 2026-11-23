@@ -1792,7 +1792,7 @@ body.format-tiles.editing {
             text-decoration: none;
             background-color: darken($brand-primary, 10%);
             border-color: darken($brand-primary, 10%);
-            outline: 3px auto $brand-primary;
+            outline: 3px solid $brand-primary;
         }
     }
 
@@ -1908,7 +1908,7 @@ body.format-tiles.editing {
                 text-decoration: none;
                 background-color: darken($brand-primary, 10%);
                 border-color: darken($brand-primary, 10%);
-                outline: 3px auto $brand-primary;
+                outline: 3px solid $brand-primary;
             }
         }
         li[id^="section-"] {
