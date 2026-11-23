@@ -77,3 +77,16 @@ Feature: Every right-hand panel has a header with its name and its close button
       | #snap_feeds_side_menu_trigger   | #snap_feeds_side_menu           | #snap_feeds_side_menu .snap-panel-close-button           |
       | [id^=message-drawer-toggle]     | [data-region=right-hand-drawer] | [data-region=right-hand-drawer] .snap-panel-close-button |
       | .blocks-drawer-button           | #theme_snap-drawers-blocks      | #theme_snap-drawers-blocks .drawertoggle                 |
+
+  @javascript @accessibility
+  Scenario: Each Snap feed has its Refresh button and its link in its header row, in the order they're shown
+    Given the following config values are set as admin:
+      | advancedfeedsenable | 1 | theme_snap |
+    And I change window size to "large"
+    And I log in as "admin"
+    And I am on site homepage
+    When I click on "#snap_feeds_side_menu_trigger" "css_element"
+    Then "Refresh deadlines" "button" should exist in the "#snap_feeds_side_menu .snap-feed-header" "css_element"
+    And "View my calendar" "link" should exist in the "#snap_feeds_side_menu .snap-feed-header" "css_element"
+    And "#snap_feeds_side_menu .snap-feed-header .snap-feed-reload + .snap-feeds-menu-more" "css_element" should exist
+    And the "#snap_feeds_side_menu .snap-feeds" "css_element" should meet accessibility standards

@@ -144,7 +144,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
         // Core renderer has not $output attribute, but code checker requires it.
         global $OUTPUT, $CFG;
         $text = get_string($langstring, 'theme_snap');
-        $svgicon = file_get_contents($CFG->dirroot.'/theme/snap/pix/'.$iconname.'.svg');
+        // Decorative: the link's name is its text. Hidden from assistive technology, which could otherwise read the
+        // icon's own markup.
+        $svgicon = preg_replace('/<svg\b/', '<svg aria-hidden="true" focusable="false"',
+            file_get_contents($CFG->dirroot.'/theme/snap/pix/'.$iconname.'.svg'), 1);
         $snapfeedsurlparam = isset($CFG->theme_snap_feeds_url_parameter) ? $CFG->theme_snap_feeds_url_parameter : true;
         if ($location == 'snapfeedsmenu') {
             if ($snapfeedsurlparam) {
@@ -382,10 +385,11 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
 
         $heading = get_string('messages', 'theme_snap');
+        $link = $this->column_header_icon_link('viewmessaging', 'messages-new', new moodle_url('/message/'), $location);
         if ($this->advanced_feeds_enabled()) {
-            $o = ce_render_helper::get_instance()
+            return ce_render_helper::get_instance()
                 ->render_feed_web_component('messages', $heading, get_string('nomessages', 'theme_snap'),
-                    false, true, 0, $location);
+                    false, true, 0, $location, $link);
         } else {
             if ($location == 'snapfeedsmenu') {
                 $o = '<h2>'.$heading.'</h2>';
@@ -396,9 +400,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
             }
         }
 
-        $url = new moodle_url('/message/');
-        $o .= $this->column_header_icon_link('viewmessaging', 'messages-new', $url, $location);
-        return $o;
+        return $o . $link;
     }
 
 
@@ -414,11 +416,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
 
         $heading = get_string('forumposts', 'theme_snap');
+        $link = $this->column_header_icon_link('viewforumposts', 'forumposts-new',
+            new moodle_url('/mod/forum/user.php', ['id' => $USER->id]), $location);
         if ($this->advanced_feeds_enabled()) {
             $virtualpaging = true; // Web service retrieves all elements, need to do virtual paging.
-            $o = ce_render_helper::get_instance()->render_feed_web_component('forumposts', $heading,
+            return ce_render_helper::get_instance()->render_feed_web_component('forumposts', $heading,
                             get_string('noforumposts', 'theme_snap'), $virtualpaging,
-                 true, 0, $location);
+                 true, 0, $location, $link);
         } else {
             if ($location == 'snapfeedsmenu') {
                 $o = '<h2>'.$heading.'</h2>
@@ -429,9 +433,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
             }
         }
 
-        $url = new moodle_url('/mod/forum/user.php', ['id' => $USER->id]);
-        $o .= $this->column_header_icon_link('viewforumposts', 'forumposts-new', $url, $location);
-        return $o;
+        return $o . $link;
     }
 
 
@@ -800,11 +802,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
 
         $heading = get_string('recentfeedback', 'theme_snap');
+        $link = $this->column_header_icon_link('viewmyfeedback', 'grading-new',
+            new moodle_url('/grade/report/mygrades.php'), $location);
         if ($this->advanced_feeds_enabled()) {
             $virtualpaging = true; // Web service retrieves all elements, need to do virtual paging.
-            $o = ce_render_helper::get_instance()->render_feed_web_component('graded', $heading,
+            return ce_render_helper::get_instance()->render_feed_web_component('graded', $heading,
                             get_string('nograded', 'theme_snap'), $virtualpaging,
-                true, 0, $location);
+                true, 0, $location, $link);
         } else {
             if ($location == 'snapfeedsmenu') {
                 $o = "<h2>$heading</h2>";
@@ -815,9 +819,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
             }
         }
 
-        $url = new moodle_url('/grade/report/mygrades.php');
-        $o .= $this->column_header_icon_link('viewmyfeedback', 'grading-new', $url, $location);
-        return $o;
+        return $o . $link;
     }
 
     /**
@@ -832,11 +834,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
 
         $heading = get_string('deadlines', 'theme_snap');
+        $link = $this->column_header_icon_link('viewcalendar', 'calendar-new',
+            $CFG->wwwroot . '/calendar/view.php?view=month', $location);
         if ($this->advanced_feeds_enabled()) {
             $virtualpaging = true; // Web service retrieves all elements, need to do virtual paging.
-            $o = ce_render_helper::get_instance()->render_feed_web_component('deadlines', $heading,
+            return ce_render_helper::get_instance()->render_feed_web_component('deadlines', $heading,
                 get_string('nodeadlines', 'theme_snap'), $virtualpaging,
-                true, 0, $location);
+                true, 0, $location, $link);
         } else {
             if ($location == 'snapfeedsmenu') {
                 $o = "<h2>$heading</h2>";
@@ -847,9 +851,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
             }
         }
 
-        $calurl = $CFG->wwwroot.'/calendar/view.php?view=month';
-        $o .= $this->column_header_icon_link('viewcalendar', 'calendar-new', $calurl, $location);
-        return $o;
+        return $o . $link;
     }
 
 

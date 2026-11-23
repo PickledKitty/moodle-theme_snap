@@ -64,13 +64,16 @@ class ce_render_helper {
      * @param bool $virtualpaging
      * @param bool $showreload
      * @param int $courseid
+     * @param string $location
+     * @param string $headerlink HTML of a link for the feed's header, beside its Refresh button (such as View my
+     *     calendar): the component puts it there (ng-content), so it comes in the order the feed shows it.
      * @return string
      * @throws \core\exception\coding_exception
      * @throws \dml_exception
      * @throws \core\exception\moodle_exception
      */
     public function render_feed_web_component($feedkey, $title, $emptymessage, $virtualpaging = false, $showreload = true,
-        $courseid = 0, $location = '' ) {
+        $courseid = 0, $location = '', $headerlink = '') {
         global $CFG;
         $pagesize = get_config('theme_snap', 'advancedfeedsperpage');
         $pagesize = !empty($pagesize) ? $pagesize : 3;
@@ -115,8 +118,7 @@ class ce_render_helper {
            max-life-time="$maxlifetime"
            {$courseidatt}
            loading-feed="{$loadingfeed}"
-
-></snap-feed>
+>{$headerlink}</snap-feed>
 HTML;
     }
 }

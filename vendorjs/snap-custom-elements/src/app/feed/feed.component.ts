@@ -10,7 +10,19 @@ import {ErrorReporterService} from "../error-reporter.service";
   selector: 'snap-feed',
   standalone: false,
   template: `
-      <h2>{{ title }}</h2>
+      <!-- The feed's name, then its actions: Refresh, and any link Snap puts inside the element (such as View my
+           calendar), in the order a keyboard reaches them. -->
+      <div class="snap-feed-header">
+          <h2>{{ title }}</h2>
+          <div class="snap-feed-actions">
+              <button *ngIf="showReload" type="button" class="snap-feed-action snap-feed-reload"
+                 (click)="purgeDataAndResetFeed()" title="{{ reloadMessage }} {{ title.toLowerCase() }}">
+                  <span class="visually-hidden">{{ reloadMessage }} {{ title.toLowerCase() }}</span>
+                  <i class="snap-feeds-refresh-icon fa fa-refresh" aria-hidden="true"></i>
+              </button>
+              <ng-content></ng-content>
+          </div>
+      </div>
       <div id="{{ elemId }}" [@growIn]="feedItemTotal">
           <div class="snap-media-object feeditem {{feedItem.extraClasses}}" *ngFor="let feedItem of feedItems" [attr.data-from-cache]="feedItem.fromCache" [attr.data-mod-name]="feedItem.modName">
               <img *ngIf="feedItem.hasUserPic; else userInitials"
@@ -55,15 +67,10 @@ import {ErrorReporterService} from "../error-reporter.service";
           {{ 'viewmore' | moodleString | async }}
         </a>
       </div>
-      <button *ngIf="viewMoreEnabled && nextPage >= 0" type="button" class="snap-sidebar-menu-more"
+      <button *ngIf="viewMoreEnabled && nextPage >= 0" type="button" class="snap-feed-action snap-sidebar-menu-more"
          (click)="getFeed($event)" title="{{ viewMoreMessage }} {{ title.toLowerCase() }}">
-          <small>{{viewMoreMessage}}</small>
-          <i class="snap-feeds-more-icon fa fa-caret-down"></i>
-      </button>
-      <button *ngIf="nextPage === -1 && showReload" type="button" class="snap-sidebar-menu-more"
-         (click)="purgeDataAndResetFeed()" title="{{ reloadMessage }} {{ title.toLowerCase() }}">
-          <small>{{reloadMessage}}</small>
-          <i class="snap-feeds-refresh-icon fa fa-refresh"></i>
+          <span class="visually-hidden">{{ viewMoreMessage }} {{ title.toLowerCase() }}</span>
+          <i class="snap-feeds-more-icon fa fa-caret-down" aria-hidden="true"></i>
       </button>
       <span *ngIf="fetchingData" class="snap-sidebar-menu-more snap-sidebar-menu-feed-loading">
         <a class="small text-muted">{{loadingFeed}} </a>

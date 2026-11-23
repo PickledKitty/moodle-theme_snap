@@ -185,22 +185,6 @@ body.path-site .block.block_settings {
             margin: 1rem;
             padding: 0.5rem 1rem;
             border-radius: 0.5rem;
-            .snap-sidebar-menu-more {
-                pointer-events: none;
-                margin-top: 1em;
-                margin-right: -0.8rem;
-                .snap-feeds-refresh-icon,
-                .snap-feeds-more-icon {
-                    display: block;
-                    margin-right: 0.8em;
-                }
-                small {
-                    display: none;
-                }
-                :before {
-                    pointer-events: all;
-                }
-            }
             h2 {
                 clear: both;
                 font-size: 1rem;
@@ -208,18 +192,6 @@ body.path-site .block.block_settings {
                 line-height: 1;
                 padding: 0.5em 0;
                 margin: 0.5em 0;
-            }
-            .snap-feeds-menu-more {
-                display: block;
-                text-align: right;
-                pointer-events: none;
-
-                small {
-                    display: none;
-                }
-                svg {
-                    pointer-events: all;
-                }
             }
             #snap-feeds-menu-messages,
             #snap-feeds-menu-forumposts {
@@ -359,29 +331,73 @@ body.path-site .block.block_settings {
                     font-weight: 700;
                 }
 
-                .snap-feeds-refresh-icon {
-                    display: inline-block;
-                    margin-left: 8px;
-                }
-
-                .snap-feeds-menu-more {
-                    display: block;
-                    text-align: right;
-                }
-
-                .snap-feeds-menu-more, .snap-sidebar-menu-more {
-                    * {
-                        display: inline-block;
-                        transform: translate(8px, 16px);
-                    }
-
-                    i, svg {
-                        width: 34px;
-                    }
-                }
             }
         }
     }
+    // Each feed (the snap-feed element, vendorjs/snap-custom-elements): its name, then its actions on the right,
+    // Refresh and its link (View my calendar and so on), each a 32px square with the icon in the middle. View more
+    // stays under the list, on the right, the same size.
+    snap-feed {
+        .snap-feed-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            h2 {
+                flex: 1 1 auto;
+                min-width: 0;
+            }
+        }
+
+        .snap-feed-actions {
+            display: flex;
+            flex: none;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .snap-feed-action,
+        .snap-feed-actions > a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: 0;
+            border-radius: 0.5rem;
+            background: none;
+            line-height: 1;
+            text-decoration: none;
+
+            i,
+            svg {
+                display: block;
+                width: 1.1rem;
+                height: 1.1rem;
+                margin: 0;
+                font-size: 1.1rem;
+            }
+
+            // These SVGs are drawn in the middle half of their box (viewBox padding), so a 40px box gives a glyph
+            // the size of the Font Awesome ones; the padding round it is empty, so nothing shows past the button.
+            svg {
+                flex: none;
+                width: 40px;
+                height: 40px;
+            }
+
+            small {
+                @include visually-hidden();
+            }
+        }
+
+        > .snap-feed-action {
+            display: flex;
+            margin: 0.5rem 0 0 auto;
+        }
+    }
+
     .snap-feeds .userinitials.snap-feeds-forumpost-userinitials {
         float: left;
         width: 36px;

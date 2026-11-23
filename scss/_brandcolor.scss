@@ -307,6 +307,23 @@ $custom-menu-text-color: rgb(255, 255, 255) !default; // Need to define this wit
         }
     }
 
+    // Snap feeds' Refresh, View more and header links: brand icons, a light brand tint on hover, the ring on keyboard
+    // focus (_blocks.scss: snap-feed).
+    snap-feed .snap-feed-action,
+    snap-feed .snap-feed-actions > a {
+        color: $brand-primary;
+
+        &:hover {
+            background-color: rgba($brand-primary, 0.1);
+        }
+
+        &:focus-visible {
+            outline: 3px solid $brand-primary;
+            outline-offset: 2px;
+            background-color: transparent;
+        }
+    }
+
     button.snap-sidebar-menu-more {
         color: $brand-primary;
         &:hover {
