@@ -7810,6 +7810,25 @@ span[data-flexitour="container"]:has(> div[data-role="flexitour-step"]) {
     .snap-page-my-courses-options  {
         float: right;
     }
+    // The course buttons sit beside the title when they fit, at their own width: the title takes the rest of the
+    // line. On a line of their own below it, they fill that line.
+    #page-title #page-mast h1 {
+        flex-grow: 1000;
+    }
+    .snap-my-courses-buttons {
+        flex: 1 0 auto;
+
+        .snap-page-my-courses-options {
+            align-self: stretch;
+        }
+
+        .btn-group,
+        .my-action-buttons,
+        .my-action-buttons form {
+            display: flex;
+            flex: 1 1 auto;
+        }
+    }
     .block_myoverview {
         border: 0 !important;
     }
@@ -7819,6 +7838,12 @@ span[data-flexitour="container"]:has(> div[data-role="flexitour-step"]) {
             max-width: unset;
             padding: 0 0;
             margin: 0 !important;
+
+            // Its column has no gutters, so the row's negative margins only pushed the block off the left edge
+            // and under the sidebar.
+            > .row {
+                margin-inline: 0;
+            }
         }
 
         .snap-page-my-courses-options {
@@ -7828,21 +7853,22 @@ span[data-flexitour="container"]:has(> div[data-role="flexitour-step"]) {
         .block_myoverview_column {
             padding: 0 0;
             margin-right: 3rem;
+            // The title, its line and the filters line up with the white course panel below them.
             .card-title {
-                padding: 0 5em;
+                padding: 0 1em;
             }
             hr {
-                margin: 0.5em 5em;
+                margin: 0.5em 1em;
             }
             [data-region="filter"] {
-                padding: 0 5em;
+                padding: 0 1em;
                 margin-bottom: 2em;
             }
             [data-region="courses-view"] {
                 padding: 0 0.5em 0;
                 border-radius: 0.3em;
                 .card-grid  {
-                    padding: 2em;
+                    padding: 1em;
                     background-color: white;
                     @include dark-mode {
                         background-color: var(--bs-body-bg);
@@ -7853,10 +7879,22 @@ span[data-flexitour="container"]:has(> div[data-role="flexitour-step"]) {
                 margin-top: 1em;
             }
             .block-myoverview-content {
-                padding: 2em 3em;
+                padding: 1em 1.1em 0;
                 background-color: #eef0f6;
                 @include dark-mode {
                     background-color: var(--bs-tertiary-bg);
+                }
+            }
+            // On phones the courses and filters get the width, not the desktop's side padding.
+            @include media-breakpoint-down(sm) {
+                [data-region="courses-view"] {
+                    padding-inline: 0;
+                    .card-grid {
+                        padding: 1em 0.5em;
+                    }
+                }
+                .block-myoverview-content {
+                    padding: 1em 2em 0;
                 }
             }
             .snap-page-my-courses-options  {
@@ -7921,9 +7959,6 @@ span[data-flexitour="container"]:has(> div[data-role="flexitour-step"]) {
         }
 
         #region-main {
-            padding: 0 1.1rem 0 0;
-            margin: 0 !important;
-
             .block_myoverview {
                 width: 100%;
 

@@ -17,7 +17,8 @@
 {{!
     @template block_myoverview/progress-bar
 
-    This template renders a simple progress bar.
+    This template renders a simple progress bar. Snap adds the bar under the text; the text already gives the
+    progress, so the bar is hidden from screen readers.
 
     Example context (json):
     {
@@ -27,7 +28,7 @@
 <div class="progress-text">
     <span class="visually-hidden">{{#str}}aria:courseprogress, block_myoverview{{/str}}</span>
     {{#str}}completepercent, block_myoverview, <span>{{progress}}</span>{{/str}}
-    <div class="progress">
+    <div class="progress" aria-hidden="true">
         <div class="progress-bar" role="progressbar" style="width: {{progress}}%" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
 </div>

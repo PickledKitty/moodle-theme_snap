@@ -85,6 +85,26 @@ Feature: Users can access to the My Courses page in Snap.
     Then I should see "Site pages"
     Then I should see "Site badges"
 
+  @javascript @accessibility
+  Scenario Outline: The Course overview and the course buttons fit the page at <size>
+    # Its row's negative margins used to push it off the left edge and under the sidebar.
+    Given I change viewport size to "<size>"
+    # My Courses is the home page (Background).
+    And I log in as "admin"
+    And I should see "Course overview"
+    Then the element "#region-main" should fit its width
+    And the element "#page-mast" should fit its width
+    And the page should meet accessibility standards
+
+    Examples:
+      | size     |
+      | 480x900  |
+      | 576x900  |
+      | 768x900  |
+      | 992x900  |
+      | 1200x900 |
+      | 1400x900 |
+
   @javascript
   Scenario: User will see a warning message when the Course overview block is disabled.
     Given the following config values are set as admin:
