@@ -65,4 +65,9 @@ $description = get_string('lazyload_mod_page_description', 'theme_snap');
 $setting = new admin_setting_configcheckbox($name, $title, $description, 1);
 $snapsettings->add($setting);
 
+// The year a course belongs to, for the My courses Year filter.
+$snapsettings->add(new \theme_snap\admin_setting_configyearpattern('theme_snap/courseyearpattern',
+    new \core\lang_string('courseyearpattern', 'theme_snap'),
+    new \core\lang_string('courseyearpattern_desc', 'theme_snap')));
+
 $settings->add($snapsettings);

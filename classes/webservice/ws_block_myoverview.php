@@ -116,7 +116,8 @@ class ws_block_myoverview extends external_api {
         if ($params['yeardata'] != null && $params['yeardata'] != "all") {
             $filteredbyyearcourses = [];
             foreach ($mainFiltersResult["courses"] as $course) {
-                $endyear = userdate($course->enddate, '%Y');
+                $endyear = \theme_snap\services\course::course_year((object)['idnumber' => $course->idnumber ?? '',
+                    'enddate' => $course->enddate ?? 0]);
                 if ($endyear == $params['yeardata']) {
                     $filteredbyyearcourses[] = $course;
                 }

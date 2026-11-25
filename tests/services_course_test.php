@@ -25,6 +25,8 @@ use theme_snap\local;
  * @copyright Copyright (c) 2016 Open LMS (https://www.openlms.net)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+#[\PHPUnit\Framework\Attributes\CoversMethod(course::class, 'course_year')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\theme_snap\admin_setting_configyearpattern::class, 'validate')]
 class services_course_test extends \advanced_testcase {
 
     /**
@@ -254,5 +256,50 @@ class services_course_test extends \advanced_testcase {
         $section = theme_snap_output_fragment_section($params);
         $this->assertStringContainsString('Fragment forum', $section);
         $this->assertStringContainsString('snap-modchooser', $section);
+    }
+
+    /**
+     * A course's year: from its ID number when the pattern finds one, otherwise from its end date, otherwise none.
+     */
+    public function test_course_year(): void {
+        $end2027 = make_timestamp(2027, 2, 12);
+        $course = (object)['idnumber' => '91236.202620', 'enddate' => $end2027];
+
+        // No pattern: the end date's year.
+        set_config('courseyearpattern', '', 'theme_snap');
+        $this->assertSame('2027', course::course_year($course));
+
+        // The pattern finds the year in the ID number, which wins over the end date.
+        set_config('courseyearpattern', '\.(\d{4})\d{2}$', 'theme_snap');
+        $this->assertSame('2026', course::course_year($course));
+
+        // An ID number the pattern doesn't match: the end date's year.
+        $this->assertSame('2027', course::course_year((object)['idnumber' => 'ABC-101', 'enddate' => $end2027]));
+
+        // Neither: no year.
+        $this->assertNull(course::course_year((object)['idnumber' => 'ABC-101', 'enddate' => 0]));
+        $this->assertNull(course::course_year((object)['idnumber' => '', 'enddate' => 0]));
+
+        // What the brackets find must be a year.
+        set_config('courseyearpattern', '^(\d+)', 'theme_snap');
+        $this->assertSame('2027', course::course_year($course));
+
+        // A broken pattern saved some other way is ignored.
+        set_config('courseyearpattern', '(\d{4', 'theme_snap');
+        $this->assertSame('2027', @course::course_year($course));
+    }
+
+    /**
+     * The year pattern setting saves only a valid expression with brackets, or nothing.
+     */
+    public function test_year_pattern_setting(): void {
+        global $CFG;
+        require_once($CFG->libdir . '/adminlib.php');
+        $setting = new \theme_snap\admin_setting_configyearpattern('theme_snap/courseyearpattern', 'Year', '');
+        $this->assertTrue($setting->validate(''));
+        $this->assertTrue($setting->validate('\.(\d{4})\d{2}$'));
+        $this->assertTrue($setting->validate('a~(\d{4})'));
+        $this->assertSame(get_string('courseyearpattern_invalid', 'theme_snap'), $setting->validate('(\d{4'));
+        $this->assertSame(get_string('courseyearpattern_nogroup', 'theme_snap'), $setting->validate('\d{4}'));
     }
 }

@@ -74,8 +74,9 @@ class block_myoverview_renderer extends \block_myoverview\output\renderer {
         $courses = enrol_get_my_courses('enddate', 'fullname ASC, id DESC');
         $coursesyears = [];
         foreach ($courses as $course) {
-            if (!empty($course->enddate)) {
-                $endyear = userdate($course->enddate, '%Y');
+            // From the ID number, or the end date (theme_snap/courseyearpattern), as the filter does.
+            $endyear = \theme_snap\services\course::course_year($course);
+            if ($endyear !== null) {
                 if ($yearpreference == $endyear) {
                     $yearlink = html_writer::tag('a', $endyear,[
                         'class' => 'dropdown-item',

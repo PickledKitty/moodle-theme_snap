@@ -303,6 +303,36 @@ class course {
     }
 
     /**
+     * The year a course belongs to: from its ID number when the site's year pattern (theme_snap/courseyearpattern)
+     * finds one, otherwise from its end date. Used by the My courses Year filter, for its menu and its results.
+     *
+     * @param \stdClass $course with idnumber and enddate
+     * @return string|null the year, like '2026', or null when there's none
+     */
+    public static function course_year(\stdClass $course): ?string {
+        $pattern = (string)get_config('theme_snap', 'courseyearpattern');
+        if ($pattern !== '' && !empty($course->idnumber)
+                && @preg_match(self::year_pattern_regex($pattern), $course->idnumber, $matches)
+                && isset($matches[1]) && preg_match('/^\d{4}$/', $matches[1])) {
+            return $matches[1];
+        }
+        if (!empty($course->enddate)) {
+            return userdate($course->enddate, '%Y');
+        }
+        return null;
+    }
+
+    /**
+     * The year pattern setting as a PHP regular expression: entered without delimiters, so these are added.
+     *
+     * @param string $pattern
+     * @return string
+     */
+    public static function year_pattern_regex(string $pattern): string {
+        return '~' . str_replace('~', '\~', $pattern) . '~';
+    }
+
+    /**
      * Set favorite status on or off.
      *
      * @param string $courseshortname

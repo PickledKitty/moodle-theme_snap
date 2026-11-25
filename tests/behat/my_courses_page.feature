@@ -201,6 +201,28 @@ Feature: Users can access to the My Courses page in Snap.
     And I should see "Course 3"
 
   @javascript
+  Scenario: The Year filter takes a course's year from its ID number when the year pattern finds one
+    Given the following config values are set as admin:
+      | courseyearpattern | \.(\d{4})\d{2}$ | theme_snap |
+    And the following "courses" exist:
+      | fullname     | shortname | idnumber     | startdate  | enddate    |
+      | Year course  | YC        | 91236.202620 | 1735689600 | 1830340800 |
+      | Ended course | EC        | ABC-101      | 1735689600 | 1798804800 |
+    And the following "course enrolments" exist:
+      | user     | course | role           |
+      | teacher1 | YC     | editingteacher |
+      | teacher1 | EC     | editingteacher |
+    And I log in as "teacher1"
+    When I click on "#yeardropdown" "css_element"
+    # Year course: its ID number's 2026, not its end date's 2028. Ended course: no match, so its end date's 2027.
+    Then "ul[aria-labelledby='yeardropdown'] a[data-value='2026']" "css_element" should exist
+    And "ul[aria-labelledby='yeardropdown'] a[data-value='2027']" "css_element" should exist
+    And "ul[aria-labelledby='yeardropdown'] a[data-value='2028']" "css_element" should not exist
+    And I click on "ul[aria-labelledby='yeardropdown'] a[data-value='2026']" "css_element"
+    And I should see "Year course" in the "[data-region='courses-view']" "css_element"
+    And I should not see "Ended course" in the "[data-region='courses-view']" "css_element"
+
+  @javascript
   Scenario: User can use the completion filter in the Course overview block in Snap.
     Given the following "courses" exist:
       | fullname | shortname | category | enablecompletion |
