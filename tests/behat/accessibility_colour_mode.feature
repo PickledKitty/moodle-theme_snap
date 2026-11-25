@@ -166,3 +166,22 @@ Feature: Snap in the light and dark colour modes
       | mode  |
       | light |
       | dark  |
+
+  @javascript @accessibility
+  Scenario Outline: My courses' cards are one colour and meet accessibility standards in <mode> mode
+    Given the following "user preferences" exist:
+      | user     | preference             | value  |
+      | student1 | theme_boost_colourmode | <mode> |
+    And I change window size to "large"
+    And I log in as "student1"
+    When I am on the "My courses" page
+    Then the "data-bs-theme" attribute of "html" "css_element" should contain "<mode>"
+    And ".course-card .card-footer" "css_element" should exist
+    # Moodle makes bg-white a raised grey in dark mode, which put a grey band across the foot of each card.
+    And ".course-card .card-footer.bg-white" "css_element" should not exist
+    And the page should meet accessibility standards
+
+    Examples:
+      | mode  |
+      | light |
+      | dark  |
