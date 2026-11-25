@@ -113,8 +113,10 @@ class block_myoverview_renderer extends \block_myoverview\output\renderer {
                 $yearslist .= $yearlistitem->$year;
             }
             $data['years'] = $yearslist;
-            $data['yearpreference'] = $yearpreference;
         }
+        // Always given: the course list turns paging off while a year is chosen, and read a missing value as a chosen
+        // year. With no year menu (no course has an end date) there's no year to choose, or to clear.
+        $data['yearpreference'] = empty($coursesyears) ? 'all' : $yearpreference;
 
         return $this->render_from_template('block_myoverview/main', $data);
     }

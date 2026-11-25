@@ -105,6 +105,47 @@ Feature: Users can access to the My Courses page in Snap.
       | 1200x900 |
       | 1400x900 |
 
+  @javascript @accessibility
+  Scenario: With more courses than fit on a page, the Course overview pages them, though no course has an end date
+    # With no end dates there's no year menu, and the list used to read that as a chosen year and show every course.
+    Given the following "courses" exist:
+      | fullname  | shortname | category |
+      | Paging 01 | P01       | 0        |
+      | Paging 02 | P02       | 0        |
+      | Paging 03 | P03       | 0        |
+      | Paging 04 | P04       | 0        |
+      | Paging 05 | P05       | 0        |
+      | Paging 06 | P06       | 0        |
+      | Paging 07 | P07       | 0        |
+      | Paging 08 | P08       | 0        |
+      | Paging 09 | P09       | 0        |
+      | Paging 10 | P10       | 0        |
+      | Paging 11 | P11       | 0        |
+      | Paging 12 | P12       | 0        |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | student1 | P01   | student |
+      | student1 | P02   | student |
+      | student1 | P03   | student |
+      | student1 | P04   | student |
+      | student1 | P05   | student |
+      | student1 | P06   | student |
+      | student1 | P07   | student |
+      | student1 | P08   | student |
+      | student1 | P09   | student |
+      | student1 | P10   | student |
+      | student1 | P11   | student |
+      | student1 | P12   | student |
+    And I change window size to "large"
+    When I log in as "student1"
+    Then I should see "Course overview"
+    And "#yeardropdown" "css_element" should not exist
+    And "[data-region='paging-bar']" "css_element" should be visible
+    # 13 courses by name: Course 1 and Paging 01 to 11 on the first page, Paging 12 on the second.
+    And I should see "Paging 11" in the "[data-region='courses-view']" "css_element"
+    And I should not see "Paging 12" in the "[data-region='courses-view']" "css_element"
+    And the page should meet accessibility standards
+
   @javascript
   Scenario: User will see a warning message when the Course overview block is disabled.
     Given the following config values are set as admin:
