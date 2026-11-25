@@ -119,7 +119,8 @@ class course_renderer extends \core_course_renderer {
         $category = \core_course_category::get($course->category, IGNORE_MISSING, true);
         $teachers = [];
         foreach ((new \core_course_list_element($course))->get_course_contacts() as $contact) {
-            $teachers[] = $contact['username'];
+            // In normal case, for names stored in capitals or lower case.
+            $teachers[] = \theme_snap\services\course::name_case($contact['username']);
         }
         $summary = '';
         if (!empty($course->summary)) {
@@ -128,7 +129,7 @@ class course_renderer extends \core_course_renderer {
             // Plain text, without the [alt text] html_to_text() puts in for images.
             $plain = html_entity_decode(strip_tags(format_text($text, $course->summaryformat, ['context' => $context])),
                 ENT_QUOTES | ENT_HTML5, 'UTF-8');
-            $summary = shorten_text(trim(preg_replace('/\s+/u', ' ', $plain)), 200);
+            $summary = shorten_text(trim(preg_replace('/\s+/u', ' ', $plain)), 470);
         }
         // Progress: activities done out of those with completion, as core's progress percentage counts them.
         $progress = null;
@@ -149,7 +150,8 @@ class course_renderer extends \core_course_renderer {
             }
             $progress = $total ? (int)floor($done / $total * 100) : null;
         }
-        $fullname = format_string($course->fullname, true, ['context' => $context]);
+        $fullname = format_string(\theme_snap\services\course::tidy_fullname($course->fullname), true,
+            ['context' => $context]);
         return [
             'id' => $course->id,
             'tabid' => $tabid,

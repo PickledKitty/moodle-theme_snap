@@ -403,6 +403,58 @@ class course {
     }
 
     /**
+     * A merged course's full name without its repeats. Merged courses repeat each unit's name once per class, and the
+     * name may be cut off part way through a part at the database's 254 characters. Parts (separated by a slash with a
+     * space on at least one side, so "and/or" stays whole) are kept in the order first seen; exact repeats (not
+     * case-sensitive) go, and when the name is at the limit, a last part that's the start of an earlier one goes too.
+     * Works on raw or formatted names.
+     *
+     * @param string $fullname
+     * @return string
+     */
+    public static function tidy_fullname(string $fullname): string {
+        if (strpos($fullname, '/') === false) {
+            return $fullname;
+        }
+        $truncated = \core_text::strlen($fullname) >= 254;
+        $parts = preg_split('/\s+\/\s*|\s*\/\s+/u', trim($fullname));
+        $lastindex = count($parts) - 1;
+        $kept = [];
+        $seen = [];
+        foreach ($parts as $i => $part) {
+            $part = trim($part);
+            $lower = \core_text::strtolower($part);
+            if ($lower === '' || in_array($lower, $seen, true)) {
+                continue;
+            }
+            if ($truncated && $i === $lastindex) {
+                foreach ($seen as $earlier) {
+                    if (strpos($earlier, $lower) === 0) {
+                        continue 2;
+                    }
+                }
+            }
+            $kept[] = $part;
+            $seen[] = $lower;
+        }
+        return implode(' / ', $kept);
+    }
+
+    /**
+     * A person's name in normal case, for names stored in capitals or lower case: each word capitalised, also after
+     * an apostrophe or hyphen, and after "Mc" (O'Brien-Smith, McDonald).
+     *
+     * @param string $name
+     * @return string
+     */
+    public static function name_case(string $name): string {
+        $name = \core_text::strtotitle(\core_text::strtolower($name));
+        $name = preg_replace_callback("/(['\x{2019}-]|\bMc)(\p{Ll})/u",
+            fn($m) => $m[1] . \core_text::strtoupper($m[2]), $name);
+        return $name;
+    }
+
+    /**
      * The year pattern setting as a PHP regular expression: entered without delimiters, so these are added.
      *
      * @param string $pattern

@@ -1059,7 +1059,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $prefix = null;
         if ($context->contextlevel == CONTEXT_MODULE) {
             if ($this->page->course->format === 'singleactivity') {
-                $heading = format_string($this->page->course->fullname, true, ['context' => $context]);
+                $heading = format_string(\theme_snap\services\course::tidy_fullname($this->page->course->fullname), true, ['context' => $context]);
             } else {
                 $heading = $this->page->cm->get_formatted_name();
                 $iconurl = $this->page->cm->get_icon_url();
@@ -1172,10 +1172,11 @@ class core_renderer extends \theme_boost\output\core_renderer {
             && stripos($heading, format_string($COURSE->fullname)) === 0;
         if ($iscourseheading || $pagetype === 'course-view-section-topics') {
             $courseurl = new moodle_url('/course/view.php', ['id' => $COURSE->id]);
-            $coursefullname = format_string($COURSE->fullname);
+            // A merged course's name without its repeats.
+            $coursefullname = format_string(\theme_snap\services\course::tidy_fullname($COURSE->fullname));
             // escape=>false: html_writer::tag() re-escapes attribute values, so leaving HTML
             // entities decoded here prevents double-encoding (e.g. "&" showing as "&amp;" in tooltip).
-            $coursetitleattr = format_string($COURSE->fullname, true, ['escape' => false]);
+            $coursetitleattr = format_string(\theme_snap\services\course::tidy_fullname($COURSE->fullname), true, ['escape' => false]);
             return \core\output\html_writer::tag($tag,
                 \core\output\html_writer::link($courseurl, $coursefullname),
                 ['title' => $coursetitleattr, 'class' => $this->snap_title_classes($tag, $coursetitleattr),
@@ -1186,6 +1187,24 @@ class core_renderer extends \theme_boost\output\core_renderer {
         return \core\output\html_writer::tag($tag, $heading,
             ['class' => $this->snap_title_classes($tag, strip_tags($heading)), 'id' => 'snap-page-title'])
             . $this->snap_title_toggle(strip_tags($heading));
+    }
+
+    /**
+     * The page's title (the browser tab), with a merged course's name without its repeats.
+     *
+     * @return string
+     */
+    public function page_title() {
+        $title = parent::page_title();
+        $course = $this->page->course;
+        if (empty($course->id) || $course->id == SITEID || strpos($course->fullname, '/') === false) {
+            return $title;
+        }
+        $tidy = \theme_snap\services\course::tidy_fullname($course->fullname);
+        foreach ([format_string($course->fullname), $course->fullname] as $name) {
+            $title = str_replace($name, $name === $course->fullname ? $tidy : format_string($tidy), $title);
+        }
+        return $title;
     }
 
     /**
@@ -2714,7 +2733,7 @@ HTML;
                 'url' => $action,
                 'text' => $iscourse ? format_string($COURSE->shortname, true, ['context' => \context_course::instance($COURSE->id)])
                     : $item->get_content(),
-                'title' => $iscourse ? format_string($COURSE->fullname, true, ['escape' => false]) : $item->get_title(),
+                'title' => $iscourse ? format_string(\theme_snap\services\course::tidy_fullname($COURSE->fullname), true, ['escape' => false]) : $item->get_title(),
                 'class' => $iscourse ? 'snap-crumb-course' : '',
                 'courseicon' => $iscourse,
                 'hidden' => !empty($item->hidden),
@@ -2889,7 +2908,7 @@ HTML;
         global $COURSE;
         $courseurl = new moodle_url('/course/view.php', ['id' => $COURSE->id]);
         $coursename = format_string($COURSE->fullname);
-        $namelink = \core\output\html_writer::link($courseurl, $coursename);
+        $namelink = \core\output\html_writer::link($courseurl, format_string(\theme_snap\services\course::tidy_fullname($COURSE->fullname)));
         $replacedname = str_replace($coursename, $namelink, $element);
         return $replacedname;
     }

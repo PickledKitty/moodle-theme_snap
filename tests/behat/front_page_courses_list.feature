@@ -257,3 +257,32 @@ Feature: Correct functionality of enrolled courses and available courses in the 
       | 992x900  | dark  |
       | 1200x900 | light |
       | 1400x900 | dark  |
+
+  @javascript
+  Scenario: A merged course's name shows without its repeats, and teachers' names in normal case
+    Given the following "users" exist:
+      | username | firstname | lastname      | email                |
+      | teacher9 | JOHN      | o'brien-smith | teacher9@example.com |
+    And the following "courses" exist:
+      | fullname                                   | shortname | startdate  | enddate    |
+      | Unit Alpha / Unit Beta / Unit Alpha / unit beta | MERGED    | 1767225600 | 1782864000 |
+    And the following "course enrolments" exist:
+      | user     | course | role           |
+      | student1 | MERGED | student        |
+      | teacher9 | MERGED | editingteacher |
+    And the following config values are set as admin:
+      | frontpageloggedin | 5 |
+      | enablemycourses   | 1 |
+    And I change window size to "large"
+    And I log in as "student1"
+    When I visit "/?redirect=0#snap-fp-tab-y2026"
+    Then I should see "Unit Alpha / Unit Beta" in the "#snap-fp-tiles-y2026 .snap-fp-tile-title" "css_element"
+    And I should not see "Unit Alpha / Unit Beta / Unit Alpha" in the "#snap-fp-tiles-y2026" "css_element"
+    And I click on "Details: Unit Alpha / Unit Beta" "button"
+    And I should see "Teachers: John O'Brien-Smith" in the "#snap-fp-tiles-y2026" "css_element"
+    And I am on "Unit Alpha / Unit Beta / Unit Alpha / unit beta" course homepage
+    And I should see "Unit Alpha / Unit Beta" in the "#page-title h1" "css_element"
+    And I should not see "Unit Alpha / Unit Beta / Unit Alpha" in the "#page-title" "css_element"
+    And I visit "/my/courses.php"
+    And I should see "Unit Alpha / Unit Beta" in the "[data-region='courses-view']" "css_element"
+    And I should not see "Unit Alpha / Unit Beta / Unit Alpha" in the "[data-region='courses-view']" "css_element"

@@ -142,6 +142,14 @@ class ws_block_myoverview extends external_api {
                 $mainFiltersResult["courses"] = $filteredbynotcompleted;
             }
         }
+        // A merged course's name without its repeats, as on the front page and the course page.
+        foreach ($mainFiltersResult['courses'] as $course) {
+            foreach (['fullname', 'fullnamedisplay'] as $field) {
+                if (isset($course->$field)) {
+                    $course->$field = \theme_snap\services\course::tidy_fullname($course->$field);
+                }
+            }
+        }
         return $mainFiltersResult;
     }
 }

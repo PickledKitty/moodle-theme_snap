@@ -27,6 +27,8 @@ use theme_snap\local;
  */
 #[\PHPUnit\Framework\Attributes\CoversMethod(course::class, 'course_year')]
 #[\PHPUnit\Framework\Attributes\CoversMethod(course::class, 'my_courses_by_tab')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(course::class, 'tidy_fullname')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(course::class, 'name_case')]
 #[\PHPUnit\Framework\Attributes\CoversMethod(\theme_snap\admin_setting_configyearpattern::class, 'validate')]
 class services_course_test extends \advanced_testcase {
 
@@ -319,5 +321,31 @@ class services_course_test extends \advanced_testcase {
         $this->assertTrue($setting->validate('a~(\d{4})'));
         $this->assertSame(get_string('courseyearpattern_invalid', 'theme_snap'), $setting->validate('(\d{4'));
         $this->assertSame(get_string('courseyearpattern_nogroup', 'theme_snap'), $setting->validate('\d{4}'));
+    }
+
+    /**
+     * A merged course's name loses its repeats, and a last part cut off at 254 characters; "and/or" stays whole.
+     */
+    public function test_tidy_fullname(): void {
+        $this->assertSame('Course 1', course::tidy_fullname('Course 1'));
+        $this->assertSame('Read and/or write', course::tidy_fullname('Read and/or write'));
+        $this->assertSame('Unit A / Unit B', course::tidy_fullname('Unit A / Unit B / unit a / Unit B'));
+        $this->assertSame('Unit A / Unit B', course::tidy_fullname('Unit A /Unit B/ Unit A'));
+        // Under the limit, a part that only starts like an earlier one is its own part.
+        $this->assertSame('Unit Alpha / Unit Al', course::tidy_fullname('Unit Alpha / Unit Al'));
+        // At the limit it's the earlier part cut off, so it goes.
+        $atlimit = 'Unit Alpha / ' . str_repeat('x', 231) . ' / Unit Al';
+        $this->assertSame(254, \core_text::strlen($atlimit));
+        $this->assertSame('Unit Alpha / ' . str_repeat('x', 231), course::tidy_fullname($atlimit));
+    }
+
+    /**
+     * Names in capitals or lower case come out in normal case.
+     */
+    public function test_name_case(): void {
+        $this->assertSame("John O'Brien-Smith", course::name_case("JOHN O'BRIEN-SMITH"));
+        $this->assertSame('Mary McDonald', course::name_case('mary mcdonald'));
+        $this->assertSame('Mackenzie Ng', course::name_case('MACKENZIE NG'));
+        $this->assertSame('Élodie Durand', course::name_case('ÉLODIE DURAND'));
     }
 }
