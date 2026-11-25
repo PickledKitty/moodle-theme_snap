@@ -7875,8 +7875,14 @@ span[data-flexitour="container"]:has(> div[data-role="flexitour-step"]) {
                     }
                 }
             }
+            // The grey box has no bottom padding (the course panel's edge is its foot), so the paging row brings its
+            // own, the same as the box's top, when it shows: with one page its only child, the paging bar, is hidden.
             [data-region="paging-control-container"] {
                 margin-top: 1em;
+
+                &:has(> :not(.hidden)) {
+                    padding-bottom: 1em;
+                }
             }
             .block-myoverview-content {
                 padding: 1em 1.1em 0;
