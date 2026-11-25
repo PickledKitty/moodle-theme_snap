@@ -700,6 +700,14 @@
 // Wiki
 // ------------------------------------------------------------
 // Patches mod/wiki/styles.css.
+// In both modes the wiki's red text was too light: 3.83:1 on its yellow, 3.57:1 on its green and 4:1 on white.
+.ouw_deleted,
+.ouw_added,
+a.wiki_newentry:link,
+a.wiki_newentry:visited {
+    color: #c00000;
+}
+
 [data-bs-theme="dark"] {
     // Wikis: the contents box, the upload section, the added and deleted text when comparing versions, and links to
     // pages not written yet, all in the wiki's own fixed colours.
@@ -736,6 +744,15 @@
 // Workshop
 // ------------------------------------------------------------
 // Patches mod/workshop/styles.css and mod/workshop/allocation/manual/styles.css.
+// The manual allocation's grey notes, in both modes: #888 was 3.06:1 on its grey stripes.
+.path-mod-workshop .manual-allocator .allocations {
+    .reviewedby .info,
+    .peer .info,
+    .reviewerof .info {
+        color: var(--bs-secondary-color);
+    }
+}
+
 [data-bs-theme="dark"] {
     // Workshops: the phase planner, submission, assessment and feedback boxes, messages, allocation results and the
     // grading report, all in the workshop's own fixed light colours. The current phase stays green, and messages
@@ -835,8 +852,8 @@
             color: dark-readable(#e00, $dark-surface-page);
         }
 
-        // Manual allocation: striped rows, a pale yellow highlight on the people you're hovering over, light lines
-        // and grey notes, from the allocation plugin's own styles.
+        // Manual allocation: striped rows, a pale yellow highlight on the people you're hovering over and light lines,
+        // from the allocation plugin's own styles.
         .manual-allocator .allocations {
             tbody tr:nth-of-type(odd) {
                 background-color: var(--bs-tertiary-bg);
@@ -853,12 +870,6 @@
 
             tr td.peer {
                 border-color: var(--bs-border-color);
-            }
-
-            .reviewedby .info,
-            .peer .info,
-            .reviewerof .info {
-                color: var(--bs-secondary-color);
             }
         }
 

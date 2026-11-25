@@ -852,10 +852,10 @@ img.icon.hide {
     @include svg-icon;
 }
 
-// Font awesome icons.
+// Font awesome icons. Bootstrap's muted text colour, which follows the colour mode: #999 was 2.85:1 on white.
 i.icon,
 p.tree_item:before {
-    color: #999;
+    color: var(--bs-secondary-color);
 }
 
 p.tree_item.hasicon i.nav-missing-icon:before {
@@ -3099,6 +3099,14 @@ li.calendar_event_user:before {
         display: none;
     }
 
+    // Core colours the key's eye icons blue, which is lost on Snap's event colours above (2.74:1 on salmon, 1.16:1
+    // on the user events' blue). The icon takes its key's text colour, picked for its background.
+    li span.calendar_event_course i.icon,
+    li span.calendar_event_group i.icon,
+    li span.calendar_event_user i.icon {
+        color: inherit;
+    }
+
     .calendar_event span[class*="_event_"] {
         border-radius: 100%;
         display: inline-block;
@@ -4970,6 +4978,10 @@ body:not(.pagelayout-course) #moodle-footer {
     background-color: $snap-footer-bg-color;
     a {
         font-weight: bold;
+    }
+    // Icons in the footer's text colour, which is set for its background, not the page's muted grey.
+    i.icon {
+        color: inherit;
     }
     #snap-site-footer {
         color: $snap-footer-txt-color;

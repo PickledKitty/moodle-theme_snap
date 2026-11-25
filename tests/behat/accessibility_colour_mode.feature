@@ -106,3 +106,63 @@ Feature: Snap in the light and dark colour modes
       | mode  |
       | light |
       | dark  |
+
+  @javascript @accessibility
+  Scenario Outline: The calendar's key, a wiki's version comparison and a workshop's allocation meet accessibility standards in <mode> mode
+    Given the following "users" exist:
+      | username | firstname | lastname | email                |
+      | teacher1 | Teacher   | 1        | teacher1@example.com |
+    And the following "course enrolments" exist:
+      | user     | course | role           |
+      | teacher1 | C1     | editingteacher |
+    And the following "user preferences" exist:
+      | user     | preference             | value    |
+      | teacher1 | theme_boost_colourmode | <mode>   |
+      | teacher1 | htmleditor             | textarea |
+    And the following "activities" exist:
+      | activity | name       | course | idnumber | firstpagetitle | wikimode      |
+      | wiki     | Test wiki  | C1     | wiki1    | First page     | collaborative |
+      | workshop | Workshop 1 | C1     | ws1      |                |               |
+    And the following "events" exist:
+      | name          | eventtype | course |
+      | Course event  | course    | C1     |
+    And I change window size to "large"
+    And I log in as "teacher1"
+    # The key under the month: each event type's eye icon sits on that type's colour.
+    When I am viewing site calendar
+    Then the "data-bs-theme" attribute of "html" "css_element" should contain "<mode>"
+    And ".calendar_filters span.calendar_event_course .icon" "css_element" should exist
+    And the page should meet accessibility standards
+    # Comparing two versions of a wiki page shows the added and deleted words in colour. In a narrow window, where
+    # the previous/next bar isn't pinned: the driver scrolls Save only to the window's edge, under the pinned bar.
+    And I change window size to "mobile"
+    And I am on the "Test wiki" "wiki activity" page
+    And I press "Create page"
+    And I set the following fields to these values:
+      | HTML format | First edition |
+    And I press "Save"
+    And I select "Edit" from the "jump" singleselect
+    And I set the following fields to these values:
+      | HTML format | Second edition |
+    And I press "Save"
+    And I select "History" from the "jump" singleselect
+    And I click on "comparewith" "radio" in the "1" "table_row"
+    And I click on "compare" "radio" in the "2" "table_row"
+    And I press "Compare selected"
+    And ".ouw_added" "css_element" should exist
+    # The AA rules, contrast among them, but not the A ones: core's wiki links the older version's author picture twice,
+    # one link inside the other, so the outer link has no name (mod/wiki/renderer.php, the same in Boost).
+    And the ".wiki-diff-container" "css_element" should meet "wcag2aa, wcag21aa" accessibility standards
+    # The manual allocation's grey notes beside each participant.
+    And I change window size to "large"
+    And I am on the "Workshop 1" "workshop activity" page
+    And I follow "Allocate submissions"
+    And ".manual-allocator .allocations .info" "css_element" should exist
+    # The table only: core's allocation method menu above it has no label (mod/workshop/classes/output/actionbar.php,
+    # the same in Boost).
+    And the ".manual-allocator" "css_element" should meet accessibility standards
+
+    Examples:
+      | mode  |
+      | light |
+      | dark  |
