@@ -54,3 +54,10 @@ Feature: Snap admin settings tab persistence after saving changes.
     And I wait until the page is ready
     Then the "class" attribute of "#snap-admin-tabs .nav-link[href='#themesnaptopbar']" "css_element" should contain "active"
     And the "class" attribute of "#themesnaptopbar" "css_element" should contain "active"
+
+  @javascript @accessibility
+  Scenario: The Course display tab opens with its heading, like the other tabs
+    When I click on "Course display" "link" in the "#snap-admin-tabs" "css_element"
+    Then I should see "Course display" in the "#themesnapcoursedisplay h3.main" "css_element"
+    And I should see "How courses are shown" in the "#themesnapcoursedisplay" "css_element"
+    And the "#themesnapcoursedisplay" "css_element" should meet accessibility standards

@@ -27,6 +27,11 @@
         @extend .visually-hidden;
     }
 
+    // Space between the last setting (on Course display, its line) and the Save changes button.
+    .settingsform > button[type="submit"] {
+        margin-top: 1rem;
+    }
+
     // Save button on large screen.
     @include media-breakpoint-up(sm) {
         button[type=submit] {
@@ -361,6 +366,8 @@
 // -------------------------
 #themesnapcoursedisplay.active {
     @include make-row();
+    // Without the row's negative margins, so the tab lines up with the others.
+    margin-inline: 0;
 
     .form-item {
         border-bottom: 1px solid $brand-primary;

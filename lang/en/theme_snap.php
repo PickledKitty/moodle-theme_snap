@@ -80,6 +80,7 @@ $string['courseyearpattern_nogroup'] = 'Put brackets around the year, for exampl
 $string['courses'] = 'Courses';
 $string['coursecontacts'] = 'Course Contacts';
 $string['coursedisplay'] = 'Course display';
+$string['coursedisplayhelp'] = 'How courses are shown: their resources, footer and table of contents, how their pages load, and their years on My courses.';
 $string['coursefootertoggle'] = 'Course footer';
 $string['coursefootertoggledesc'] = 'The Course footer shows useful information to users on a course page including course contacts, course description and recent activity in the course.';
 $string['courseformatnotification'] = 'The current course format you are using is not fully supported by the Snap theme. For the best experience Open LMS recommends using the Topics or Weekly course formats with the Snap theme. The course format can be changed in the <a href="{$a}">course settings</a>.';

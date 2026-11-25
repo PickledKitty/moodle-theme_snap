@@ -19,6 +19,10 @@ use theme_snap\admin_setting_configradiobuttons;
 
 $snapsettings = new admin_settingpage('themesnapcoursedisplay', get_string('coursedisplay', 'theme_snap'));
 
+// The tab's heading, as on the other tabs.
+$snapsettings->add(new admin_setting_heading('theme_snap/coursedisplay_heading',
+    new \core\lang_string('coursedisplay', 'theme_snap'), get_string('coursedisplayhelp', 'theme_snap')));
+
 // Resource display options.
 $name = 'theme_snap/resourcedisplay';
 $title = new \core\lang_string('resourcedisplay', 'theme_snap');
