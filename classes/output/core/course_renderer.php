@@ -46,6 +46,133 @@ require_once("$CFG->libdir/resourcelib.php");
 class course_renderer extends \core_course_renderer {
 
     /**
+     * The front page's "List of enrolled courses": the current user's courses as tiles, in tabs (Favourites, the
+     * years, Other and tabs from course custom fields). See \theme_snap\services\course::my_courses_by_tab().
+     *
+     * @return string
+     */
+    public function frontpage_my_courses() {
+        if (!isloggedin() || isguestuser()) {
+            return '';
+        }
+        $bytab = \theme_snap\services\course::service()->my_courses_by_tab();
+
+        $tabs = [];
+        $addtab = function(string $id, string $name, array $courses, bool $alwaysthere = false) use (&$tabs) {
+            if ($courses || $alwaysthere) {
+                $tabs[] = ['id' => $id, 'name' => $name, 'courses' => $courses];
+            }
+        };
+        // The tab each course lives in when it isn't starred, for its tile in Favourites.
+        $hometab = [];
+        foreach ($bytab['years'] as $year => $courses) {
+            $hometab += array_fill_keys(array_keys($courses), 'y' . $year);
+        }
+        $hometab += array_fill_keys(array_keys($bytab['other']), 'other');
+        foreach ($bytab['fieldtabs'] as $shortname => $tab) {
+            $hometab += array_fill_keys(array_keys($tab['courses']), 'field-' . $shortname);
+        }
+
+        $tiles = fn(string $tabid, array $courses) => array_values(array_map(
+            fn($course) => $this->course_tile_context($course, $tabid, $hometab[$course->id] ?? $tabid), $courses));
+        // Favourites is always there, hidden when empty, so a star can show it.
+        $addtab('fav', get_string('favourites', 'theme_snap'), $tiles('fav', $bytab['favourites']), true);
+        foreach ($bytab['years'] as $year => $courses) {
+            $addtab('y' . $year, (string)$year, $tiles('y' . $year, $courses));
+        }
+        $addtab('other', get_string('other'), $tiles('other', $bytab['other']));
+        foreach ($bytab['fieldtabs'] as $shortname => $tab) {
+            $addtab('field-' . $shortname, $tab['name'], $tiles('field-' . $shortname, $tab['courses']));
+        }
+        if (count($tabs) === 1) {
+            // No courses at all.
+            return $this->render_from_template('theme_snap/course_tiles', ['nocourses' => true]);
+        }
+
+        // Favourites first when it has courses, otherwise the next tab.
+        $hasfavourites = !empty($tabs[0]['courses']);
+        $active = $hasfavourites ? 0 : 1;
+        foreach ($tabs as $i => &$tab) {
+            $tab['active'] = $i === $active;
+            $tab['isfav'] = $tab['id'] === 'fav';
+            $tab['hidden'] = $tab['isfav'] && !$hasfavourites;
+        }
+        unset($tab);
+        return $this->render_from_template('theme_snap/course_tiles', [
+            'tabs' => $tabs,
+            'hasfavourites' => $hasfavourites,
+        ]);
+    }
+
+    /**
+     * What a course's tile shows.
+     *
+     * @param \stdClass $course from enrol_get_my_courses(), with summary
+     * @param string $tabid the tab the tile is in
+     * @param string $hometab the tab the course is in when it isn't starred
+     * @return array
+     */
+    protected function course_tile_context(\stdClass $course, string $tabid, string $hometab): array {
+        $context = context_course::instance($course->id);
+        $image = \core_course\external\course_summary_exporter::get_course_image($course)
+            ?: $this->output->get_generated_url_for_course($context);
+        $category = \core_course_category::get($course->category, IGNORE_MISSING, true);
+        $teachers = [];
+        foreach ((new \core_course_list_element($course))->get_course_contacts() as $contact) {
+            $teachers[] = $contact['username'];
+        }
+        $summary = '';
+        if (!empty($course->summary)) {
+            $text = file_rewrite_pluginfile_urls($course->summary, 'pluginfile.php', $context->id, 'course',
+                'summary', null);
+            // Plain text, without the [alt text] html_to_text() puts in for images.
+            $plain = html_entity_decode(strip_tags(format_text($text, $course->summaryformat, ['context' => $context])),
+                ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            $summary = shorten_text(trim(preg_replace('/\s+/u', ' ', $plain)), 200);
+        }
+        // Progress: activities done out of those with completion, as core's progress percentage counts them.
+        $progress = null;
+        $done = 0;
+        $total = 0;
+        $userid = $GLOBALS['USER']->id;
+        $completion = new \completion_info($course);
+        if ($completion->is_enabled() && $completion->is_tracked_user($userid)) {
+            foreach ($completion->get_activities() as $cm) {
+                if (!$cm->uservisible) {
+                    continue;
+                }
+                $total++;
+                $state = $completion->get_data($cm, true, $userid)->completionstate;
+                if ($state == COMPLETION_COMPLETE || $state == COMPLETION_COMPLETE_PASS) {
+                    $done++;
+                }
+            }
+            $progress = $total ? (int)floor($done / $total * 100) : null;
+        }
+        $fullname = format_string($course->fullname, true, ['context' => $context]);
+        return [
+            'id' => $course->id,
+            'tabid' => $tabid,
+            'hometab' => $hometab,
+            'fullname' => $fullname,
+            'shortname' => format_string($course->shortname, true, ['context' => $context]),
+            'url' => (new moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
+            'image' => $image,
+            'categoryname' => $category ? $category->get_formatted_name() : '',
+            'teachers' => implode(' | ', $teachers),
+            'summary' => $summary,
+            'hasprogress' => $progress !== null,
+            'progress' => $progress,
+            // The bar's colour, as in 4.5: red under 20%, yellow under 80%, then green.
+            'progresslevel' => $progress === null ? '' : ($progress < 20 ? 'low' : ($progress < 80 ? 'mid' : 'high')),
+            'progresscomplete' => $done,
+            'progresstotal' => $total,
+            'hidden' => empty($course->visible),
+            'favourite' => $tabid === 'fav' || \theme_snap\services\course::service()->favorited($course->id),
+        ];
+    }
+
+    /**
      * Output frontpage summary text and frontpage modules (stored as section 1 in site course)
      *
      * This may be disabled in settings

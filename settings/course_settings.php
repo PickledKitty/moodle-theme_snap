@@ -69,9 +69,27 @@ $description = get_string('lazyload_mod_page_description', 'theme_snap');
 $setting = new admin_setting_configcheckbox($name, $title, $description, 1);
 $snapsettings->add($setting);
 
-// The year a course belongs to, for the My courses Year filter.
+// The year a course belongs to, for the front page's year tabs and the My courses Year filter.
 $snapsettings->add(new \theme_snap\admin_setting_configyearpattern('theme_snap/courseyearpattern',
     new \core\lang_string('courseyearpattern', 'theme_snap'),
     new \core\lang_string('courseyearpattern_desc', 'theme_snap')));
+
+// The front page's course tiles: tabs from checkbox course custom fields, and category words that fill one of them.
+$checkboxfields = [];
+foreach (\core_course\customfield\course_handler::create()->get_fields() as $field) {
+    if ($field->get('type') === 'checkbox') {
+        $checkboxfields[$field->get('shortname')] = $field->get_formatted_name();
+    }
+}
+$snapsettings->add(new admin_setting_configmulticheckbox('theme_snap/fptilesfieldtabs',
+    new \core\lang_string('fptilesfieldtabs', 'theme_snap'),
+    new \core\lang_string('fptilesfieldtabs_desc', 'theme_snap'), [], $checkboxfields));
+$snapsettings->add(new admin_setting_configtextarea('theme_snap/fptilescategorywords',
+    new \core\lang_string('fptilescategorywords', 'theme_snap'),
+    new \core\lang_string('fptilescategorywords_desc', 'theme_snap'), '', PARAM_TEXT, 30, 3));
+$snapsettings->add(new admin_setting_configselect('theme_snap/fptilescategorytab',
+    new \core\lang_string('fptilescategorytab', 'theme_snap'),
+    new \core\lang_string('fptilescategorytab_desc', 'theme_snap'), '',
+    ['' => new \core\lang_string('none')] + $checkboxfields));
 
 $settings->add($snapsettings);

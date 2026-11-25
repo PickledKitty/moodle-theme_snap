@@ -26,6 +26,7 @@ use theme_snap\local;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 #[\PHPUnit\Framework\Attributes\CoversMethod(course::class, 'course_year')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(course::class, 'my_courses_by_tab')]
 #[\PHPUnit\Framework\Attributes\CoversMethod(\theme_snap\admin_setting_configyearpattern::class, 'validate')]
 class services_course_test extends \advanced_testcase {
 
@@ -116,47 +117,64 @@ class services_course_test extends \advanced_testcase {
         $this->assertFalse(isset($favorites[$this->courses[2]->id]));
     }
 
-    public function test_my_courses_split_by_past_courses_favorites() {
-        $service = $this->courseservice;
-        $service->setfavorite($this->courses[0]->shortname, true, $this->user1->id);
-        $service->setfavorite($this->courses[1]->shortname, true, $this->user1->id);
-
-        $this->setUser($this->user1);
-        list ($pastcourses, $favorites, $notfavorites) = $service->my_courses_split_by_favorites();
-        $notfavorites = array_keys($notfavorites);
-        sort($notfavorites);
-
-        $expectedpastcourses = [
-            $this->courses[10]->id,
-            $this->courses[11]->id,
-            $this->courses[12]->id,
-            $this->courses[13]->id,
-            $this->courses[14]->id,
-        ];
-
-        // Collapse pastcourses (currently hashed by year).
-        $collapsed = [];
-        foreach ($pastcourses as $year => $courses) {
-            $collapsed = array_merge($collapsed, array_keys($courses));
+    /**
+     * The front page's tabs: a starred course is in Favourites and its own tab; years newest first; no year is Other;
+     * custom field tabs, one filled by top-level category words too; courses in those tabs not under years.
+     */
+    public function test_my_courses_by_tab(): void {
+        global $DB;
+        $gen = $this->getDataGenerator();
+        $user = $gen->create_user();
+        $dev = $gen->create_category(['name' => 'Staff development']);
+        $devchild = $gen->create_category(['name' => 'Drafts', 'parent' => $dev->id]);
+        $handler = \core_course\customfield\course_handler::create();
+        $fieldcat = $gen->get_plugin_generator('core_customfield')->create_category(
+            ['component' => 'core_course', 'area' => 'course']);
+        foreach (['devcourse' => 'Development course', 'infocourse' => 'Information course'] as $shortname => $name) {
+            $gen->get_plugin_generator('core_customfield')->create_field(['categoryid' => $fieldcat->get('id'),
+                'type' => 'checkbox', 'shortname' => $shortname, 'name' => $name]);
         }
-        $pastcourses = $collapsed;
-        foreach ($expectedpastcourses as $expectedpastcourse) {
-            $this->assertTrue(in_array($expectedpastcourse, $pastcourses));
-        }
-        $expectedfavorites = [
-            $this->courses[0]->id,
-            $this->courses[1]->id,
-        ];
-        $this->assertEquals($expectedfavorites, array_keys($favorites));
+        $make = function(string $name, array $record = []) use ($gen, $user) {
+            $course = $gen->create_course(['fullname' => $name] + $record);
+            $gen->enrol_user($user->id, $course->id, 'student');
+            return (int)$course->id;
+        };
+        $y2025 = $make('B 2025', ['startdate' => make_timestamp(2025, 1, 1), 'enddate' => make_timestamp(2025, 6, 1)]);
+        $y2026 = $make('A 2026', ['startdate' => make_timestamp(2026, 1, 1), 'enddate' => make_timestamp(2026, 6, 1)]);
+        $noyear = $make('No year');
+        $starred = $make('Starred', ['startdate' => make_timestamp(2026, 1, 1), 'enddate' => make_timestamp(2026, 6, 1)]);
+        $devcat = $make('In dev category', ['category' => $devchild->id]);
+        $devfield = $make('Dev by field', ['customfield_devcourse' => 1]);
+        $info = $make('Information', ['customfield_infocourse' => 1, 'enddate' => make_timestamp(2026, 6, 1),
+            'startdate' => make_timestamp(2026, 1, 1)]);
+        $this->courseservice->setfavorite($DB->get_field('course', 'shortname', ['id' => $starred]), true, $user->id);
+        // The Development course field's tab gets the courses with it ticked and, from the category words, the
+        // courses in the development category; it's a tab though only Information course is ticked as one.
+        set_config('fptilescategorywords', "Snap\nDEVELOPMENT", 'theme_snap');
+        set_config('fptilescategorytab', 'devcourse', 'theme_snap');
+        set_config('fptilesfieldtabs', 'infocourse', 'theme_snap');
+        $this->setUser($user);
 
-        $notfavoritecourses = array_slice($this->courses, 2, 8);
-        $expectednotfavorites = array_keys($notfavoritecourses);
-        sort($expectednotfavorites);
-        $expectednotfavorites = [];
-        foreach ($notfavoritecourses as $course) {
-            $expectednotfavorites[] = $course->id;
-        }
-        $this->assertEquals($expectednotfavorites, $notfavorites);
+        $tabs = $this->courseservice->my_courses_by_tab();
+        $this->assertSame([$starred], array_keys($tabs['favourites']));
+        $this->assertSame(['2026', '2025'], array_map('strval', array_keys($tabs['years'])));
+        $this->assertSame([$y2026, $starred], array_keys($tabs['years']['2026']));
+        $this->assertSame([$y2025], array_keys($tabs['years']['2025']));
+        $this->assertSame([$noyear], array_keys($tabs['other']));
+        $this->assertSame(['devcourse', 'infocourse'], array_keys($tabs['fieldtabs']));
+        $this->assertSame('Development course', $tabs['fieldtabs']['devcourse']['name']);
+        $this->assertEqualsCanonicalizing([$devcat, $devfield], array_keys($tabs['fieldtabs']['devcourse']['courses']));
+        $this->assertSame('Information course', $tabs['fieldtabs']['infocourse']['name']);
+        $this->assertSame([$info], array_keys($tabs['fieldtabs']['infocourse']['courses']));
+
+        // Without the settings, those courses go by their years.
+        set_config('fptilescategorywords', '', 'theme_snap');
+        set_config('fptilescategorytab', '', 'theme_snap');
+        set_config('fptilesfieldtabs', '', 'theme_snap');
+        $tabs = $this->courseservice->my_courses_by_tab();
+        $this->assertSame([], $tabs['fieldtabs']);
+        $this->assertContains($info, array_keys($tabs['years']['2026']));
+        $this->assertEqualsCanonicalizing([$noyear, $devcat, $devfield], array_keys($tabs['other']));
     }
 
     public function test_setfavorite() {

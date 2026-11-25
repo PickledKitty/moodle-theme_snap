@@ -1,0 +1,73 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_snap/course_tile
+
+    One course on the front page's course tiles: the course image, with the name on a black band and the progress
+    along the bottom. The details (category, View course, teachers and summary) cover the tile on hover, when
+    anything in it has keyboard focus, or with the Details button (for touch screens); Escape closes them.
+    The image is a mouse-only link to the course too, out of the tab order: View course is the real link.
+    Ids include the tab, since a starred course has a tile in Favourites and in its own tab.
+
+    Example context (json):
+    {
+        "id": 2, "tabid": "y2026", "hometab": "y2026", "fullname": "Course 101", "shortname": "C101", "url": "#",
+        "image": "", "categoryname": "Science", "teachers": "Ana Lee | Sam Wu", "summary": "About the course",
+        "hasprogress": true, "progress": 40, "progresslevel": "mid", "progresscomplete": 4, "progresstotal": 10, "hidden": true,
+        "favourite": false
+    }
+}}
+<article class="snap-fp-tile{{#hidden}} snap-fp-tile-notpublished{{/hidden}}" data-courseid="{{id}}"
+    data-hometab="{{hometab}}" aria-labelledby="snap-fp-tile-{{tabid}}-{{id}}" style="background-image: url('{{{image}}}');">
+    <a class="snap-fp-tile-cover" href="{{url}}" tabindex="-1" aria-hidden="true"></a>
+    <button type="button" class="snap-fp-tile-star" data-action="favourite" data-courseid="{{id}}"
+        aria-pressed="{{#favourite}}true{{/favourite}}{{^favourite}}false{{/favourite}}">
+        <span class="visually-hidden">{{#str}}fptilesstar, theme_snap, {{{fullname}}}{{/str}}</span>
+    </button>
+    <div class="snap-fp-tile-band">
+        <h3 class="snap-fp-tile-title" id="snap-fp-tile-{{tabid}}-{{id}}">{{{fullname}}}</h3>
+        <p class="snap-fp-tile-shortname">{{{shortname}}}</p>
+        {{#hidden}}
+            <p class="snap-fp-tile-status">{{#str}}hiddenfromstudents{{/str}}</p>
+        {{/hidden}}
+    </div>
+    <div class="snap-fp-tile-details" id="snap-fp-tile-details-{{tabid}}-{{id}}" data-region="details">
+        <a class="snap-fp-tile-link" href="{{url}}">
+            <span class="snap-fp-tile-category">{{{categoryname}}}</span>
+            <span class="snap-fp-tile-view">{{#str}}viewcourse, theme_snap{{/str}}<span class="visually-hidden">: {{{fullname}}}</span><i class="icon fa-solid fa-circle-arrow-right" aria-hidden="true"></i></span>
+        </a>
+        {{#teachers}}
+            <p class="snap-fp-tile-teachers">{{#str}}fptilesteachers, theme_snap, {{teachers}}{{/str}}</p>
+        {{/teachers}}
+        <p class="snap-fp-tile-summary-name">{{{fullname}}}</p>
+        {{#summary}}
+            <p class="snap-fp-tile-summary">{{summary}}</p>
+        {{/summary}}
+    </div>
+    <div class="snap-fp-tile-foot">
+        <div class="snap-fp-tile-foot-row">
+            {{#hasprogress}}
+                <span class="snap-fp-tile-progress">{{#str}}fptilesprogress, theme_snap, {"complete": {{progresscomplete}}, "total": {{progresstotal}}, "percent": {{progress}} }{{/str}}</span>
+            {{/hasprogress}}
+            <button type="button" class="snap-fp-tile-toggle" data-action="details" aria-expanded="false"
+                aria-controls="snap-fp-tile-details-{{tabid}}-{{id}}">{{#str}}fptilesdetails, theme_snap{{/str}}<span class="visually-hidden">: {{{fullname}}}</span><i class="icon fa-solid fa-chevron-up" aria-hidden="true"></i></button>
+        </div>
+        {{#hasprogress}}
+            <div class="snap-fp-tile-bar" aria-hidden="true"><div class="snap-fp-tile-bar-fill snap-fp-tile-bar-{{progresslevel}}" style="width: {{progress}}%"></div></div>
+        {{/hasprogress}}
+    </div>
+</article>

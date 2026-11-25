@@ -342,3 +342,298 @@ body#page-course-index-category #moodle-page #page-header.snap-category-header.s
         margin-left: auto;
     }
 }
+
+// -------------------------
+// Front page course tiles (theme_snap/course_tiles, course_renderer::frontpage_my_courses()): tabs of course tiles,
+// as in Snap 4.5. The course image fills the tile, with the name on a black band and the progress along the bottom;
+// the details cover the tile on hover, when View course has keyboard focus, or with the Details button (touch
+// screens), and Escape closes them (fp_tiles.js). The bands are black in both colour modes, like the image they sit
+// on. Brand colours are in _brandcolor.scss.
+// -------------------------
+.snap-fp-tiles {
+    text-align: start;
+
+    .snap-fp-tiles-hint {
+        color: var(--bs-secondary-color);
+
+        .icon {
+            margin-inline-end: 0.4em;
+        }
+    }
+
+    // Separate boxes, the open one filled with the brand colour (_brandcolor.scss).
+    .snap-fp-tiles-tabs {
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        margin-bottom: 1.75rem;
+        border-bottom: 1px solid var(--bs-border-color);
+
+        .nav-link {
+            margin-bottom: -1px;
+            padding: 0.5rem 1.5rem;
+            color: var(--bs-body-color);
+            background-color: var(--bs-body-bg);
+            border: 1px solid var(--bs-border-color);
+            border-radius: 0;
+
+            @include media-breakpoint-down(md) {
+                flex-grow: 1;
+                padding: 0.5rem 0.75rem;
+            }
+        }
+    }
+
+    // One across, two from 576px and three from 1400px, so a tile is never squeezed.
+    .snap-fp-tiles-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.75rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        @include media-breakpoint-up(sm) {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        @include media-breakpoint-up(xxl) {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    .snap-fp-tiles-empty {
+        color: var(--bs-secondary-color);
+    }
+}
+
+.snap-fp-tile {
+    position: relative;
+    // Rows: the image, the black band, the progress. The details cover the first two.
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 1fr auto auto;
+
+    > * {
+        grid-column: 1;
+    }
+    // At least 300px, as in 4.5, and taller when the text needs it (zoom, text spacing).
+    min-height: 18.75rem;
+    height: 100%;
+    overflow: hidden;
+    color: #fff;
+    background-color: #555;
+    background-position: center;
+    background-size: cover;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+
+    p {
+        margin: 0;
+    }
+
+    // The image is a link to the course for the mouse; View course is the link for the keyboard.
+    .snap-fp-tile-cover {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+    }
+
+    // The star: 4.5's gold star images, with a thin dark edge so they show on light images too.
+    .snap-fp-tile-star {
+        position: absolute;
+        top: 0.4rem;
+        right: 0.6rem;
+        z-index: 4;
+        width: 2.25rem;
+        height: 2.25rem;
+        padding: 0.2rem;
+        background: none;
+        border: 0;
+
+        &::after {
+            content: "";
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: url("[[pix:theme|fav_unchecked]]") center / contain no-repeat;
+            filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 1px rgba(0, 0, 0, 0.9));
+        }
+
+        &[aria-pressed="true"]::after {
+            background-image: url("[[pix:theme|fav_checked]]");
+        }
+    }
+
+    // The black band: the name (two lines at most), a line, the short name.
+    .snap-fp-tile-band {
+        position: relative;
+        z-index: 2;
+        grid-row: 2;
+        padding: 0.4rem 1rem 0.5rem;
+        background-color: rgba(0, 0, 0, 0.85);
+        pointer-events: none;
+    }
+
+    // Names longer than two lines end in an ellipsis. The line under it is the short name's, so no padding here
+    // shows a third line.
+    .snap-fp-tile-title,
+    .snap-fp-tile-summary-name {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow-wrap: anywhere;
+    }
+
+    .snap-fp-tile-title {
+        margin: 0 0 0.4rem;
+        font-size: 0.95rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #fff;
+    }
+
+    .snap-fp-tile-shortname {
+        padding-top: 0.4rem;
+        font-size: 0.75rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.45);
+    }
+
+    .snap-fp-tile-status {
+        margin-top: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #ffda6a;
+    }
+
+    // The details: over the image and the band, slid up from behind the progress.
+    .snap-fp-tile-details {
+        position: relative;
+        z-index: 3;
+        grid-row: 1 / 3;
+        min-height: 0;
+        padding: 0.75rem 3.25rem 0.75rem 1rem;
+        overflow-y: auto;
+        font-size: 0.8rem;
+        background-color: rgba(0, 0, 0, 0.88);
+        // Below the band, behind the progress and out of the tile.
+        transform: translateY(100%);
+        transition: transform 0.35s ease-in-out;
+
+        @media (prefers-reduced-motion: reduce) {
+            transition: none;
+        }
+    }
+
+    @media (hover: hover) {
+        &:hover:not(.snap-fp-tile-dismissed) .snap-fp-tile-details {
+            transform: none;
+        }
+    }
+
+    &.snap-fp-tile-open .snap-fp-tile-details,
+    &:has(.snap-fp-tile-link:focus) .snap-fp-tile-details {
+        transform: none;
+    }
+
+    // Category, then View course: a bar in the brand colour (_brandcolor.scss).
+    .snap-fp-tile-link {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 0.25rem 1rem;
+        margin-bottom: 0.75rem;
+        padding: 0.3rem 0.6rem;
+        font-weight: 600;
+        text-decoration: none;
+
+        .icon {
+            margin: 0 0 0 0.4em;
+            color: inherit;
+        }
+    }
+
+    .snap-fp-tile-teachers {
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+        font-style: italic;
+    }
+
+    // A line, then the name, as in 4.5.
+    .snap-fp-tile-summary-name {
+        margin-bottom: 0.4rem;
+        padding-top: 0.75rem;
+        font-weight: 600;
+        border-top: 1px solid rgba(255, 255, 255, 0.45);
+    }
+
+    // The progress along the bottom: its text on black, then the bar.
+    .snap-fp-tile-foot {
+        position: relative;
+        z-index: 4;
+        grid-row: 3;
+        background-color: #000;
+    }
+
+    .snap-fp-tile-foot-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.25rem 1rem;
+        min-height: 2rem;
+        padding: 0.2rem 0.5rem 0.2rem 1rem;
+        font-size: 0.75rem;
+    }
+
+    .snap-fp-tile-toggle {
+        margin-left: auto;
+        padding: 0.15rem 0.5rem;
+        font-size: 0.75rem;
+        color: #fff;
+        background: none;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 0.25rem;
+
+        .icon {
+            margin: 0 0 0 0.4em;
+            color: inherit;
+            transition: transform 0.35s ease-in-out;
+
+            @media (prefers-reduced-motion: reduce) {
+                transition: none;
+            }
+        }
+
+        &[aria-expanded="true"] .icon {
+            transform: rotate(180deg);
+        }
+
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        &:focus-visible {
+            outline: 3px solid #fff;
+            outline-offset: 1px;
+        }
+    }
+
+    .snap-fp-tile-bar {
+        height: 0.5rem;
+        background-color: $gray-300;
+    }
+
+    // Red under 20%, yellow under 80%, green from there, as in 4.5.
+    .snap-fp-tile-bar-fill {
+        height: 100%;
+        background-color: $green;
+
+        &.snap-fp-tile-bar-low {
+            background-color: $red;
+        }
+
+        &.snap-fp-tile-bar-mid {
+            background-color: $yellow;
+        }
+    }
+}

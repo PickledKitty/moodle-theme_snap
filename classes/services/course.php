@@ -276,38 +276,118 @@ class course {
     }
 
     /**
-     * Get courses for current user split by favorite status.
+     * The current user's courses for the front page's course tiles, split into tabs: Favourites, one per year
+     * (newest first), Other (no year), and one per checkbox course custom field chosen in theme_snap/fptilesfieldtabs,
+     * for the courses with it ticked. Courses whose top-level category's name contains one of the words in
+     * theme_snap/fptilescategorywords also go in the tab of the field in theme_snap/fptilescategorytab (a DEV tab,
+     * say), which is a tab even if it isn't ticked in fptilesfieldtabs.
      *
-     * @return array
-     * @throws \core\exception\coding_exception
+     * A course in a field's tab is only there, not under its year. A starred course is in Favourites as well as its
+     * own tab. Every list is sorted by name.
+     *
+     * @return array ['favourites' => course[], 'years' => [year => course[]], 'other' => course[],
+     *     'fieldtabs' => [shortname => ['name' => string, 'courses' => course[]]]]
      */
-    public function my_courses_split_by_favorites() {
-        $courses = enrol_get_my_courses('enddate', 'fullname ASC, id DESC');
-        $favorites = $this->favorites();
-        $favorited = [];
-        $notfavorited = [];
-        $past = [];
-        foreach ($courses as $course) {
-            $today = time();
-            if (!empty($course->enddate) && $course->enddate < $today) {
-                $course->endyear = userdate($course->enddate, '%Y');
-                $past[$course->endyear][$course->id] = $course;
-            } else if (isset($favorites[$course->id])) {
-                $favorited[$course->id] = $course;
-            } else {
-                $notfavorited[$course->id] = $course;
+    public function my_courses_by_tab(): array {
+        $courses = enrol_get_my_courses(['enddate', 'summary', 'summaryformat'], 'fullname ASC, id DESC');
+        $favourites = $this->favorites();
+        $words = array_filter(array_map(fn($w) => \core_text::strtolower(trim($w)),
+            explode("\n", (string)get_config('theme_snap', 'fptilescategorywords'))));
+        $categorytab = (string)get_config('theme_snap', 'fptilescategorytab');
+        $fieldtabs = array_filter(explode(',', (string)get_config('theme_snap', 'fptilesfieldtabs')));
+        if ($categorytab !== '' && $words) {
+            $fieldtabs[] = $categorytab;
+        }
+
+        // The ticked checkbox fields of each course, in one query. All fields, whoever can see them: they sort the
+        // courses, they aren't shown.
+        $ticked = [];
+        $fieldnames = [];
+        if ($fieldtabs) {
+            $handler = \core_course\customfield\course_handler::create();
+            foreach ($handler->get_fields() as $field) {
+                $fieldnames[$field->get('shortname')] = $field->get_formatted_name();
+            }
+            $data = $courses ? $handler->get_instances_data(array_keys($courses), true) : [];
+            foreach ($data as $courseid => $fields) {
+                foreach ($fields as $fielddata) {
+                    $field = $fielddata->get_field();
+                    if ($field->get('type') === 'checkbox' && $fielddata->get_value()) {
+                        $ticked[$courseid][] = $field->get('shortname');
+                    }
+                }
             }
         }
-        krsort($past); // Reorder list by year.
-        return [$past, $favorited, $notfavorited];
+
+        $result = ['favourites' => [], 'years' => [], 'other' => [], 'fieldtabs' => []];
+        // In the order the fields are sorted in (Site administration > Courses > Course custom fields).
+        foreach ($fieldnames as $shortname => $name) {
+            if (in_array($shortname, $fieldtabs)) {
+                $result['fieldtabs'][$shortname] = ['name' => $name, 'courses' => []];
+            }
+        }
+        foreach ($courses as $course) {
+            if (isset($favourites[$course->id])) {
+                $result['favourites'][$course->id] = $course;
+            }
+            $coursetabs = $ticked[$course->id] ?? [];
+            if (isset($result['fieldtabs'][$categorytab]) && $this->in_category_with_words($course, $words)) {
+                $coursetabs[] = $categorytab;
+            }
+            $intab = false;
+            foreach ($coursetabs as $shortname) {
+                if (isset($result['fieldtabs'][$shortname])) {
+                    $result['fieldtabs'][$shortname]['courses'][$course->id] = $course;
+                    $intab = true;
+                }
+            }
+            if ($intab) {
+                continue;
+            }
+            $year = self::course_year($course);
+            if ($year === null) {
+                $result['other'][$course->id] = $course;
+            } else {
+                $result['years'][$year][$course->id] = $course;
+            }
+        }
+        krsort($result['years']);
+        return $result;
+    }
+
+    /**
+     * Whether a course's top-level category's name contains any of the words (lower case).
+     *
+     * @param \stdClass $course
+     * @param string[] $words
+     * @return bool
+     */
+    private function in_category_with_words(\stdClass $course, array $words): bool {
+        if (!$words) {
+            return false;
+        }
+        $category = \core_course_category::get($course->category, IGNORE_MISSING, true);
+        if (!$category) {
+            return false;
+        }
+        $parents = $category->get_parents();
+        $top = $parents ? \core_course_category::get(reset($parents), IGNORE_MISSING, true) : $category;
+        $name = \core_text::strtolower((string)($top->name ?? ''));
+        foreach ($words as $word) {
+            if (\core_text::strpos($name, $word) !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * The year a course belongs to: from its ID number when the site's year pattern (theme_snap/courseyearpattern)
-     * finds one, otherwise from its end date. Used by the My courses Year filter, for its menu and its results.
+     * finds one, otherwise from its end date. Used by the front page's year tabs and the My courses Year filter, so
+     * both always agree.
      *
      * @param \stdClass $course with idnumber and enddate
-     * @return string|null the year, like '2026', or null when there's none
+     * @return string|null the year, like '2026', or null when there's none (shown as Other on the front page)
      */
     public static function course_year(\stdClass $course): ?string {
         $pattern = (string)get_config('theme_snap', 'courseyearpattern');

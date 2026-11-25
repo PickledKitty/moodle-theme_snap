@@ -38,13 +38,11 @@ Feature: Correct functionality of enrolled courses and available courses in the 
       | student1 | C1     | student        |
       | student1 | C2     | student        |
       | student2 | C1     | student        |
-    Then I log in as "admin"
-    And I am on site homepage
-    And I click on "#admin-menu-trigger" "css_element"
-    And I navigate to "Settings" in current page administration
-    And I set the field with xpath "//select[@id='id_s__frontpageloggedin0']" to "None"
-    And I press "Save changes"
-    And I log out
+    # Home is the front page, with no items for logged-in users.
+    And the following config values are set as admin:
+      | enablemyhome      | 1 |
+      | defaulthomepage   | 0 |
+      | frontpageloggedin |   |
 
   @javascript
   Scenario: Enrolled courses are displayed correctly in front page in Snap.
@@ -65,9 +63,9 @@ Feature: Correct functionality of enrolled courses and available courses in the 
     And I log out
     Then I log in as "student1"
     And I am on site homepage
-    And ".snap-home-course" "css_element" should exist
-    And ".snap-home-course-title" "css_element" should exist
-    And ".snap-home-courses-image" "css_element" should exist
+    # Enrolled courses are Snap's course tiles, in tabs.
+    And ".snap-fp-tiles [role='tablist']" "css_element" should exist
+    And ".snap-fp-tile .snap-fp-tile-title" "css_element" should exist
     And I should see "Course 1"
     And I should see "Course 2"
     And I should not see "Course 3"
@@ -157,31 +155,105 @@ Feature: Correct functionality of enrolled courses and available courses in the 
     And I should see "2 students"
 
   @javascript
-  Scenario: Users can set course as favourite from course cards in home page.
-    Given I log in as "admin"
-    And I am on site homepage
-    And I click on "#admin-menu-trigger" "css_element"
-    And I navigate to "Settings" in current page administration
-    And I set the field with xpath "//select[@id='id_s__frontpageloggedin0']" to "Enrolled courses"
-    And I press "Save changes"
+  Scenario: Users can star a course from its tile on the front page
+    # My courses is off on the test site; it's on here to check stars made on the front page show there.
+    Given the following config values are set as admin:
+      | frontpageloggedin | 5 |
+      | enablemycourses   | 1 |
     And I log in as "student2"
-    And I follow "My Courses"
-    And ".course-card [data-region='favourite-icon'] .hidden" "css_element" should exist
-    And I am on site homepage
-    And I hover ".snap-home-course" "css_element"
-    And ".snap-home-course .favouriteicon .set-favourite" "css_element" should be visible
-    And I press the tab key
-    And the focused element is "Star this course" "button"
-    And I press the enter key
-    And I wait until the page is ready
-    And ".snap-home-course .favouriteicon .unset-favourite" "css_element" should be visible
-    And I follow "My Courses"
+    And I visit "/?redirect=0"
+    And I should see "Star a course to add it to Favourites." in the ".snap-fp-tiles" "css_element"
+    And "#snap-fp-tab-fav" "css_element" should not be visible
+    When I click on "Favourite: Course 1" "button" in the "#snap-fp-tiles-other" "css_element"
+    Then the "aria-pressed" attribute of "#snap-fp-tiles-other [data-action='favourite']" "css_element" should contain "true"
+    And "#snap-fp-tab-fav" "css_element" should be visible
+    And I should not see "Star a course to add it to Favourites."
+    # Straight there: the front page also has a "Skip My courses" link, which "I follow" would take.
+    And I visit "/my/courses.php"
+    And ".course-card [data-region='favourite-icon']" "css_element" should exist
     And ".course-card [data-region='favourite-icon'] .hidden" "css_element" should not exist
-    And I am on site homepage
-    And I hover ".snap-home-course" "css_element"
-    And I click on ".snap-home-course .favouriteicon .unset-favourite" "css_element"
-    And I wait until the page is ready
-    And ".snap-home-course .favouriteicon .set-favourite" "css_element" should be visible
-    And I follow "My Courses"
+    # After a reload Favourites opens first, and the course is in its own tab too.
+    And I visit "/?redirect=0"
+    And the "aria-selected" attribute of "#snap-fp-tab-fav" "css_element" should contain "true"
+    And "#snap-fp-tiles-other .snap-fp-tile" "css_element" should exist
+    And I click on "Favourite: Course 1" "button" in the "#snap-fp-tiles-fav" "css_element"
+    And "#snap-fp-tiles-fav .snap-fp-tile" "css_element" should not exist
+    And I should see "No favourites yet. Star a course to add it here." in the "#snap-fp-tiles-fav" "css_element"
+    And I visit "/my/courses.php"
     And ".course-card [data-region='favourite-icon'] .hidden" "css_element" should exist
 
+  @javascript @accessibility
+  Scenario: The course tiles' tabs and details work from the keyboard
+    # DEV is a checkbox course custom field's tab, filled by the category words.
+    Given the following "custom field categories" exist:
+      | name        | component   | area   | itemid |
+      | Course type | core_course | course | 0      |
+    And the following "custom fields" exist:
+      | name | category    | type     | shortname |
+      | DEV  | Course type | checkbox | dev       |
+    And the following "categories" exist:
+      | name              | idnumber |
+      | Staff development | DEVCAT   |
+    And the following "courses" exist:
+      | fullname   | shortname | category | startdate  | enddate    |
+      | Year tile  | YT        | 0        | 1767225600 | 1782864000 |
+      | Dev tile   | DT        | DEVCAT   | 0          | 0          |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | student1 | YT     | student |
+      | student1 | DT     | student |
+    And the following config values are set as admin:
+      | frontpageloggedin    | 5           |            |
+      | fptilescategorywords | development | theme_snap |
+      | fptilescategorytab   | dev         | theme_snap |
+    And I change window size to "large"
+    And I log in as "student1"
+    When I visit "/?redirect=0"
+    # No favourites: the 2026 tab is open first, then Other and DEV.
+    Then the "aria-selected" attribute of "#snap-fp-tab-y2026" "css_element" should contain "true"
+    And I should see "Year tile" in the "#snap-fp-tiles-y2026" "css_element"
+    And I click on "#snap-fp-tab-y2026" "css_element"
+    And I press the right key
+    And the focused element is "#snap-fp-tab-other" "css_element"
+    And I should see "Course 1" in the "#snap-fp-tiles-other" "css_element"
+    And I press the right key
+    And the focused element is "#snap-fp-tab-field-dev" "css_element"
+    And I should see "Dev tile" in the "#snap-fp-tiles-field-dev" "css_element"
+    # The Details button opens the details; Escape closes them and leaves focus on it.
+    And I click on "Details: Dev tile" "button"
+    And the "aria-expanded" attribute of "#snap-fp-tiles-field-dev [data-action='details']" "css_element" should contain "true"
+    And "View Course: Dev tile" "link" should be visible
+    And I press the escape key
+    And the "aria-expanded" attribute of "#snap-fp-tiles-field-dev [data-action='details']" "css_element" should contain "false"
+    And the focused element is "#snap-fp-tiles-field-dev [data-action='details']" "css_element"
+
+  @javascript @accessibility
+  Scenario Outline: The course tiles fit the page and meet accessibility standards at <size> in <mode> mode
+    Given the following "courses" exist:
+      | fullname  | shortname | startdate  | enddate    | summary                     |
+      | Year tile | YT        | 1767225600 | 1782864000 | A course with a summary.    |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | student1 | YT     | student |
+    And the following "user preferences" exist:
+      | user     | preference             | value  |
+      | student1 | theme_boost_colourmode | <mode> |
+    And the following config values are set as admin:
+      | frontpageloggedin | 5 |
+    And I change viewport size to "<size>"
+    And I log in as "student1"
+    When I visit "/?redirect=0"
+    Then ".snap-fp-tile" "css_element" should exist
+    And the element "#frontpage-course-list" should fit its width
+    And the "#frontpage-course-list" "css_element" should meet accessibility standards
+    And I click on "Details: Year tile" "button"
+    And the "#frontpage-course-list" "css_element" should meet accessibility standards
+
+    Examples:
+      | size     | mode  |
+      | 480x900  | light |
+      | 576x900  | dark  |
+      | 768x900  | light |
+      | 992x900  | dark  |
+      | 1200x900 | light |
+      | 1400x900 | dark  |

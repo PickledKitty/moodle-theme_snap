@@ -1,0 +1,75 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_snap/course_tiles
+
+    The front page's course tiles: the current user's courses in tabs (Favourites, the years, Other and tabs from
+    course custom fields, such as DEV). Favourites is always there, hidden when it's empty, so starring a course can show it.
+    The open tab is kept in the address (#snap-fp-tab-<id>). Rendered by course_renderer::frontpage_my_courses().
+
+    Example context (json):
+    {
+        "hasfavourites": false,
+        "tabs": [
+            {"id": "fav", "isfav": true, "name": "Favourites", "hidden": true, "active": false, "courses": []},
+            {"id": "y2026", "name": "2026", "hidden": false, "active": true, "courses": [
+                {"id": 2, "tabid": "y2026", "hometab": "y2026", "fullname": "Course 101", "shortname": "C101",
+                "url": "#", "image": "", "categoryname": "Science", "teachers": "Ana Lee", "summary": "About it",
+                "hasprogress": true, "progress": 40, "hidden": false, "favourite": false}
+            ]}
+        ]
+    }
+}}
+<div class="snap-fp-tiles" data-region="snap-fp-tiles">
+    {{#nocourses}}
+        <p>{{#str}}fptilesnocourses, theme_snap{{/str}}</p>
+    {{/nocourses}}
+    {{^nocourses}}
+        <p class="snap-fp-tiles-hint" data-region="hint" {{#hasfavourites}}hidden{{/hasfavourites}}>
+            <i class="icon fa-regular fa-star" aria-hidden="true"></i>{{#str}}fptileshint, theme_snap{{/str}}
+        </p>
+        <div class="nav nav-tabs snap-fp-tiles-tabs" role="tablist" aria-label="{{#str}}fptilestabs, theme_snap{{/str}}">
+            {{#tabs}}
+                <button type="button" class="nav-link{{#active}} active{{/active}}" id="snap-fp-tab-{{id}}"
+                    role="tab" data-bs-toggle="tab" data-bs-target="#snap-fp-tiles-{{id}}"
+                    aria-controls="snap-fp-tiles-{{id}}" aria-selected="{{#active}}true{{/active}}{{^active}}false{{/active}}"
+                    {{^active}}tabindex="-1"{{/active}} {{#hidden}}hidden{{/hidden}}>{{name}}</button>
+            {{/tabs}}
+        </div>
+        <div class="tab-content">
+            {{#tabs}}
+                <div class="tab-pane{{#active}} active show{{/active}}" id="snap-fp-tiles-{{id}}" role="tabpanel"
+                    aria-labelledby="snap-fp-tab-{{id}}" data-tab="{{id}}">
+                    <ul class="snap-fp-tiles-list" data-region="tiles">
+                        {{#courses}}
+                            <li>{{> theme_snap/course_tile }}</li>
+                        {{/courses}}
+                    </ul>
+                    {{#isfav}}
+                        <p class="snap-fp-tiles-empty" data-region="empty" {{^hidden}}hidden{{/hidden}}>{{#str}}fptilesnofavourites, theme_snap{{/str}}</p>
+                    {{/isfav}}
+                </div>
+            {{/tabs}}
+        </div>
+        <div class="visually-hidden" role="status" data-region="status"></div>
+    {{/nocourses}}
+</div>
+{{#js}}
+    require(['theme_snap/fp_tiles'], function(tiles) {
+        tiles.init();
+    });
+{{/js}}
