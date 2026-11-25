@@ -286,3 +286,22 @@ Feature: Correct functionality of enrolled courses and available courses in the 
     And I visit "/my/courses.php"
     And I should see "Unit Alpha / Unit Beta" in the "[data-region='courses-view']" "css_element"
     And I should not see "Unit Alpha / Unit Beta / Unit Alpha" in the "[data-region='courses-view']" "css_element"
+
+  @javascript @accessibility
+  Scenario: With a course search on the front page, it's at the top too, and All courses follows the course tiles
+    Given the following config values are set as admin:
+      | frontpageloggedin | 5,7 |
+    And I change window size to "large"
+    And I log in as "student1"
+    When I visit "/?redirect=0"
+    Then ".snap-fp-search-top #coursesearchbox" "css_element" should exist
+    And "#moodle-frontpage-elements #shortsearchbox" "css_element" should exist
+    And "#frontpage-course-list + .snap-fp-allcourses" "css_element" should exist
+    And the page should meet accessibility standards
+    And I set the field "coursesearchbox" to "Course 1"
+    And I press the enter key
+    And I should see "Course 1" in the "#region-main" "css_element"
+    And I visit "/?redirect=0"
+    And I click on "All courses" "link" in the ".snap-fp-allcourses" "css_element"
+    # The course list (with one category, that category's page).
+    And "body#page-course-index, body#page-course-index-category" "css_element" should exist

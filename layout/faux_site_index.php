@@ -45,6 +45,13 @@ if (substr_compare($maincontent, $lastclosetag, -strlen($lastclosetag)) !== 0) {
     throw new \core\exception\coding_exception($message);
 }
 
+// When the front page has a course search, it's at the top as well as in its place in the list. The full form, so
+// its ids differ from the one below (the short form).
+$courserenderer = $PAGE->get_renderer('core', 'course');
+if (in_array(FRONTPAGECOURSESEARCH, explode(',', $frontpagelayout))) {
+    echo $OUTPUT->box($courserenderer->course_search_form(''), 'mdl-align snap-fp-search-top');
+}
+
 // Snap feature spots.
 echo $this->feature_spot_cards();
 
@@ -55,7 +62,6 @@ echo $OUTPUT->render(new featured_categories());
 echo $OUTPUT->render(new featured_courses());
 
 echo substr($maincontent, 0, -strlen($lastclosetag));
-$courserenderer = $PAGE->get_renderer('core', 'course');
 
 // Wrapper for moodle front page elements.
 echo "<div id='moodle-frontpage-elements'>";
@@ -87,6 +93,12 @@ foreach (explode(',', $frontpagelayout) as $section) {
 
                 // End frontpage course list div container.
                 echo \core\output\html_writer::end_tag('div');
+
+                // All courses, for those who can see the course list.
+                if (has_capability('moodle/category:viewcourselist', context_system::instance())) {
+                    echo \core\output\html_writer::div(\core\output\html_writer::link(new \core\url('/course/index.php'),
+                        get_string('fulllistofcourses'), ['class' => 'btn btn-secondary']), 'mdl-align snap-fp-allcourses');
+                }
 
                 echo \core\output\html_writer::tag('span', '', array('class' => 'skip-block-to', 'id' => 'skipmycourses'));
 

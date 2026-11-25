@@ -2749,9 +2749,18 @@ body.path-course #moodle-page #page-header {
 
 // Front page core elements.
 #page-site-index {
-    // Front page course search box.
-    #coursesearch .input-group {
-        max-width: 300px;
+    // Front page course search boxes (at the top and in the list of front page items, layout/faux_site_index.php):
+    // across the content, lined up with the course tiles.
+    form[action$="/course/search.php"] {
+        padding-inline: 4%;
+
+        .coursesearchbox {
+            display: block;
+        }
+
+        .input-group {
+            max-width: none;
+        }
     }
     // Front page edit summary - hide cog icon.
     .sitetopic .fa-cog {
