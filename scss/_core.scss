@@ -1646,11 +1646,13 @@ $mr-nav-zindex: 1052;
 // Styles for Snap user menu.
 #snap-header {
 
+    // The header is 50px high up to 992px and 100px from there (#snap-header, below), so the user menu and the
+    // logo have no top margin up to 992px: with it they reached below the 50px.
     .pull-right.js-only.d-flex, .float-end.js-only.d-flex {
         margin-top: 1em;
 
-        @media (max-width: 768px) {
-            margin-top: 0.6em;
+        @media (max-width: 992px) {
+            margin-top: 0;
         }
 
         @include media-breakpoint-down(sm) {
@@ -1661,7 +1663,7 @@ $mr-nav-zindex: 1052;
     #snap-home:not(.logo) {
         margin-top: 1em;
         margin-bottom: 1em;
-        @include media-breakpoint-down(md) {
+        @media (max-width: 992px) {
             margin-top: 0;
             margin-bottom: 0;
         }
@@ -1692,7 +1694,8 @@ $mr-nav-zindex: 1052;
             // the header taller than its fixed 100px and pushes the custom menu over the content.
             display: flex;
             align-items: center;
-            @include media-breakpoint-down(md) {
+            // No padding while the header is 50px high (up to 992px).
+            @media (max-width: 992px) {
                 padding: 0;
             }
         }
@@ -6882,8 +6885,32 @@ header#mr-nav {
 }
 
 @media (max-width: 992px) {
+    // 50px high, with the logo and the user menu centred in it. It holds its floats (the user menu), so they can't
+    // push the custom menu below it down over the page. From 768px the page's text is larger (18px), too large for
+    // the 50px: the phone size (14.4px) here.
     .theme-snap #snap-header {
         height: 50px;
+        display: flow-root;
+
+        @include media-breakpoint-up(md) {
+            font-size: 0.8rem;
+        }
+
+        #snap-home:not(.logo) {
+            padding-top: 0;
+            padding-bottom: 0;
+            line-height: 50px;
+        }
+
+        .float-end.js-only.d-flex {
+            height: 50px;
+            align-items: center;
+        }
+    }
+
+    #mr-nav #snap-header {
+        padding-top: 0;
+        padding-bottom: 0;
     }
     #page-header {
         padding-top: 30px;
@@ -6895,7 +6922,9 @@ header#mr-nav {
     header#mr-nav div#snap-custom-menu-header {
         display: block;
 
+        // 50px, as from 992px up, so it fills the space the page leaves for it (it starts 100px down).
         nav.navbar {
+            min-height: 50px;
             padding: 0 0.5rem;
         }
 
