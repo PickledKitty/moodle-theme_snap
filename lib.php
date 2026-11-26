@@ -517,7 +517,7 @@ function theme_snap_get_pre_scss($theme) {
         $theme->settings->feature_spot_background_color : '#ffffff';
 
     $settings['feature-spot-title-color'] = !empty($theme->settings->feature_spot_title_color) ?
-        $theme->settings->feature_spot_title_color : '#ff7f41';
+        $theme->settings->feature_spot_title_color : '#b84a0f';
 
     $settings['feature-spot-description-color'] = !empty($theme->settings->feature_spot_description_color) ?
         $theme->settings->feature_spot_description_color : '#565656';

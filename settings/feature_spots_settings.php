@@ -35,7 +35,7 @@ $snapsettings->add($setting);
 
 $name = 'theme_snap/feature_spot_title_color';
 $title = get_string('feature_spot_title_color', 'theme_snap');
-$setting = new admin_setting_configcolourpicker($name, $title, '', '#ff7f41');
+$setting = new admin_setting_configcolourpicker($name, $title, '', '#b84a0f');
 $setting->set_updatedcallback('theme_reset_all_caches');
 $snapsettings->add($setting);
 
@@ -50,6 +50,19 @@ $title = get_string('feature_spot_background_color', 'theme_snap');
 $setting = new \theme_snap\admin_setting_configcolorwithcontrast(
     \theme_snap\admin_setting_configcolorwithcontrast::FEATURESPOT_BACK, $name, $title, '', '#ffffff');
 $setting->set_updatedcallback('theme_reset_all_caches');
+$snapsettings->add($setting);
+
+// Whether each feature spot shows on the front page: off keeps its content, to try other numbers of spots.
+$name = 'theme_snap/fs_one_show';
+$setting = new admin_setting_configcheckbox($name, new \core\lang_string('featureshow', 'theme_snap', 1), '', 1);
+$snapsettings->add($setting);
+
+$name = 'theme_snap/fs_two_show';
+$setting = new admin_setting_configcheckbox($name, new \core\lang_string('featureshow', 'theme_snap', 2), '', 1);
+$snapsettings->add($setting);
+
+$name = 'theme_snap/fs_three_show';
+$setting = new admin_setting_configcheckbox($name, new \core\lang_string('featureshow', 'theme_snap', 3), '', 1);
 $snapsettings->add($setting);
 
 // Feature spot images.
@@ -147,6 +160,19 @@ $setting = new admin_setting_configtextarea($name, $title, $description, '');
 $snapsettings->add($setting);
 
 // Second group of 3 settings.
+
+// Whether each feature spot shows on the front page: off keeps its content, to try other numbers of spots.
+$name = 'theme_snap/fs_four_show';
+$setting = new admin_setting_configcheckbox($name, new \core\lang_string('featureshow', 'theme_snap', 4), '', 1);
+$snapsettings->add($setting);
+
+$name = 'theme_snap/fs_five_show';
+$setting = new admin_setting_configcheckbox($name, new \core\lang_string('featureshow', 'theme_snap', 5), '', 1);
+$snapsettings->add($setting);
+
+$name = 'theme_snap/fs_six_show';
+$setting = new admin_setting_configcheckbox($name, new \core\lang_string('featureshow', 'theme_snap', 6), '', 1);
+$snapsettings->add($setting);
 
 $name = 'theme_snap/fs_four_image';
 $title = new \core\lang_string('featurefourimage', 'theme_snap');

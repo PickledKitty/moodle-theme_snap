@@ -170,6 +170,7 @@ $string['favicondesc'] = 'Favicons appear in your web browser’s address bar, i
 $string['favorite'] = 'Favorite {$a}';
 $string['favorited'] = 'Favorited {$a}';
 $string['favourites'] = 'Favourites';
+$string['featureshow'] = 'Show feature spot {$a} on the front page';
 $string['featurespots'] = 'Feature spots';
 $string['featurespotsedit'] = 'Edit feature spots';
 $string['featurespotshelp'] = '<p>Add up to 6 feature spots to your site&#8217;s front page to highlight the main benefits to current and potential users.</p>

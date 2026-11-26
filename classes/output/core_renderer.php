@@ -1819,6 +1819,11 @@ HTML;
         // Note - we are using underscores in the settings to make easier to read.
 
         foreach ($fsnames as $feature) {
+            // Hidden with its Show checkbox: it keeps its content. Not set yet (before the setting was saved) is shown.
+            $show = $feature . '_show';
+            if (isset($this->page->theme->settings->$show) && empty($this->page->theme->settings->$show)) {
+                continue;
+            }
             $title = $feature . '_title';
             $link = $feature . '_title_link';
             $cbopeninnewtab = $feature . '_title_link_cb';
@@ -1849,42 +1854,21 @@ HTML;
                 $fstitle = '<h2 class="snap-feature-spots-heading">' . s($this->page->theme->settings->fs_heading) . '</h2>';
             }
 
-            $colclass = 'col-sm-12'; // Default
-            if ($fscount === 2) {
-                $colclass = 'col-sm-6'; // Two cards = 50%.
-            } elseif ($fscount === 3) {
-                $colclass = 'col-sm-4'; // Three cards = 33.3%.
-            } else {
-                $colclass = 'col-sm-4'; // Default for more than 3 cards.
-            }
-
-            $extraClass = '';
-            if ($fscount === 4) {
-                $extraClass = 'col-sm-6'; // Fourth card = 50% when there are 4 cards.
-            } elseif ($fscount === 5) {
-                $extraClass = 'col-sm-6'; // Fourth and fifth cards = 50% when there are 5 cards.
-            } elseif ($fscount === 6) {
-                $extraClass = 'col-sm-4'; // Fourth, fifth, and sixth cards = 33.3% when there are 6 cards.
-            }
-
+            // Rows of up to three, but two and two for four, so no card is left on its own; each card's width is a
+            // share of its row. Below 768px they're one across (_core.scss).
+            $perrow = $fscount === 4 ? 2 : 3;
             $cards = '<div class="snap-feature-spots-list" role="list">';
-            for ($i = 1; $i <= $fscount; $i++) {
-                $feature = $features[$i - 1];
-                // Open a new row every three cards.
-                if ($i % 3 == 1) {
-                    if ($i > 1) {
-                        $cards .= '</div>'; // Close the previous row.
-                    }
-                    $cards .= '<div class="row py-4 justify-content-center" role="presentation">'; // Open a new row.
+            $i = 0;
+            foreach (array_chunk($features, $perrow) as $rowfeatures) {
+                $colclass = 'col-sm-' . (12 / count($rowfeatures));
+                $cards .= '<div class="row py-4 justify-content-center" role="presentation">';
+                foreach ($rowfeatures as $feature) {
+                    $i++;
+                    $cards .= '<div class="' . $colclass . '" id="snap-feature-' . $i . '" role="listitem">'
+                        . $feature . '</div>';
                 }
-                $currentcolclass = $colclass;
-                if ($i > 3) {
-                    $currentcolclass = $extraClass; // Apply the special class for the fourth, fifth, and sixth cards.
-                }
-                $cards .= '<div class="' . $currentcolclass . '" id="snap-feature-' . $i . '" role="listitem">'
-                    . $feature . '</div>';
+                $cards .= '</div>';
             }
-            $cards .= '</div>'; // Close the last row.
             $cards .= '</div>';
 
             $fsedit = '';

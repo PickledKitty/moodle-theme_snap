@@ -209,5 +209,26 @@ function xmldb_theme_snap_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2025121900, 'theme', 'snap');
     }
 
+    if ($oldversion < 2026112600) {
+        // The feature spot titles' default orange, #ff7f41, was 2.5:1 on their white card; the new default, #b84a0f, is
+        // 5.2:1. Sites still on the old default (saved when Snap was installed) get the new one.
+        if (strtolower((string)get_config('theme_snap', 'feature_spot_title_color')) === '#ff7f41') {
+            set_config('feature_spot_title_color', '#b84a0f', 'theme_snap');
+            theme_reset_all_caches();
+        }
+        upgrade_plugin_savepoint(true, 2026112600, 'theme', 'snap');
+    }
+
+    if ($oldversion < 2026112601) {
+        // Each feature spot's new Show checkbox: on, so the spots that show now still do. Saved here, since the
+        // settings tab shows an unsaved checkbox as off, and saving the tab like that would hide every spot.
+        foreach (['one', 'two', 'three', 'four', 'five', 'six'] as $spot) {
+            if (get_config('theme_snap', "fs_{$spot}_show") === false) {
+                set_config("fs_{$spot}_show", 1, 'theme_snap');
+            }
+        }
+        upgrade_plugin_savepoint(true, 2026112601, 'theme', 'snap');
+    }
+
     return true;
 }

@@ -38,10 +38,15 @@ Feature: Correct functionality of feature spots in the front page with every pos
       | fs_one_title_link    | https://www.moodle.com    | theme_snap |
       | fs_three_title_link  | /course/view.php?id=1     | theme_snap |
       | fs_one_title_link_cb | 1                         | theme_snap |
+    # The test site's home page is the Dashboard, and with "Site home" off Moodle sends everyone there: it's on here,
+    # and the scenarios go to the front page itself (/?redirect=0).
+    And the following config values are set as admin:
+      | enablemyhome | 1 |
+
   @javascript
   Scenario: Snap Feature spots are correctly configured. Just for text and title.
     Given I log in as "admin"
-    And I am on site homepage
+    And I visit "/?redirect=0"
     And I should see "Heading for feature spots"
     And I should see "Title for spot 1"
     And I should see "Title for spot 2"
@@ -49,27 +54,27 @@ Feature: Correct functionality of feature spots in the front page with every pos
     # No content text should be valid.
     And the following config values are set as admin:
       | fs_two_text          |       | theme_snap |
-    And I am on site homepage
+    And I visit "/?redirect=0"
     And I should see "Title for spot 2"
 
   @javascript
   Scenario: Snap Feature spots have links as a title.
     Given I log in as "admin"
-    And I am on site homepage
+    And I visit "/?redirect=0"
     And ".snap-feature-block a.snap-feature-link" "css_element" should exist
     And the "href" attribute of "//div[@class='snap-feature-block position-relative']//a[contains(text(), 'Title for spot 1')]" "xpath_element" should contain "https://www.moodle.com"
     And the "href" attribute of "//div[@class='snap-feature-block position-relative']//a[contains(text(), 'Title for spot 3')]" "xpath_element" should contain "course/view.php?id=1"
   @javascript
   Scenario: Snap Feature spots title links opens in a new window when the checkbox is checked.
     Given I log in as "admin"
-    And I am on site homepage
+    And I visit "/?redirect=0"
     And the "target" attribute of "//div[@class='snap-feature-block position-relative']//a[contains(text(), 'Title for spot 1')]" "xpath_element" should contain "_blank"
   @javascript
   Scenario: Snap Feature spots settings page validate that the links exists as links, internal and external.
     Given I log in as "admin"
     And the following config values are set as admin:
       | linkadmincategories | 0 |
-    And I am on site homepage
+    And I visit "/?redirect=0"
     And I go to "Site administration > Appearance > Themes" in snap administration
     And I follow "Edit theme settings 'Snap'"
     And I follow "Feature spots"
@@ -85,3 +90,41 @@ Feature: Correct functionality of feature spots in the front page with every pos
     And I set the field with xpath "//div[@class='form-text defaultsnext']//input[@id='id_s_theme_snap_fs_one_title_link']" to "http://www.google.com"
     And I press "Save changes"
     And I should see "Changes saved"
+
+  @javascript
+  Scenario: A feature spot can be left off the front page without losing its content
+    Given the following config values are set as admin:
+      | fs_two_show | 0 | theme_snap |
+    And I log in as "admin"
+    When I visit "/?redirect=0"
+    Then I should see "Title for spot 1" in the "#snap-feature-spots" "css_element"
+    And I should not see "Title for spot 2" in the "#snap-feature-spots" "css_element"
+    And I should see "Title for spot 3" in the "#snap-feature-spots" "css_element"
+    # Two left, side by side.
+    And "#snap-feature-spots .row:nth-child(1) > .col-sm-6:nth-child(2)" "css_element" should exist
+    And the following config values are set as admin:
+      | fs_two_show | 1 | theme_snap |
+    And I visit "/?redirect=0"
+    And I should see "Title for spot 2" in the "#snap-feature-spots" "css_element"
+
+  @javascript @accessibility
+  Scenario Outline: <count> feature spots are laid out <layout> on a computer, and one across on a phone
+    Given the following config values are set as admin:
+      | fs_four_title | Title for spot 4 | theme_snap |
+      | fs_five_title | <five>           | theme_snap |
+      | fs_six_title  | <six>            | theme_snap |
+    And I change window size to "large"
+    And I log in as "admin"
+    When I visit "/?redirect=0"
+    Then "#snap-feature-spots .row:nth-child(1) > [role='listitem']:nth-child(<first>)" "css_element" should exist
+    And "#snap-feature-spots .row:nth-child(1) > [role='listitem']:nth-child(<first> + 1)" "css_element" should not exist
+    And "#snap-feature-spots .row:nth-child(2) > [role='listitem']:nth-child(<second>)" "css_element" should exist
+    And the "#snap-feature-spots" "css_element" should meet accessibility standards
+    And I change window size to "mobile"
+    And the element "#snap-feature-spots" should fit its width
+
+    Examples:
+      | count | layout                 | five             | six              | first | second |
+      | Four  | two by two             |                  |                  | 2     | 2      |
+      | Five  | three, then two        | Title for spot 5 |                  | 3     | 2      |
+      | Six   | three, then three      | Title for spot 5 | Title for spot 6 | 3     | 3      |
