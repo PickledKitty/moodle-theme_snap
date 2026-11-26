@@ -5445,6 +5445,18 @@ table th img.iconhelp {
             flex: 0 0 100%;
             max-width: 100%;
         }
+
+        // One across, so the rows' own space would make the gap between rows bigger than between cards: only the
+        // first row's top and the last row's bottom keep theirs.
+        .snap-feature-spots-list > .row {
+            &:not(:first-child) {
+                padding-top: 0 !important;
+            }
+
+            &:not(:last-child) {
+                padding-bottom: 0 !important;
+            }
+        }
     }
 
     .snap-feature-image {
