@@ -107,6 +107,22 @@ const closeOnEscape = (root, e) => {
 };
 
 /**
+ * Details that don't fit their tile scroll, so they take keyboard focus then (arrow keys scroll them); details that
+ * fit don't, so they add no Tab stop.
+ *
+ * @param {HTMLElement} root
+ */
+const focusableWhenScrolling = root => {
+    root.querySelectorAll('[data-region="details"]').forEach(details => {
+        if (details.scrollHeight > details.clientHeight + 1) {
+            details.tabIndex = 0;
+        } else {
+            details.removeAttribute('tabindex');
+        }
+    });
+};
+
+/**
  * A copy of a tile for Favourites, with its ids made unique for that tab.
  *
  * @param {HTMLElement} tile
@@ -143,6 +159,7 @@ const addToFavourites = (root, tile) => {
     const after = [...list.children].find(item => tileTitle(item.querySelector(SELECTORS.tile)).toLocaleLowerCase() > title);
     list.insertBefore(favouriteCopy(tile), after || null);
     refreshFavourites(root);
+    focusableWhenScrolling(root);
 };
 
 /**
@@ -260,4 +277,8 @@ export const init = () => {
         }
     });
     rememberTab(root);
+    // Whether details scroll changes with the width, and with the open tab (hidden tabs measure nothing).
+    focusableWhenScrolling(root);
+    new ResizeObserver(() => focusableWhenScrolling(root)).observe(root);
+    root.addEventListener('shown.bs.tab', () => focusableWhenScrolling(root));
 };

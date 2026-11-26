@@ -45,7 +45,8 @@
             <p class="snap-fp-tile-status">{{#str}}hiddenfromstudents{{/str}}</p>
         {{/hidden}}
     </div>
-    <div class="snap-fp-tile-details" id="snap-fp-tile-details-{{tabid}}-{{id}}" data-region="details">
+    <div class="snap-fp-tile-details" id="snap-fp-tile-details-{{tabid}}-{{id}}" data-region="details" role="region"
+        aria-label="{{#str}}fptilesdetails, theme_snap{{/str}}: {{{fullname}}}">
         <a class="snap-fp-tile-link" href="{{url}}">
             <span class="snap-fp-tile-category">{{{categoryname}}}</span>
             <span class="snap-fp-tile-view">{{#str}}viewcourse, theme_snap{{/str}}<span class="visually-hidden">: {{{fullname}}}</span><i class="icon fa-solid fa-circle-arrow-right" aria-hidden="true"></i></span>
