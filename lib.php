@@ -342,6 +342,9 @@ function theme_snap_pluginfile($course, $cm, $context, $filearea, $args, $forced
         'slide_one_image',
         'slide_two_image',
         'slide_three_image',
+        'slide_one_image_small',
+        'slide_two_image_small',
+        'slide_three_image_small',
         'loginbgimg'
     ];
 

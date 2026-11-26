@@ -63,6 +63,15 @@ $default = $unchecked;
 $setting = new admin_setting_configcheckbox($name, $title, $description, $default, $checked, $unchecked);
 $snapsettings->add($setting);
 
+// Hero: tall photos with the title over them. Banner: each slide the shape of its image, for images that carry
+// their own text.
+$snapsettings->add(new admin_setting_configselect('theme_snap/cover_carousel_style',
+    new \core\lang_string('covercarouselstyle', 'theme_snap'),
+    new \core\lang_string('covercarouselstyle_desc', 'theme_snap'), 'hero', [
+        'hero' => new \core\lang_string('covercarouselstylehero', 'theme_snap'),
+        'banner' => new \core\lang_string('covercarouselstylebanner', 'theme_snap'),
+    ]));
+
 $name = 'theme_snap/slide_one_image';
 $title = new \core\lang_string('coverimage', 'theme_snap');
 $description = '';
@@ -83,6 +92,19 @@ $description = '';
 $opts = array('accepted_types' => array('.png', '.jpg', '.gif', '.webp', '.svg'));
 $setting = new admin_setting_configstoredfile($name, $title, $description, 'slide_three_image', 0, $opts);
 $snapsettings->add($setting);
+
+// Optional images for small screens (below 768px), shown there instead: a narrower banner, or a portrait crop.
+$snapsettings->add(new admin_setting_configstoredfile('theme_snap/slide_one_image_small',
+    new \core\lang_string('coverimagesmall', 'theme_snap'), new \core\lang_string('coverimagesmall_desc', 'theme_snap'),
+    'slide_one_image_small', 0, $opts));
+
+$snapsettings->add(new admin_setting_configstoredfile('theme_snap/slide_two_image_small',
+    new \core\lang_string('coverimagesmall', 'theme_snap'), new \core\lang_string('coverimagesmall_desc', 'theme_snap'),
+    'slide_two_image_small', 0, $opts));
+
+$snapsettings->add(new admin_setting_configstoredfile('theme_snap/slide_three_image_small',
+    new \core\lang_string('coverimagesmall', 'theme_snap'), new \core\lang_string('coverimagesmall_desc', 'theme_snap'),
+    'slide_three_image_small', 0, $opts));
 
 $name = 'theme_snap/slide_one_title';
 $title = new \core\lang_string('title', 'theme_snap');

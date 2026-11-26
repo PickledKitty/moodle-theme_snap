@@ -17,9 +17,14 @@
 {{!
     @template theme_boost/carousel
 
+    The front page's cover carousel. Each slide's image, and its optional image for small screens ("imagesmall"),
+    are custom properties the styles use (_core.scss). With "banner" (the Banner slide style), each slide has its
+    image's shape ("ratio" and "ratiosmall", width / height, and "height" in pixels) and its caption is only for
+    screen readers.
 
     Example context (json):
     {
+        "banner": false,
         "slides": [
          {
              "index": 0,
@@ -28,6 +33,10 @@
              "image": "",
              "title": "Slide title",
              "subtitle": "Slide subtitle",
+             "imagesmall": "",
+             "ratio": "",
+             "ratiosmall": "",
+             "height": 0,
              "slidelabel": "Slide 1 of 2"
          },
          {
@@ -37,25 +46,32 @@
              "image": "",
              "title": "Slide title",
              "subtitle": "Slide subtitle",
+             "imagesmall": "",
+             "ratio": "",
+             "ratiosmall": "",
+             "height": 0,
              "slidelabel": "Slide 2 of 2"
          }
         ]
     }
 }}
 
-<section id="snap-site-carousel" class="carousel slide" aria-label="{{covercarousellabel}}">
+<section id="snap-site-carousel" class="carousel slide{{#banner}} snap-carousel-banner{{/banner}}" aria-label="{{covercarousellabel}}">
     <span class="visually-hidden">{{carouselsronlytext}}</span>
 
     {{#slides}}
-        <link rel="preload" as="image" href="{{{image}}}">
+        <link rel="preload" as="image" href="{{{image}}}"{{#imagesmall}} media="(min-width: 768px)"{{/imagesmall}}>
+        {{#imagesmall}}
+            <link rel="preload" as="image" href="{{{imagesmall}}}" media="(max-width: 767.98px)">
+        {{/imagesmall}}
     {{/slides}}
 
     <div class="carousel-inner" id="snap-carousel-container">
         <!-- Carousel slides. -->
         {{#slides}}
             <div class="carousel-item carousel-{{name}} {{active}}" role="group" aria-label="{{slidelabel}}">
-                <div class="carousel-slide" style="background-image:url({{{image}}});">
-                    <div class="carousel-caption">
+                <div class="carousel-slide" style="--snap-slide-image: url({{{image}}});{{#imagesmall}} --snap-slide-image-small: url({{{imagesmall}}});{{/imagesmall}}{{#ratio}} --snap-slide-ratio: {{ratio}}; --snap-slide-height: {{height}}px;{{/ratio}}{{#ratiosmall}} --snap-slide-ratio-small: {{ratiosmall}};{{/ratiosmall}}">
+                    <div class="carousel-caption{{#banner}} visually-hidden{{/banner}}">
                         <h1>{{title}}</h1>
                         <p>{{subtitle}}</p>
                     </div>

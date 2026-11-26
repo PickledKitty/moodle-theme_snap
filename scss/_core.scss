@@ -2488,10 +2488,16 @@ body.path-course #moodle-page #page-header {
 
     .carousel-slide {
         position: relative;
+        // The slide's image, and below 768px its image for small screens when it has one (carousel.mustache).
+        background-image: var(--snap-slide-image);
         background-position: center center;
         background-size: cover;
         background-color: #222;
         min-height: 32rem;
+
+        @include media-breakpoint-down(md) {
+            background-image: var(--snap-slide-image-small, var(--snap-slide-image));
+        }
 
         --scrim-stops:
             rgba(0, 0, 0, 0.65) 0%,
@@ -2728,6 +2734,33 @@ body.path-course #moodle-page #page-header {
             height: 1.6rem;
             margin: 0 .1rem;
             background-color: rgba(255, 255, 255, 0.3);
+        }
+    }
+}
+
+// The Banner slide style, as Snap 4.5 had it: each slide has its image's shape (from core_renderer::cover_carousel()),
+// so below 992px the banner shows whole, scaled to fit. From 992px it's at least as high as the image itself
+// (--snap-slide-height, at most half the window), from the left, so a banner's important part, on the left, is at
+// full size and the right of it is cut off until the window is as wide as the image. Below 768px an image for small
+// screens, when there is one, shows whole at its own shape. No hero height, crop or shade.
+#snap-site-carousel.snap-carousel-banner {
+    .carousel-slide {
+        // A set width, so the minimum height makes the slide taller, not wider than the page.
+        width: 100%;
+        min-height: 0;
+        aspect-ratio: var(--snap-slide-ratio, auto);
+        background-position: left center;
+
+        &::before {
+            display: none;
+        }
+
+        @include media-breakpoint-up(lg) {
+            min-height: min(var(--snap-slide-height, 0px), 50vh);
+        }
+
+        @include media-breakpoint-down(md) {
+            aspect-ratio: var(--snap-slide-ratio-small, var(--snap-slide-ratio, auto));
         }
     }
 }

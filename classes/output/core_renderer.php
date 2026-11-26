@@ -949,8 +949,19 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $slidenames = ["slide_one", "slide_two", "slide_three"];
         $slides = [];
         $i = 0;
+        // Banner style: each slide gets its image's shape (_core.scss).
+        $banner = ($this->page->theme->settings->cover_carousel_style ?? 'hero') === 'banner';
+        $fs = get_file_storage();
+        $syscontextid = \context_system::instance()->id;
+        // A slide image's size, from its file.
+        $size = function(string $filearea) use ($fs, $syscontextid): ?array {
+            $files = $fs->get_area_files($syscontextid, 'theme_snap', $filearea, 0, 'id DESC', false);
+            $info = $files ? reset($files)->get_imageinfo() : false;
+            return !empty($info['width']) && !empty($info['height']) ? $info : null;
+        };
         foreach ($slidenames as $slidename) {
             $image = $slidename . '_image';
+            $small = $slidename . '_image_small';
             $title = $slidename . '_title';
             $subtitle = $slidename . '_subtitle';
             if (!empty($this->page->theme->settings->$image) && !empty($this->page->theme->settings->$title)) {
@@ -959,9 +970,21 @@ class core_renderer extends \theme_boost\output\core_renderer {
                     'active' => '',
                     'name' => $slidename,
                     'image' => $this->page->theme->setting_file_url($image, $image),
+                    'imagesmall' => empty($this->page->theme->settings->$small) ? '' :
+                        $this->page->theme->setting_file_url($small, $small),
                     'title' => $this->page->theme->settings->$title,
                     'subtitle' => $this->page->theme->settings->$subtitle,
+                    'ratio' => '',
+                    'ratiosmall' => '',
+                    'height' => 0,
                 ];
+                if ($banner && ($info = $size($image))) {
+                    $slide->ratio = $info['width'] . ' / ' . $info['height'];
+                    $slide->height = (int)$info['height'];
+                }
+                if ($banner && $slide->imagesmall && ($info = $size($small))) {
+                    $slide->ratiosmall = $info['width'] . ' / ' . $info['height'];
+                }
                 $slides[] = $slide;
             }
         }
@@ -994,7 +1017,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 'carouselplaybutton' => $carouselplaybutton,
                 'carouselpausebutton' => $carouselpausebutton,
                 'covercarousellabel' => $covercarousellabel,
-                'carouselhidecontrols' => $carouselhidecontrols, ];
+                'carouselhidecontrols' => $carouselhidecontrols,
+                'banner' => $banner, ];
         $data['slides'] = $slides;
         return $this->render_from_template('theme_snap/carousel', $data);
     }

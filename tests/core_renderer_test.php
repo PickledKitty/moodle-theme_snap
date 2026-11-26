@@ -31,6 +31,7 @@ namespace theme_snap;
 #[\PHPUnit\Framework\Attributes\CoversMethod(\theme_snap\output\core_renderer::class, 'snap_blocks_drawer_contents')]
 #[\PHPUnit\Framework\Attributes\CoversMethod(\theme_snap\output\core_renderer::class, 'custom_menu')]
 #[\PHPUnit\Framework\Attributes\CoversMethod(\theme_snap\local::class, 'filter_custom_menu')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\theme_snap\output\core_renderer::class, 'cover_carousel')]
 class core_renderer_test extends \advanced_testcase {
 
     /**
@@ -54,8 +55,9 @@ class core_renderer_test extends \advanced_testcase {
         $corerenderer = new \theme_snap\output\core_renderer($PAGE, $target);
         $heading = $corerenderer->page_heading();
 
-        // The id is the title toggle's target (core_renderer::snap_title_toggle()).
-        $this->assertEquals('<h1 id="snap-page-title"></h1>', $heading);
+        // The id is the title toggle's target (core_renderer::snap_title_toggle()); the class is the title strip's,
+        // whichever element it is (core_renderer::snap_title_classes()).
+        $this->assertEquals('<h1 class="snap-page-title" id="snap-page-title"></h1>', $heading);
     }
 
     /**
@@ -232,5 +234,49 @@ class core_renderer_test extends \advanced_testcase {
 
         set_config('custommenu', '[siteadmin] Admin item|https://example.com/a', 'theme_snap');
         $this->assertSame('', $render());
+    }
+
+    /**
+     * The carousel's Hero style (the default) shows the title over the slide; the Banner style gives each slide its
+     * image's shape and height and keeps the title for screen readers. An image for small screens is passed as well.
+     */
+    public function test_cover_carousel_styles(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $syscontextid = \context_system::instance()->id;
+        foreach (['slide_one_image' => [1600, 160], 'slide_one_image_small' => [640, 240]] as $filearea => [$w, $h]) {
+            $img = imagecreatetruecolor($w, $h);
+            ob_start();
+            imagepng($img);
+            get_file_storage()->create_file_from_string(['contextid' => $syscontextid, 'component' => 'theme_snap',
+                'filearea' => $filearea, 'itemid' => 0, 'filepath' => '/', 'filename' => "$filearea.png"], ob_get_clean());
+            set_config($filearea, "/$filearea.png", 'theme_snap');
+        }
+        set_config('slide_one_title', 'My student portal', 'theme_snap');
+        set_config('cover_carousel', 1, 'theme_snap');
+
+        $render = function() {
+            $page = new \moodle_page();
+            $page->set_url('/');
+            $page->set_context(\context_system::instance());
+            $page->force_theme('snap');
+            return (new \theme_snap\output\core_renderer($page, null))->cover_carousel();
+        };
+
+        $hero = $render();
+        $this->assertStringContainsString('My student portal', $hero);
+        $this->assertStringContainsString('slide_one_image_small.png', $hero);
+        $this->assertStringNotContainsString('--snap-slide-ratio', $hero);
+        $this->assertStringNotContainsString('snap-carousel-banner', $hero);
+        $this->assertMatchesRegularExpression('/class="carousel-caption"/', $hero);
+
+        set_config('cover_carousel_style', 'banner', 'theme_snap');
+        $banner = $render();
+        $this->assertStringContainsString('snap-carousel-banner', $banner);
+        $this->assertStringContainsString('--snap-slide-ratio: 1600 / 160;', $banner);
+        $this->assertStringContainsString('--snap-slide-height: 160px;', $banner);
+        $this->assertStringContainsString('--snap-slide-ratio-small: 640 / 240;', $banner);
+        $this->assertStringContainsString('carousel-caption visually-hidden', $banner);
+        $this->assertStringContainsString('My student portal', $banner);
     }
 }
